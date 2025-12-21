@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 
-export default function Index() {
+export default function MeusTreinos() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Index
-      </Text>
+      <Text style={styles.title}>Progresso</Text>
+      <View style={styles.separator} />
     </View>
   );
 }

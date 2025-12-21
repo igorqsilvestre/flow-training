@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 
-export default function TabTwoScreen() {
+export default function MeusTreinos() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
+      <Text style={styles.title}>Meus Treinos</Text>
       <View style={styles.separator} />
     </View>
   );
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'white'
   },
   separator: {
     marginVertical: 30,
