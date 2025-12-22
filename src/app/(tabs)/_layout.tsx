@@ -21,13 +21,15 @@ export default function TabLayout () {
             tabBarItemStyle: {
                flex: 1,
             },
+            tabBarInactiveTintColor: theme.colors.primary,
+            tabBarActiveTintColor: theme.colors.primary,
             tabBarIndicatorStyle: {
                 backgroundColor: theme.colors.primary,
                 marginBottom: 4,
             },
             tabBarStyle: {
                 paddingTop: insets.top,
-                backgroundColor: theme.colors.header
+                backgroundColor: theme.colors.header,
             },
             tabBarLabelStyle: {
                 fontWeight: 'bold'
@@ -38,7 +40,8 @@ export default function TabLayout () {
             name="index"
             options={{ 
                 tabBarShowLabel: false,
-                tabBarIcon: () => <MaterialIcons size={28} name="house"  />
+                tabBarIcon: () => <MaterialIcons size={23} name="house"  />,
+           
             }}
         />
         <TopTabs.Screen
