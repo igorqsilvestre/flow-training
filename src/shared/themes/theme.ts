@@ -16,12 +16,11 @@ export const theme =  {
       large: 16,
       extraLarge: 64
     },
-    family: 'Poppins',
-    weights: {
-      regular: 'Regular',
-      bold: 'Bold',
-      boldItalic: 'Bold Italic',
-      medium: 'Medium'
+    family: {
+      regular: 'PoppinsRegular',
+      bold: 'PoppinsBold',
+      boldItalic: 'PoppinsBoldItalic',
+      medium: 'PoppinsMedium'
     }
   }
 };

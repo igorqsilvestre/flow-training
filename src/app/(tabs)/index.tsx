@@ -14,9 +14,9 @@ export default function Index() {
           Vamos começar
         </Text>
        </View>
-      <View>
+      <View style={{ gap: 8}}>
         <CardSmall backgroundColor={theme.colors.preparation} title='Preparação' tempoOuQuantidade={10} />
-        <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={5} />
+        <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={5} tipo='exercise'/>
         <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} />
 
         <View>
@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
+    fontFamily: theme.fonts.family.boldItalic,
     color: theme.colors.secundary
   }
 });

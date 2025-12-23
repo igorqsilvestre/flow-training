@@ -32,7 +32,7 @@ export default function TabLayout () {
                 backgroundColor: theme.colors.header,
             },
             tabBarLabelStyle: {
-                fontWeight: 'bold'
+                fontFamily: theme.fonts.family.bold,
             }
         }}
         >
