@@ -52,12 +52,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
                 }}
                 renderItem={({ item }) => (
                    <View style={{ width: '48%' }}>
-                      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
-                        <TouchableOpacity>
-                          <MaterialIcons size={23} name="edit"  />
-                        </TouchableOpacity>
-                      </View>
+                      <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
                     
                       <View style={styles.contentExercicio}>
                         <View style={{flexDirection: 'row', gap: 4}}>
@@ -67,7 +62,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
                             <MaterialIcons size={23} name="edit"  />
                           </TouchableOpacity>
                         </View>
-                        
+                          
                         <View style={{flexDirection: 'row', gap: 4}}>
                           <Text style={styles.cardSubTitle}>Des</Text>
                           <Text style={styles.cardSubTitle}>15</Text>
