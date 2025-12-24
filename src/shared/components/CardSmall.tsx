@@ -1,6 +1,9 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
+
+const ITEM_HEIGHT = 30;
+const MAX_ITEMS_VISIBLE = 2;
 
 interface IPropsCardSmall {
     backgroundColor: string,
@@ -8,8 +11,13 @@ interface IPropsCardSmall {
     tempoOuQuantidade: number,
     tipo?: 'default' | 'exercise';
 }
-
 export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'default'}: IPropsCardSmall) => {
+
+  const listHeight =
+    tipo === 'exercise'
+      ? Math.min(tempoOuQuantidade, MAX_ITEMS_VISIBLE) * ITEM_HEIGHT
+      : undefined;
+
     return (
         <View style={{ backgroundColor, ...styles.card}}>
           <TouchableOpacity style={styles.cardIconRefresh}>
@@ -24,19 +32,58 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
               </TouchableOpacity>
 
              {tipo === 'exercise' && (
-              <View style={{ flexDirection: 'row'}}>
-                {Array.from({ length: tempoOuQuantidade }).map((_, index) => (
-                  <View key={index}>
-                    <View style={{flexDirection: 'row' }}>
-                      <Text>Exercício {index + 1}º</Text>
-                       <TouchableOpacity>
-                        <MaterialIcons size={23} name="edit"  />
-                      </TouchableOpacity>
+              <View
+                style={{
+                  height: listHeight,
+                  width: '100%'
+                }}
+              >
+                <FlatList 
+                data={Array.from(
+                  { length: tempoOuQuantidade },
+                  (_, index) => ({ id: index + 1 })
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+                contentContainerStyle={{  
+                  rowGap: 6,
+                  paddingHorizontal: 10
+                }}
+                renderItem={({ item }) => (
+                   <View style={{ width: '48%' }}>
+                      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                        <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
+                        <TouchableOpacity>
+                          <MaterialIcons size={23} name="edit"  />
+                        </TouchableOpacity>
+                      </View>
+                    
+                      <View style={styles.contentExercicio}>
+                        <View style={{flexDirection: 'row', gap: 4}}>
+                          <Text style={styles.cardSubTitle}>Time</Text>
+                          <Text style={styles.cardSubTitle}>45</Text>
+                          <TouchableOpacity>
+                            <MaterialIcons size={23} name="edit"  />
+                          </TouchableOpacity>
+                        </View>
+                        
+                        <View style={{flexDirection: 'row', gap: 4}}>
+                          <Text style={styles.cardSubTitle}>Des</Text>
+                          <Text style={styles.cardSubTitle}>15</Text>
+                          <TouchableOpacity>
+                            <MaterialIcons size={23} name="edit"  />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
-                   
-                  </View>
-                ))}
+                )}
+                showsVerticalScrollIndicator={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
+                scrollEnabled={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
+                >
+                </FlatList>
               </View>
+              
              )}
             </View>
           </View>
@@ -46,8 +93,6 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
 
 const styles = StyleSheet.create({
   card: {
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 10,
   },
   cardTitle: {
@@ -62,5 +107,13 @@ const styles = StyleSheet.create({
   },
   cardIconRefresh: {
    alignSelf: 'flex-end'
+  },
+  contentExercicio: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderRadius: 4,
+ 
   }
 });

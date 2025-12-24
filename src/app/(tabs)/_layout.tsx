@@ -15,7 +15,7 @@ export default function TabLayout () {
         <TopTabs 
         screenOptions={{
             sceneStyle: {
-                backgroundColor: theme.colors.primary
+                backgroundColor: theme.colors.primary,
             },
             tabBarScrollEnabled: false,
             tabBarItemStyle: {

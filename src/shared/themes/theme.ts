@@ -8,7 +8,8 @@ export const theme =  {
     exercise: '#8BBBE2',
     cycles: '#F58080',
     wrong: '#FF0000',
-    secundary: '#A1A1A1'
+    secundary: '#A1A1A1',
+    white: '#FFFFFF'
   },
   fonts: {
     sizes: {

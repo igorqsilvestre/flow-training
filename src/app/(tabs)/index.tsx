@@ -1,6 +1,7 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
 import { theme } from '@/src/shared/themes/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
@@ -8,24 +9,36 @@ export default function Index() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View >
+    <View style={{flex: 1}}>
        <View style={{paddingVertical: 30 }}>
         <Text style={styles.title}>
           Vamos começar
         </Text>
        </View>
-      <View style={{ gap: 8}}>
+
+      <View style={{ flex: 1, gap: 8, marginBottom: 8}}>
         <CardSmall backgroundColor={theme.colors.preparation} title='Preparação' tempoOuQuantidade={10} />
-        <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={5} tipo='exercise'/>
+        <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={4} tipo='exercise'/>
         <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} />
 
-        <View>
-          <Text style={styles.title}>Ações</Text>
+        <View style={{flexDirection: 'row', gap: 20, justifyContent: 'center'}}>
+          <TouchableOpacity style={{alignItems: 'center'}}>
+            <MaterialIcons size={28} name="play-circle" color='#FFFFFF'/>
+            <Text style={styles.subtitle}>Iniciar</Text>
+          </TouchableOpacity>
+
+
+          <TouchableOpacity style={{alignItems: 'center'}}>
+            <MaterialIcons size={28} name="save" color='#FFFFFF'/>
+            <Text style={styles.subtitle}>Salvar</Text>
+          </TouchableOpacity>
+
         </View>
       </View>
 
-      <View style={{ paddingBottom: insets.bottom }}>
-        <Text style={styles.title}>Footer</Text>
+      <View style={{  paddingBottom: insets.bottom, ...styles.contentFooter}}>
+        <Text style={styles.titleFooter}>Siglas</Text>
+        <Text style={styles.textBody}>Rep: Repetição - Time: Tempo - Des: Descanso</Text>
       </View>
     </View>
    
@@ -38,5 +51,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: theme.fonts.family.boldItalic,
     color: theme.colors.secundary
+  },
+  subtitle: {
+    fontFamily: theme.fonts.family.bold,
+    fontSize: 12,
+    color: theme.colors.white
+  },
+  contentFooter: {
+    flexDirection: 'column', 
+    alignItems: 'center' ,
+    backgroundColor: theme.colors.footer
+  },
+  titleFooter: {
+    fontSize: 12,
+    fontFamily: theme.fonts.family.bold,
+    color: theme.colors.primary
+  },
+  textBody: {
+    fontFamily: theme.fonts.family.regular,
+    fontSize: 12,
+    color: theme.colors.primary
   }
 });
