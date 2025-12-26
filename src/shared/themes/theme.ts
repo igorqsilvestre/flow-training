@@ -9,7 +9,10 @@ export const theme =  {
     cycles: '#F58080',
     wrong: '#FF0000',
     secundary: '#A1A1A1',
-    white: '#FFFFFF'
+    white: '#FFFFFF',
+    botaoPreparation: '#2F3E1F',
+    botaoExercise: '#1E3A5F',
+    botaoDescanso: '#991B1B'
   },
   fonts: {
     sizes: {

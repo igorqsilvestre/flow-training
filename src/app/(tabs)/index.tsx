@@ -1,6 +1,7 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -22,10 +23,11 @@ export default function Index() {
         <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} />
 
         <View style={{flexDirection: 'row', gap: 20, justifyContent: 'center'}}>
-          <TouchableOpacity style={{alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => router.push('/training')} style={{alignItems: 'center'}}>
             <MaterialIcons size={28} name="play-circle" color='#FFFFFF'/>
             <Text style={styles.subtitle}>Iniciar</Text>
           </TouchableOpacity>
+        
 
 
           <TouchableOpacity style={{alignItems: 'center'}}>

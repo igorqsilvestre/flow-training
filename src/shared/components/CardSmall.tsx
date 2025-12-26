@@ -29,7 +29,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
               <Text style={styles.cardSubTitle}>{ tempoOuQuantidade }</Text>
               <TouchableOpacity>
                 <MaterialIcons size={23} name="edit"  />
-              </TouchableOpacity>
+                </TouchableOpacity>
 
              {tipo === 'exercise' && (
               <View
