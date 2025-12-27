@@ -1,29 +1,23 @@
-import { StyleSheet, Text, View } from 'react-native';
-
+import { BotoesMeuTreino } from '@/src/shared/components/BotoesMeuTreino';
+import { StyleSheet, View } from 'react-native';
 
 export default function MeusTreinos() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Meus Treinos</Text>
-      <View style={styles.separator} />
+      <BotoesMeuTreino label='Treino peito e ombro'/>
+      <BotoesMeuTreino label='Treino costas e braços'/>
+      <BotoesMeuTreino label='Treino abdomên'/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white'
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    flexDirection: 'column',
+    paddingHorizontal: 10,
+    paddingTop: 100,
+    gap: 8
   },
 });
+
+
