@@ -32,10 +32,6 @@ export const Calendario = ({ datasTreino }: Props) => {
      <View style={{ paddingHorizontal: 8 }}>
       <Calendar
         style={{ borderRadius: 10 }}
-        theme={{
-          backgroundColor: theme.colors.header,
-          calendarBackground: theme.colors.header
-        }}
         markedDates={datasMarcadas}
         enableSwipeMonths
       />

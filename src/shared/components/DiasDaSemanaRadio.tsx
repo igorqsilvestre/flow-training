@@ -82,14 +82,14 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: theme.fonts.family.bold,
     fontSize: 16,
-    color: theme.colors.header
+    color: theme.colors.white
   },
   radioFora: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: theme.colors.header,
+    borderColor: theme.colors.white,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -97,6 +97,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 7,
-    backgroundColor:  theme.colors.header,
+    backgroundColor:  theme.colors.white,
   }
 })

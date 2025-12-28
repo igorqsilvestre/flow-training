@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   buttonExercise: {
     borderRadius: 10,
-    backgroundColor: theme.colors.header,
+    backgroundColor: theme.colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     color: theme.colors.primary
   },
   buttonDelete: {
-    backgroundColor: theme.colors.header,
+    backgroundColor: theme.colors.white,
     borderRadius: 10,
     padding: 4,
   }
