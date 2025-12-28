@@ -4,9 +4,14 @@ import {
     createMaterialTopTabNavigator,
 } from "@react-navigation/material-top-tabs";
 import { withLayoutContext } from "expo-router";
+import { View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TopTabs = withLayoutContext(createMaterialTopTabNavigator().Navigator);
+
+const IconPlaceholder = () => (
+  <View style={{  height: 4 }} />
+);
 
 export default function TabLayout () {
     const insets = useSafeAreaInsets();
@@ -18,9 +23,6 @@ export default function TabLayout () {
                 backgroundColor: theme.colors.primary,
             },
             tabBarScrollEnabled: false,
-            tabBarItemStyle: {
-               flex: 1,
-            },
             tabBarInactiveTintColor: theme.colors.primary,
             tabBarActiveTintColor: theme.colors.primary,
             tabBarIndicatorStyle: {
@@ -47,13 +49,15 @@ export default function TabLayout () {
         <TopTabs.Screen
             name="meusTreinos"
             options={{ 
-                tabBarLabel: 'Meus Treinos'
+                tabBarLabel: 'Meus Treinos',
+                tabBarIcon: IconPlaceholder,
             }}
         />
          <TopTabs.Screen
             name="progresso"
             options={{ 
-                tabBarLabel: 'Progresso'
+                tabBarLabel: 'Progresso',
+                tabBarIcon: IconPlaceholder,
             }}
         />
 

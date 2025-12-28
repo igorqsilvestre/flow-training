@@ -1,29 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Calendario } from '@/src/shared/components/Calendario';
+import { DiasDaSemanaRadio } from '@/src/shared/components/DiasDaSemanaRadio';
+import { StyleSheet, View } from 'react-native';
 
 
-export default function MeusTreinos() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Progresso</Text>
-      <View style={styles.separator} />
-    </View>
+
+export default function Progresso() {
+
+ return (
+  <View style={styles.container}>
+    <DiasDaSemanaRadio datasTreino = {['2025-12-27', '2025-12-28']}/>
+    <Calendario datasTreino = {['2025-12-27', '2025-12-28']}/>
+  </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white'
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+    flexDirection: 'column',
+    gap: 100,
+    paddingTop: 50
+  }
+})
+
