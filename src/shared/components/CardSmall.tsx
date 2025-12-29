@@ -1,5 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 const ITEM_HEIGHT = 30;
@@ -13,10 +14,23 @@ interface IPropsCardSmall {
 }
 export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'default'}: IPropsCardSmall) => {
 
+  const [quantidadeOuTempo, setQuantidadeOuTempo] = useState<string>();
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if(tempoOuQuantidade){
+      setQuantidadeOuTempo(tempoOuQuantidade.toString());
+    }
+  }, [tempoOuQuantidade])
+
   const listHeight =
     tipo === 'exercise'
       ? Math.min(tempoOuQuantidade, MAX_ITEMS_VISIBLE) * ITEM_HEIGHT
       : undefined;
+
+    const finalizarEdicaoQuantidadeOuTempo = () => {
+      console.log('estou aqui');
+    }
 
     return (
         <View style={{ backgroundColor, ...styles.card}}>
@@ -24,12 +38,20 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
             <MaterialIcons size={28} name="restart-alt"  />
           </TouchableOpacity>
           <View>
-            <View style={{ paddingBottom: 20, gap: 10, alignItems: 'center' }}>
-               <Text style={styles.cardTitle}>{ title }</Text>
-              <Text style={styles.cardSubTitle}>{ tempoOuQuantidade }</Text>
-              <TouchableOpacity>
+            <View style={{ paddingBottom: 20, alignItems: 'center' }}>
+              <Text style={styles.cardTitle}>{ title }</Text>
+              <TextInput
+              ref={inputRef}
+              keyboardType="numeric"
+              value={quantidadeOuTempo}
+              onChangeText={setQuantidadeOuTempo}
+              style={styles.cardSubTitle}
+              onBlur={finalizarEdicaoQuantidadeOuTempo}
+              />
+
+              <TouchableOpacity onPress={() => inputRef.current?.focus()}>
                 <MaterialIcons size={23} name="edit"  />
-                </TouchableOpacity>
+              </TouchableOpacity>
 
              {tipo === 'exercise' && (
               <View
@@ -40,7 +62,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
               >
                 <FlatList 
                 data={Array.from(
-                  { length: tempoOuQuantidade },
+                  { length: Number(quantidadeOuTempo) },
                   (_, index) => ({ id: index + 1 })
                 )}
                 keyExtractor={(item) => item.id.toString()}
@@ -73,8 +95,8 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
                       </View>
                     </View>
                 )}
-                showsVerticalScrollIndicator={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
-                scrollEnabled={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
+                showsVerticalScrollIndicator={Number(quantidadeOuTempo) > MAX_ITEMS_VISIBLE}
+                scrollEnabled={Number(quantidadeOuTempo) > MAX_ITEMS_VISIBLE}
                 >
                 </FlatList>
               </View>
