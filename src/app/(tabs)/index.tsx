@@ -2,12 +2,14 @@ import { CardSmall } from '@/src/shared/components/CardSmall';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 export default function Index() {
   const insets = useSafeAreaInsets();
+  const [open, setOpen] = useState<boolean>();
 
   return (
     <View style={{flex: 1}}>
@@ -18,6 +20,7 @@ export default function Index() {
        </View>
 
       <View style={{ flex: 1, gap: 8, marginBottom: 8}}>
+        {/*<CustomModal></CustomModal>*/}
         <CardSmall backgroundColor={theme.colors.preparation} title='Preparação' tempoOuQuantidade={10} />
         <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={4} tipo='exercise'/>
         <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} />
