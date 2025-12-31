@@ -1,4 +1,5 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
+import { CustomModal } from '@/src/shared/components/CustomModal';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -20,7 +21,7 @@ export default function Index() {
        </View>
 
       <View style={{ flex: 1, gap: 8, marginBottom: 8}}>
-        {/*<CustomModal></CustomModal>*/}
+        <CustomModal></CustomModal>
         <CardSmall backgroundColor={theme.colors.preparation} title='Preparação' tempoOuQuantidade={10} />
         <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={4} tipo='exercise'/>
         <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} />
