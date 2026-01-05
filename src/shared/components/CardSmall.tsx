@@ -1,6 +1,9 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
+import { CustomModal } from "./CustomModal";
+
 
 const ITEM_HEIGHT = 30;
 const MAX_ITEMS_VISIBLE = 2;
@@ -9,14 +12,13 @@ interface IPropsCardSmall {
     backgroundColor: string,
     title: string,
     tempoOuQuantidade: number,
+    type: 'cronometro' | 'repeticao';
     tipo?: 'default' | 'exercise';
 }
-export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'default'}: IPropsCardSmall) => {
-    
+export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'default', type}: IPropsCardSmall) => {
+  const [open, setOpen] = useState<boolean>(false);
 
-
-
-    return (
+  return (
         <View style={{ backgroundColor, ...styles.card}}>
           <TouchableOpacity style={styles.cardIconRefresh}>
             <MaterialIcons size={28} name="restart-alt"  />
@@ -26,7 +28,14 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
               <Text style={styles.cardTitle}>{ title }</Text>
               <Text>{ tempoOuQuantidade }</Text>
 
-              <TouchableOpacity>
+              {tipo === 'exercise' && open && (
+                <CustomModal title={title} type={type} chooseType visible={open} onClose={() => setOpen(false)}/>
+              )}
+              {tipo === 'default' && open && (
+                <CustomModal title={title} type={type} visible={open} onClose={() => setOpen(false)}/>
+              )}              
+
+              <TouchableOpacity onPress={() => setOpen(true)}>
                 <MaterialIcons size={23} name="edit"  />
               </TouchableOpacity>
 
@@ -80,7 +89,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
             </View>
           </View>
         </View>
-    )
+  )
 }
 
 const styles = StyleSheet.create({

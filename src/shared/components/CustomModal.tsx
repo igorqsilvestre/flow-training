@@ -2,68 +2,113 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
+import ComboBox from "./Combo_temp";
 
 
-
-export function CustomModal() {
+export interface ICustomModalProps {
+  title: string;
+  chooseType?: boolean;
+  type: 'cronometro' | 'repeticao';
+  visible: boolean;
+  onClose: () => void;
+}
+export function CustomModal({title, type,chooseType, visible, onClose}: ICustomModalProps) {
   const [minuto, setMinuto] = useState(0);
   const [segundo, setSegundo] = useState(0);
-  const [open, setOpen] = useState<boolean>(true);
+  const [tipo, setTipo] = useState<string | undefined>();
+
+  const modo =
+  chooseType
+    ? tipo === 'rep'
+      ? 'repeticao'
+      : tipo === 'time'
+      ? 'cronometro'
+      : undefined
+    : type;
 
   return (
-    <Modal transparent animationType="fade" visible={open}>
+    <Modal transparent animationType="fade" visible={visible}>
       <View style={styles.overlay}>
         <View style={styles.modal}>
             <View style={styles.header}>
-              <Text style={styles.headerTitle}>Preparação</Text>
+              <Text style={styles.headerTitle}>{title}</Text>
             </View>
+
+              {chooseType && (
+                 <ComboBox 
+                  value={tipo}
+                  onChange={setTipo}
+                  valores={[
+                    {label:'Time', valor:'time'}, {label:'Repetição', valor:'rep'}
+                  ]}/>
+              )}
    
-            <View>
+              {modo === 'cronometro' && (
+              <View>
+                  <View style={styles.containerTitle}>
+                    <Text style={styles.title}>Minutos</Text>
+                    <Text style={styles.title}>Segundos</Text>
+                  </View>
 
-              <View style={styles.containerTitle}>
-                 <Text style={styles.title}>Minutos</Text>
-                 <Text style={styles.title}>Segundos</Text>
-              </View>
-
-              <View style={styles.containerContagem}>
+                  <View style={styles.containerContagem}>
                
-               <View style={styles.containerContagemSeparator}>
-                  <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
-                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                  </TouchableOpacity>
-                  <View style={styles.containerContagemTempo}>
-                    <Text style={styles.tempoLabel}>{minuto}</Text>
-                  </View>
-                   <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
-                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                  </TouchableOpacity>
-               </View>
+                    <View style={styles.containerContagemSeparator}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                        </TouchableOpacity>
+                        <View style={styles.containerContagemTempo}>
+                          <Text style={styles.tempoLabel}>{minuto}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={styles.containerContagemSeparator}>
-                  <Text style={styles.separatorText}>:</Text>
-                </View>
+                    <View style={styles.containerContagemSeparator}>
+                      <Text style={styles.separatorText}>:</Text>
+                    </View>
 
-                <View style={styles.containerContagemSeparator}>
-                  <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev < 50 ? prev + 1 : 0))}>
-                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                  </TouchableOpacity>
-                  <View style={styles.containerContagemTempo}>
-                    <Text style={styles.tempoLabel}>{segundo}</Text>
-                  </View>
-                  <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev > 0 ? prev - 1 : 0))}>
-                      <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                  </TouchableOpacity>
-                </View>
+                    <View style={styles.containerContagemSeparator}>
+                      <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                      </TouchableOpacity>
+                      <View style={styles.containerContagemTempo}>
+                        <Text style={styles.tempoLabel}>{segundo}</Text>
+                      </View>
+                      <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev > 0 ? prev - 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                      </TouchableOpacity>
+                    </View>
                 
-
+                  </View>
               </View>
+              )}
 
-            
+              {modo === 'repeticao' && (
+                <View>
+                   <View style={styles.containerTitle}>
+                    <Text style={styles.title}>Vezes</Text>
+                  </View>
 
-            </View>
+                  <View style={styles.containerContagem}>
+                    <View style={styles.containerContagemSeparator}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                        </TouchableOpacity>
+                        <View style={styles.containerContagemTempo}>
+                          <Text style={styles.tempoLabel}>{minuto}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                        </TouchableOpacity>
+                    </View>
+                  </View>
+
+                </View>
+              )}  
              
 
-            <TouchableOpacity style={styles.footer} onPress={() => setOpen(!open)}>
+            <TouchableOpacity style={styles.footer} onPress={onClose}>
                 <Text style={styles.footerTitle}>Adicionar</Text>
             </TouchableOpacity>
         </View>
@@ -113,6 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   containerContagemSeparator: {
+    gap: 2,
     alignItems: 'center',
   },
   containerContagemBotao: {
@@ -139,12 +185,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 20,
     marginBottom: 4,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: theme.colors.header
   },
   footerTitle: {
     textAlign: 'center',
-    fontFamily: theme.fonts.family.medium,
-    fontSize: theme.fonts.sizes.body
+    fontFamily: theme.fonts.family.regular,
+    fontSize: theme.fonts.sizes.medium
   }
 });
