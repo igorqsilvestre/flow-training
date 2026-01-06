@@ -1,9 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import { CustomModal } from "./CustomModal";
-
 
 const ITEM_HEIGHT = 30;
 const MAX_ITEMS_VISIBLE = 2;
@@ -11,35 +10,60 @@ const MAX_ITEMS_VISIBLE = 2;
 interface IPropsCardSmall {
     backgroundColor: string,
     title: string,
-    tempoOuQuantidade: number,
-    type: 'cronometro' | 'repeticao';
-    tipo?: 'default' | 'exercise';
+    tipoTempo: 'cronometro' | 'repeticao';
+    modoExercicio?: boolean,
+    quantidade?: number,
+    tempo?: {
+      minuto: number,
+      dezenaDosSegundos: number,
+      unidadeDosSegundos: number
+    },
 }
-export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'default', type}: IPropsCardSmall) => {
+export const CardSmall = (dados: IPropsCardSmall) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [tempoFormatado, setTempoFormatado] = useState('');
+  const [quantidade, setQuantidade] = useState(0);
+
+  useEffect(() => {
+    if(dados.tempo){
+      setTempoFormatado(`${dados.tempo.minuto} : ${dados.tempo.dezenaDosSegundos}${dados.tempo.unidadeDosSegundos}`);
+    }
+  },[dados.tempo]);
+
+   useEffect(() => {
+    if(dados.quantidade){
+     setQuantidade(dados.quantidade);
+    }
+  },[dados.quantidade]);
+
+  const tempoOuQuantidaderRecebidos = (minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number, quantidade: number) => {
+    if(quantidade){
+      setQuantidade(quantidade);
+    }
+    setTempoFormatado(`${minuto} : ${dezenaDosSegundos}${unidadeDosSegundos}`);
+    setOpen(false);
+  }
+
 
   return (
-        <View style={{ backgroundColor, ...styles.card}}>
+        <View style={ {backgroundColor: dados.backgroundColor, ...styles.card} }>
           <TouchableOpacity style={styles.cardIconRefresh}>
             <MaterialIcons size={28} name="restart-alt"  />
           </TouchableOpacity>
           <View>
-            <View style={{gap:8, paddingBottom: tipo === 'exercise' ? 0 : 20, alignItems: 'center' }}>
-              <Text style={styles.cardTitle}>{ title }</Text>
-              <Text>{ tempoOuQuantidade }</Text>
+            <View style={{gap:8, paddingBottom: dados.modoExercicio ? 0 : 20, alignItems: 'center' }}>
+              <Text style={styles.cardTitle}>{ dados.title }</Text>
+              <Text>{dados.tipoTempo === 'repeticao' ? quantidade : tempoFormatado}</Text>
 
-              {tipo === 'exercise' && open && (
-                <CustomModal title={title} type={type} chooseType visible={open} onClose={() => setOpen(false)}/>
-              )}
-              {tipo === 'default' && open && (
-                <CustomModal title={title} type={type} visible={open} onClose={() => setOpen(false)}/>
+              {open && (
+                <CustomModal title={dados.title} tipoTempo={dados.tipoTempo} visible={open} onClose={tempoOuQuantidaderRecebidos}/>
               )}              
 
               <TouchableOpacity onPress={() => setOpen(true)}>
                 <MaterialIcons size={23} name="edit"  />
               </TouchableOpacity>
 
-             {tipo === 'exercise' && (
+             {dados.modoExercicio  && (
               <View
                 style={styles.containerList}
               >
@@ -48,7 +72,7 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
                 </TouchableOpacity>
                 <FlatList 
                 data={Array.from(
-                  { length: tempoOuQuantidade },
+                  { length: quantidade },
                   (_, index) => ({ id: index + 1 })
                 )}
                 keyExtractor={(item) => item.id.toString()}
@@ -61,8 +85,8 @@ export const CardSmall = ({backgroundColor, title, tempoOuQuantidade, tipo = 'de
                 style={{
                    maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE
                 }}
-                showsVerticalScrollIndicator={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
-                scrollEnabled={tempoOuQuantidade > MAX_ITEMS_VISIBLE}
+                showsVerticalScrollIndicator={quantidade > MAX_ITEMS_VISIBLE}
+                scrollEnabled={quantidade > MAX_ITEMS_VISIBLE}
                 renderItem={({ item }) => (
                    <View>
                       <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>

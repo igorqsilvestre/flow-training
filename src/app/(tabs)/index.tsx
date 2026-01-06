@@ -2,14 +2,12 @@ import { CardSmall } from '@/src/shared/components/CardSmall';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 export default function Index() {
   const insets = useSafeAreaInsets();
-  const [open, setOpen] = useState<boolean>();
 
   return (
     <View style={{flex: 1}}>
@@ -20,9 +18,29 @@ export default function Index() {
        </View>
 
       <View style={{ flex: 1, gap: 8, marginBottom: 8}}>
-        <CardSmall backgroundColor={theme.colors.preparation} title='Preparação' tempoOuQuantidade={10} type='cronometro'/>
-        <CardSmall backgroundColor={theme.colors.exercise} title='Quantidade de exercícios' tempoOuQuantidade={4} tipo='exercise' type='repeticao'/>
-        <CardSmall backgroundColor={theme.colors.cycles} title='Ciclos' tempoOuQuantidade={1} type='repeticao'/>
+        <CardSmall 
+          backgroundColor={theme.colors.preparation} 
+          title='Preparação' 
+          tempo= {{
+            minuto: 0,
+            dezenaDosSegundos: 1,
+            unidadeDosSegundos: 0
+          }}
+          tipoTempo='cronometro'
+        />
+        <CardSmall 
+          backgroundColor={theme.colors.exercise} 
+          title='Quantidade de exercícios'
+          quantidade={4}
+          modoExercicio
+          tipoTempo='repeticao'
+        />
+        <CardSmall 
+          backgroundColor={theme.colors.cycles} 
+          title='Ciclos' 
+          quantidade={1} 
+          tipoTempo='repeticao'
+        />
 
         <View style={{flexDirection: 'row', gap: 20, justifyContent: 'center'}}>
           <TouchableOpacity onPress={() => router.push('/training')} style={{alignItems: 'center'}}>

@@ -8,15 +8,17 @@ import ComboBox from "./Combo_temp";
 export interface ICustomModalProps {
   title: string;
   chooseType?: boolean;
-  type: 'cronometro' | 'repeticao';
+  tipoTempo: 'cronometro' | 'repeticao';
   visible: boolean;
-  onClose: () => void;
+  onClose: (minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number,quantidade: number) => void;
 }
-export function CustomModal({title, type,chooseType, visible, onClose}: ICustomModalProps) {
+export function CustomModal({title, tipoTempo, chooseType, visible, onClose}: ICustomModalProps) {
+  //Cronômetro
   const [minuto, setMinuto] = useState(0);
   const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
   const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
-
+  //Repetição
+  const [quantidade, setQuantidade] = useState(0);
 
   const [tipo, setTipo] = useState<string | undefined>();
 
@@ -27,7 +29,16 @@ export function CustomModal({title, type,chooseType, visible, onClose}: ICustomM
       : tipo === 'time'
       ? 'cronometro'
       : undefined
-    : type;
+    : tipoTempo;
+
+    function handleAdicionar() {
+      onClose(
+        minuto,
+        dezenaDosSegundos,
+        unidadeDosSegundos,
+        quantidade
+      )
+    }
 
   return (
     <Modal transparent animationType="fade" visible={visible}>
@@ -110,13 +121,13 @@ export function CustomModal({title, type,chooseType, visible, onClose}: ICustomM
 
                   <View style={styles.containerContagem}>
                     <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev < 50 ? prev + 1 : 0))}>
                           <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
-                          <Text style={styles.tempoLabel}>{minuto}</Text>
+                          <Text style={styles.tempoLabel}>{quantidade}</Text>
                         </View>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev > 0 ? prev - 1 : 0))}>
                           <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                         </TouchableOpacity>
                     </View>
@@ -126,7 +137,7 @@ export function CustomModal({title, type,chooseType, visible, onClose}: ICustomM
               )}  
              
 
-            <TouchableOpacity style={styles.footer} onPress={onClose}>
+            <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
                 <Text style={styles.footerTitle}>Adicionar</Text>
             </TouchableOpacity>
         </View>
