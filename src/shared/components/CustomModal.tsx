@@ -14,7 +14,10 @@ export interface ICustomModalProps {
 }
 export function CustomModal({title, type,chooseType, visible, onClose}: ICustomModalProps) {
   const [minuto, setMinuto] = useState(0);
-  const [segundo, setSegundo] = useState(0);
+  const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
+  const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
+
+
   const [tipo, setTipo] = useState<string | undefined>();
 
   const modo =
@@ -44,14 +47,14 @@ export function CustomModal({title, type,chooseType, visible, onClose}: ICustomM
               )}
    
               {modo === 'cronometro' && (
-              <View>
+              <View style={{width: '100%'}}>
                   <View style={styles.containerTitle}>
                     <Text style={styles.title}>Minutos</Text>
-                    <Text style={styles.title}>Segundos</Text>
+                    <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
                   </View>
 
                   <View style={styles.containerContagem}>
-               
+                    {/*Minutos*/}
                     <View style={styles.containerContagemSeparator}>
                         <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
                           <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
@@ -64,22 +67,37 @@ export function CustomModal({title, type,chooseType, visible, onClose}: ICustomM
                         </TouchableOpacity>
                     </View>
 
+                    {/*Separador*/}
                     <View style={styles.containerContagemSeparator}>
                       <Text style={styles.separatorText}>:</Text>
                     </View>
-
-                    <View style={styles.containerContagemSeparator}>
-                      <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev < 50 ? prev + 1 : 0))}>
-                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                      </TouchableOpacity>
-                      <View style={styles.containerContagemTempo}>
-                        <Text style={styles.tempoLabel}>{segundo}</Text>
-                      </View>
-                      <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setSegundo((prev) => (prev > 0 ? prev - 1 : 0))}>
+                    
+                    {/*Segundos*/}
+                    <View style={styles.containerContagemMinutos}>
+                      <View style={styles.containerContagemSeparator}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                        </TouchableOpacity>
+                        <View style={styles.containerContagemTempo}>
+                          <Text style={styles.tempoLabel}>{dezenaDosSegundos}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                           <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                      </TouchableOpacity>
+                        </TouchableOpacity>  
+                      </View>
+
+                      <View style={styles.containerContagemSeparator}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                        </TouchableOpacity>
+                        <View style={styles.containerContagemTempo}>
+                          <Text style={styles.tempoLabel}>{unidadeDosSegundos}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
+                          <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                        </TouchableOpacity>  
+                      </View>
                     </View>
-                
                   </View>
               </View>
               )}
@@ -141,12 +159,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: theme.fonts.family.bold,
     fontSize: 15
-    
   },
-
   containerTitle: {
     flexDirection: 'row',
-    gap: 30
+    justifyContent: 'space-between',
+    paddingHorizontal: 60
+    
   },
   title: {
     fontFamily: theme.fonts.family.regular,
@@ -155,11 +173,17 @@ const styles = StyleSheet.create({
   containerContagem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 60
+  
   },
   containerContagemSeparator: {
     gap: 2,
     alignItems: 'center',
+  },
+  containerContagemMinutos: {
+    flexDirection: 'row',
+    gap: 4
   },
   containerContagemBotao: {
     width: 50,
