@@ -4,10 +4,10 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native
 import { theme } from "../themes/theme";
 import { CustomModal } from "./CustomModal";
 
-const ITEM_HEIGHT = 30;
+const ITEM_HEIGHT = 32;
 const MAX_ITEMS_VISIBLE = 2;
 
-interface IPropsCardSmall {
+type PropsCard = {
     backgroundColor: string,
     title: string,
     tipoTempo: 'cronometro' | 'repeticao';
@@ -18,75 +18,132 @@ interface IPropsCardSmall {
       dezenaDosSegundos: number,
       unidadeDosSegundos: number
     },
+    tempoFormatado?: string
 }
-export const CardSmall = (dados: IPropsCardSmall) => {
+
+export interface IPropsCardSmall {
+  tipo: 'preparacao' | 'exercicio' | 'ciclos'
+}
+export const CardSmall = ({tipo}: IPropsCardSmall) => {
   const [open, setOpen] = useState<boolean>(false);
   const [listaExpandida, setListaExpandida] = useState(false);
-  const [tempoFormatado, setTempoFormatado] = useState('');
-  const [quantidade, setQuantidade] = useState(0);
 
-  useEffect(() => {
-    if(dados.tempo){
-      setTempoFormatado(`${dados.tempo.minuto} : ${dados.tempo.dezenaDosSegundos}${dados.tempo.unidadeDosSegundos}`);
-    }
-  },[dados.tempo]);
+  const [configuracoes, setConfiguracoes] = useState<PropsCard>();
 
-   useEffect(() => {
-    if(dados.quantidade){
-     setQuantidade(dados.quantidade);
+  useEffect(()=>{
+    if(tipo === 'preparacao'){
+      return (
+        setConfiguracoes({
+          backgroundColor: theme.colors.preparation,
+          title:'Preparação',
+          tempo: {
+            minuto: 0,
+            dezenaDosSegundos: 1,
+            unidadeDosSegundos: 0
+          },
+          tempoFormatado: '0 : 10',
+          tipoTempo:'cronometro'
+        })
+      )
     }
-  },[dados.quantidade]);
 
-  const tempoOuQuantidaderRecebidos = (minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number, quantidade: number) => {
-    if(quantidade){
-      setQuantidade(quantidade);
+    if(tipo === 'exercicio'){
+      return (
+        setConfiguracoes({
+          backgroundColor: theme.colors.exercise,
+          title: 'Quantidade de exercícios',
+          quantidade: 4,
+          modoExercicio: true,
+          tipoTempo:'repeticao',
+        })
+      )
     }
-    setTempoFormatado(`${minuto} : ${dezenaDosSegundos}${unidadeDosSegundos}`);
+
+    if(tipo === 'ciclos'){
+      return (
+        setConfiguracoes({
+           backgroundColor: theme.colors.cycles,
+          title: 'Ciclos', 
+          quantidade: 1, 
+          tipoTempo:'repeticao'
+        })  
+      )
+    }
+     
+  },[tipo])
+
+  const tempoOuQuantidaderRecebidos = (
+    cronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
+    repeticao?: {quantidade: number})=> {
+
+    if(configuracoes){
+      if(repeticao && repeticao.quantidade){
+        setConfiguracoes({
+          ...configuracoes,
+          quantidade: repeticao.quantidade
+        })
+        setOpen(false);
+        return;
+      }
+
+      if(cronometro && (cronometro.minuto || cronometro.dezenaDosSegundos || cronometro.unidadeDosSegundos)){
+        setConfiguracoes({
+          ...configuracoes,
+          tempoFormatado: `${cronometro.minuto} : ${cronometro.dezenaDosSegundos}${cronometro.unidadeDosSegundos}`
+        })
+        setOpen(false);
+        return;
+      }
+    }
     setOpen(false);
   }
 
 
   return (
-        <View style={ {backgroundColor: dados.backgroundColor, ...styles.card} }>
+        <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
           <TouchableOpacity style={styles.cardIconRefresh}>
             <MaterialIcons size={28} name="restart-alt"  />
           </TouchableOpacity>
           <View>
-            <View style={{gap:8, paddingBottom: dados.modoExercicio ? 0 : 20, alignItems: 'center' }}>
-              <Text style={styles.cardTitle}>{ dados.title }</Text>
-              <Text>{dados.tipoTempo === 'repeticao' ? quantidade : tempoFormatado}</Text>
+            <View style={{gap:8, paddingBottom: configuracoes?.modoExercicio ? 0 : 20, alignItems: 'center' }}>
+              <Text style={styles.cardTitle}>{ configuracoes?.title }</Text>
+              <Text>{configuracoes?.tipoTempo === 'repeticao' ? configuracoes.quantidade : configuracoes?.tempoFormatado}</Text>
 
               {open && (
-                <CustomModal title={dados.title} tipoTempo={dados.tipoTempo} visible={open} onClose={tempoOuQuantidaderRecebidos}/>
+                <CustomModal title={configuracoes?.title} tipoTempo={configuracoes?.tipoTempo} visible={open} onClose={tempoOuQuantidaderRecebidos}/>
               )}              
 
               <TouchableOpacity onPress={() => setOpen(true)}>
                 <MaterialIcons size={23} name="edit"  />
               </TouchableOpacity>
 
-             {dados.modoExercicio  && (
+             {configuracoes?.modoExercicio  && (
               <View
                 style={styles.containerList}
               >
-                <TouchableOpacity>
-                  <MaterialIcons style={{position: 'absolute', right: 2,alignSelf: 'flex-end'}} size={23} name="edit"  />
+                <TouchableOpacity style={{alignSelf: 'flex-end'}}>
+                  <MaterialIcons size={23} name="edit"  />
                 </TouchableOpacity>
 
                 <FlatList 
                 data={Array.from(
-                  { length: quantidade },
+                  { length: configuracoes?.quantidade || 3 },
                   (_, index) => ({ id: index + 1 })
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
-                columnWrapperStyle={{ paddingVertical: 4,justifyContent: 'space-around' }}
+                columnWrapperStyle={{justifyContent: 'space-between', }}
+               
                 style={{
+                  paddingHorizontal: 20,
+                  rowGap: 4,
                    maxHeight: listaExpandida
-                   ? ITEM_HEIGHT * quantidade //mostra tudo
+                   ? ITEM_HEIGHT * (configuracoes?.quantidade || 3) //mostra tudo
                    : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
+                   
                 }}
-                showsVerticalScrollIndicator={!listaExpandida && quantidade > MAX_ITEMS_VISIBLE}
-                scrollEnabled={!listaExpandida && quantidade > MAX_ITEMS_VISIBLE}
+                showsVerticalScrollIndicator={!listaExpandida && (configuracoes?.quantidade || 3) > MAX_ITEMS_VISIBLE}
+                scrollEnabled={!listaExpandida && (configuracoes?.quantidade || 3) > MAX_ITEMS_VISIBLE}
                 renderItem={({ item }) => (
                    <View>
                       <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
@@ -108,13 +165,8 @@ export const CardSmall = (dados: IPropsCardSmall) => {
                 >
                 </FlatList>
 
-                 <TouchableOpacity onPress={() => setListaExpandida(prev => !prev)}>
+                 <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaExpandida(prev => !prev)}>
                   <MaterialIcons 
-                  style={{
-                    position: 'absolute', 
-                    alignSelf: 'center', 
-                    top: -8
-                    }} 
                     size={23} 
                     name={listaExpandida ? 'arrow-upward' : 'arrow-downward'}  
                     />
@@ -150,7 +202,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#537896',
     borderTopWidth: 1,
     paddingTop: 4,
-    paddingBottom: 20,
+    paddingBottom: 4,
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },

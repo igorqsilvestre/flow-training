@@ -6,11 +6,14 @@ import ComboBox from "./Combo_temp";
 
 
 export interface ICustomModalProps {
-  title: string;
+  title: string | undefined;
   chooseType?: boolean;
-  tipoTempo: 'cronometro' | 'repeticao';
+  tipoTempo: 'cronometro' | 'repeticao' | undefined;
   visible: boolean;
-  onClose: (minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number,quantidade: number) => void;
+  onClose: (
+    cronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
+    repeticao?: {quantidade: number}
+  ) => void;
 }
 export function CustomModal({title, tipoTempo, chooseType, visible, onClose}: ICustomModalProps) {
   //Cronômetro
@@ -33,10 +36,14 @@ export function CustomModal({title, tipoTempo, chooseType, visible, onClose}: IC
 
     function handleAdicionar() {
       onClose(
-        minuto,
-        dezenaDosSegundos,
-        unidadeDosSegundos,
-        quantidade
+        {
+          minuto,
+          dezenaDosSegundos,
+          unidadeDosSegundos,
+        },
+        {
+          quantidade
+        }
       )
     }
 

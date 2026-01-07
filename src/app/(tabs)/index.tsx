@@ -6,10 +6,15 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
+export interface Data {
+  id: string,
+  type: 'preparacao' | 'exercicio' | 'ciclos'
+}
+
 export default function Index() {
   const insets = useSafeAreaInsets();
 
-  const data = [
+  const data:Data[]  = [
     { id: '1', type: 'preparacao' },
     { id: '2', type: 'exercicio' },
     { id: '3', type: 'ciclos' },
@@ -26,7 +31,7 @@ export default function Index() {
       }}
 
       ListHeaderComponent={() => (
-        <View style={{paddingVertical: 30 }}>
+        <View style={{paddingVertical: 20 }}>
           <Text style={styles.title}>
             Vamos começar
           </Text>
@@ -36,38 +41,18 @@ export default function Index() {
       renderItem={({item}) => {
         if(item.type === 'preparacao'){
           return (
-            <CardSmall 
-              backgroundColor={theme.colors.preparation} 
-              title='Preparação' 
-              tempo= {{
-                minuto: 0,
-                dezenaDosSegundos: 1,
-                unidadeDosSegundos: 0
-              }}
-              tipoTempo='cronometro'
-            />
+            <CardSmall tipo='preparacao'/>
           );
         }
 
         if(item.type === 'exercicio'){
           return (
-            <CardSmall 
-              backgroundColor={theme.colors.exercise} 
-              title='Quantidade de exercícios'
-              quantidade={4}
-              modoExercicio
-              tipoTempo='repeticao'
-            />
+            <CardSmall tipo='exercicio'/>
           );
         }
 
         return (
-          <CardSmall 
-            backgroundColor={theme.colors.cycles} 
-            title='Ciclos' 
-            quantidade={1} 
-            tipoTempo='repeticao'
-          />
+           <CardSmall tipo='ciclos'/>
         );
 
       }}
