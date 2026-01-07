@@ -2,68 +2,99 @@ import { CardSmall } from '@/src/shared/components/CardSmall';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 export default function Index() {
   const insets = useSafeAreaInsets();
 
+  const data = [
+    { id: '1', type: 'preparacao' },
+    { id: '2', type: 'exercicio' },
+    { id: '3', type: 'ciclos' },
+  ]
+
   return (
-    <View style={{flex: 1}}>
-       <View style={{paddingVertical: 30 }}>
-        <Text style={styles.title}>
-          Vamos começar
-        </Text>
-       </View>
 
-      <View style={{ flex: 1, gap: 8, marginBottom: 8}}>
-        <CardSmall 
-          backgroundColor={theme.colors.preparation} 
-          title='Preparação' 
-          tempo= {{
-            minuto: 0,
-            dezenaDosSegundos: 1,
-            unidadeDosSegundos: 0
-          }}
-          tipoTempo='cronometro'
-        />
-        <CardSmall 
-          backgroundColor={theme.colors.exercise} 
-          title='Quantidade de exercícios'
-          quantidade={4}
-          modoExercicio
-          tipoTempo='repeticao'
-        />
-        <CardSmall 
-          backgroundColor={theme.colors.cycles} 
-          title='Ciclos' 
-          quantidade={1} 
-          tipoTempo='repeticao'
-        />
+    <FlatList
+      data={data}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={{
+        paddingBottom: insets.bottom,
+        gap: 8
+      }}
 
-        <View style={{flexDirection: 'row', gap: 20, justifyContent: 'center'}}>
-          <TouchableOpacity onPress={() => router.push('/training')} style={{alignItems: 'center'}}>
-            <MaterialIcons size={28} name="play-circle" color='#FFFFFF'/>
-            <Text style={styles.subtitle}>Iniciar</Text>
-          </TouchableOpacity>
-        
-
-
-          <TouchableOpacity style={{alignItems: 'center'}}>
-            <MaterialIcons size={28} name="save" color='#FFFFFF'/>
-            <Text style={styles.subtitle}>Salvar</Text>
-          </TouchableOpacity>
-
+      ListHeaderComponent={() => (
+        <View style={{paddingVertical: 30 }}>
+          <Text style={styles.title}>
+            Vamos começar
+          </Text>
         </View>
-      </View>
+      )}
 
-      <View style={{  paddingBottom: insets.bottom, ...styles.contentFooter}}>
-        <Text style={styles.titleFooter}>Siglas</Text>
-        <Text style={styles.textBody}>Rep: Repetição - Time: Tempo - Des: Descanso</Text>
+      renderItem={({item}) => {
+        if(item.type === 'preparacao'){
+          return (
+            <CardSmall 
+              backgroundColor={theme.colors.preparation} 
+              title='Preparação' 
+              tempo= {{
+                minuto: 0,
+                dezenaDosSegundos: 1,
+                unidadeDosSegundos: 0
+              }}
+              tipoTempo='cronometro'
+            />
+          );
+        }
+
+        if(item.type === 'exercicio'){
+          return (
+            <CardSmall 
+              backgroundColor={theme.colors.exercise} 
+              title='Quantidade de exercícios'
+              quantidade={4}
+              modoExercicio
+              tipoTempo='repeticao'
+            />
+          );
+        }
+
+        return (
+          <CardSmall 
+            backgroundColor={theme.colors.cycles} 
+            title='Ciclos' 
+            quantidade={1} 
+            tipoTempo='repeticao'
+          />
+        );
+
+      }}
+
+      ListFooterComponent={() => (
+        <View>
+          <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
+            <TouchableOpacity style={{alignItems: 'center'}} onPress={() => router.push('/training')} >
+              <MaterialIcons size={28} name="play-circle" color='#FFF'/>
+              <Text style={styles.subtitle}>Iniciar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{alignItems: 'center'}}>
+              <MaterialIcons size={28} name="save" color='#FFF'/>
+              <Text style={styles.subtitle}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
+
+            <View style={styles.contentFooter}>
+              <Text style={styles.titleFooter}>Siglas</Text>
+              <Text style={styles.textBody}>Rep: Repetição - Time: Tempo - Des: Descanso</Text>
+            </View>
       </View>
-    </View>
-   
+      )}
+    >
+    
+    </FlatList>
   );
 }
 

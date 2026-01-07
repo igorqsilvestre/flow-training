@@ -21,6 +21,7 @@ interface IPropsCardSmall {
 }
 export const CardSmall = (dados: IPropsCardSmall) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [listaExpandida, setListaExpandida] = useState(false);
   const [tempoFormatado, setTempoFormatado] = useState('');
   const [quantidade, setQuantidade] = useState(0);
 
@@ -70,6 +71,7 @@ export const CardSmall = (dados: IPropsCardSmall) => {
                 <TouchableOpacity>
                   <MaterialIcons style={{position: 'absolute', right: 2,alignSelf: 'flex-end'}} size={23} name="edit"  />
                 </TouchableOpacity>
+
                 <FlatList 
                 data={Array.from(
                   { length: quantidade },
@@ -77,16 +79,14 @@ export const CardSmall = (dados: IPropsCardSmall) => {
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
-                columnWrapperStyle={{ columnGap: 20, justifyContent: 'center' }}
-                contentContainerStyle={{
-                  rowGap: 10,
-                  paddingVertical: 8,
-                }}
+                columnWrapperStyle={{ paddingVertical: 4,justifyContent: 'space-around' }}
                 style={{
-                   maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE
+                   maxHeight: listaExpandida
+                   ? ITEM_HEIGHT * quantidade //mostra tudo
+                   : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
                 }}
-                showsVerticalScrollIndicator={quantidade > MAX_ITEMS_VISIBLE}
-                scrollEnabled={quantidade > MAX_ITEMS_VISIBLE}
+                showsVerticalScrollIndicator={!listaExpandida && quantidade > MAX_ITEMS_VISIBLE}
+                scrollEnabled={!listaExpandida && quantidade > MAX_ITEMS_VISIBLE}
                 renderItem={({ item }) => (
                    <View>
                       <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
@@ -107,6 +107,18 @@ export const CardSmall = (dados: IPropsCardSmall) => {
                 )}
                 >
                 </FlatList>
+
+                 <TouchableOpacity onPress={() => setListaExpandida(prev => !prev)}>
+                  <MaterialIcons 
+                  style={{
+                    position: 'absolute', 
+                    alignSelf: 'center', 
+                    top: -8
+                    }} 
+                    size={23} 
+                    name={listaExpandida ? 'arrow-upward' : 'arrow-downward'}  
+                    />
+                </TouchableOpacity>
               </View>
               
              )}
