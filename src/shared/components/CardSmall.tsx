@@ -7,18 +7,23 @@ import { CustomModal } from "./CustomModal";
 const ITEM_HEIGHT = 32;
 const MAX_ITEMS_VISIBLE = 2;
 
+type TempoCronometroFormatado = `${number}:${number}${number}`;
+
 type PropsCard = {
-    backgroundColor: string,
-    title: string,
-    tipoTempo: 'cronometro' | 'repeticao';
-    modoExercicio?: boolean,
-    quantidade?: number,
-    tempo?: {
-      minuto: number,
-      dezenaDosSegundos: number,
-      unidadeDosSegundos: number
-    },
-    tempoFormatado?: string
+    backgroundColor: string;
+    title: string;
+    tempoRepeticao?: number;
+    tempoCronometro?: TempoCronometroFormatado;
+}
+type Treino = {
+  id: string;
+  tipo : {
+    sigla: 'Rep' | 'Time',
+    valor: 'Repetição' | 'Time'
+  };
+  tempoCronometro?: TempoCronometroFormatado;
+  tempoDescanso?: TempoCronometroFormatado;
+  tempoRepeticao?: number;
 }
 
 export interface IPropsCardSmall {
@@ -26,7 +31,8 @@ export interface IPropsCardSmall {
 }
 export const CardSmall = ({tipo}: IPropsCardSmall) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [listaExpandida, setListaExpandida] = useState(false);
+  const [listaTreinoExpandida, setListaTreinoExpandida] = useState(false);
+  const [listaTreino, setListaTreino] = useState<Treino[]>([]);
   const [type, setType] = useState< 'preparacao' | 'exercicio' | 'ciclos'>();
 
   const [configuracoes, setConfiguracoes] = useState<PropsCard>();
@@ -36,13 +42,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.preparation,
         title:'Preparação',
-        tempo: {
-          minuto: 0,
-          dezenaDosSegundos: 1,
-          unidadeDosSegundos: 0
-        },
-        tempoFormatado: '0 : 10',
-        tipoTempo:'cronometro'
+        tempoCronometro: `${0}:${10}`,
       });
       setType(tipo);
       return;
@@ -52,20 +52,18 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.exercise,
         title: 'Quantidade de exercícios',
-        quantidade: 4,
-        modoExercicio: true,
-        tipoTempo:'repeticao',
+        tempoRepeticao: 4
       });
+      setListaTreino(criarListaDeTreinoPadrao(4));
       setType(tipo);
       return;
     }
 
     if(tipo === 'ciclos'){
       setConfiguracoes({
-          backgroundColor: theme.colors.cycles,
+        backgroundColor: theme.colors.cycles,
         title: 'Ciclos', 
-        quantidade: 1, 
-        tipoTempo:'repeticao'
+        tempoRepeticao: 1, 
       });  
       setType(tipo);
       return;
@@ -74,23 +72,24 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
   },[tipo])
 
   const tempoOuQuantidaderRecebidos = (
-    cronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
-    repeticao?: {quantidade: number})=> {
+    tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
+    tempoRrepeticao?: {quantidade: number})=> {
 
     if(configuracoes){
-      if(repeticao && repeticao.quantidade){
+      if(tempoRrepeticao && tempoRrepeticao.quantidade){
         setConfiguracoes({
           ...configuracoes,
-          quantidade: repeticao.quantidade
+          tempoRepeticao: tempoRrepeticao.quantidade
         })
+        setListaTreino(criarListaDeTreinoPadrao(tempoRrepeticao.quantidade));
         setOpen(false);
         return;
       }
 
-      if(cronometro && (cronometro.minuto || cronometro.dezenaDosSegundos || cronometro.unidadeDosSegundos)){
+      if(tempoCronometro && (tempoCronometro.minuto || tempoCronometro.dezenaDosSegundos || tempoCronometro.unidadeDosSegundos)){
         setConfiguracoes({
           ...configuracoes,
-          tempoFormatado: `${cronometro.minuto} : ${cronometro.dezenaDosSegundos}${cronometro.unidadeDosSegundos}`
+          tempoCronometro: `${tempoCronometro.minuto}:${tempoCronometro.dezenaDosSegundos}${tempoCronometro.unidadeDosSegundos}` as TempoCronometroFormatado
         })
         setOpen(false);
         return;
@@ -104,12 +103,8 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       if(type === 'preparacao'){
         setConfiguracoes({
           ...configuracoes,
-          tempo: {
-            minuto: 0,
-            dezenaDosSegundos: 1,
-            unidadeDosSegundos: 0
-          },
-          tempoFormatado: '0 : 10'
+          tempoCronometro:`${0}:${10}`,
+         
         });
         return;
       }
@@ -117,103 +112,121 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       if(type === 'exercicio'){
         setConfiguracoes({
           ...configuracoes,
-          quantidade: 4
+          tempoRepeticao: 4
         });
+        setListaTreino(criarListaDeTreinoPadrao(4));
         return;
       }
 
       if(type === 'ciclos'){
           setConfiguracoes({
             ...configuracoes,
-            quantidade: 1
+            tempoRepeticao: 1
           });
           return;
       }
-
     }
-   
   }
 
 
   return (
-        <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
-          <TouchableOpacity style={styles.cardIconRefresh} onPress={restart}>
-            <MaterialIcons size={28} name="restart-alt"  />
+    <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
+      <TouchableOpacity style={styles.cardIconRefresh} onPress={restart}>
+        <MaterialIcons size={28} name="restart-alt"  />
+      </TouchableOpacity>
+      <View>
+        <View style={{gap:8, paddingBottom: type === 'exercicio' ? 0 : 20, alignItems: 'center' }}>
+          <Text style={styles.cardTitle}>{ configuracoes?.title }</Text>
+          <Text>{configuracoes?.tempoRepeticao ? configuracoes.tempoRepeticao : configuracoes?.tempoCronometro}</Text>
+
+          {open && (
+            <CustomModal 
+              title={configuracoes?.title} 
+              tipoTempo={configuracoes?.tempoRepeticao ? 'repeticao' :'cronometro'} 
+              visible={open} 
+              onClose={tempoOuQuantidaderRecebidos}
+            />
+          )}              
+
+          <TouchableOpacity onPress={() => setOpen(true)}>
+            <MaterialIcons size={23} name="edit"  />
           </TouchableOpacity>
-          <View>
-            <View style={{gap:8, paddingBottom: configuracoes?.modoExercicio ? 0 : 20, alignItems: 'center' }}>
-              <Text style={styles.cardTitle}>{ configuracoes?.title }</Text>
-              <Text>{configuracoes?.tipoTempo === 'repeticao' ? configuracoes.quantidade : configuracoes?.tempoFormatado}</Text>
 
-              {open && (
-                <CustomModal title={configuracoes?.title} tipoTempo={configuracoes?.tipoTempo} visible={open} onClose={tempoOuQuantidaderRecebidos}/>
-              )}              
+          {type === 'exercicio'  && (
+          <View
+            style={styles.containerList}
+          >
+            <TouchableOpacity style={{alignSelf: 'flex-end'}}>
+              <MaterialIcons size={23} name="edit"  />
+            </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => setOpen(true)}>
-                <MaterialIcons size={23} name="edit"  />
-              </TouchableOpacity>
-
-             {configuracoes?.modoExercicio  && (
-              <View
-                style={styles.containerList}
-              >
-                <TouchableOpacity style={{alignSelf: 'flex-end'}}>
-                  <MaterialIcons size={23} name="edit"  />
-                </TouchableOpacity>
-
-                <FlatList 
-                data={Array.from(
-                  { length: configuracoes?.quantidade || 3 },
-                  (_, index) => ({ id: index + 1 })
-                )}
-                keyExtractor={(item) => item.id.toString()}
-                numColumns={2}
-                columnWrapperStyle={{justifyContent: 'space-between', }}
-               
-                style={{
-                  paddingHorizontal: 20,
-                  rowGap: 4,
-                   maxHeight: listaExpandida
-                   ? ITEM_HEIGHT * (configuracoes?.quantidade || 3) //mostra tudo
-                   : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
-                   
-                }}
-                showsVerticalScrollIndicator={!listaExpandida && (configuracoes?.quantidade || 3) > MAX_ITEMS_VISIBLE}
-                scrollEnabled={!listaExpandida && (configuracoes?.quantidade || 3) > MAX_ITEMS_VISIBLE}
-                renderItem={({ item }) => (
-                   <View>
-                      <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
-                    
-                      <View style={styles.contentExercicio}>
-                          <Text style={styles.cardSubTitle}>Time</Text>
-                          <Text style={styles.cardSubTitle}>45</Text>
-                          <TouchableOpacity>
-                            <MaterialIcons size={23} name="edit"  />
-                          </TouchableOpacity>
-                          <Text style={styles.cardSubTitle}>Des</Text>
-                          <Text style={styles.cardSubTitle}>15</Text>
-                          <TouchableOpacity>
-                            <MaterialIcons size={23} name="edit"  />
-                          </TouchableOpacity>
-                      </View>
-                    </View>
-                )}
-                >
-                </FlatList>
-
-                 <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaExpandida(prev => !prev)}>
-                  <MaterialIcons 
-                    size={23} 
-                    name={listaExpandida ? 'arrow-upward' : 'arrow-downward'}  
-                    />
-                </TouchableOpacity>
-              </View>
+            <FlatList 
+              data={listaTreino}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              columnWrapperStyle={{justifyContent: 'space-between', }}
               
-             )}
-            </View>
+              style={{
+                paddingHorizontal: 4,
+                rowGap: 4,
+                  maxHeight: listaTreinoExpandida
+                  ? ITEM_HEIGHT * (configuracoes?.tempoRepeticao || 4) //mostra tudo
+                  : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
+                  
+              }}
+              showsVerticalScrollIndicator={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
+              scrollEnabled={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
+              renderItem={({ item }) => (
+                  <View>
+                    <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
+                  
+                    <View style={styles.contentExercicio}>
+                        <Text style={styles.cardSubTitle}>{item.tipo.sigla}</Text>
+                        <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometro}</Text>
+                        <TouchableOpacity>
+                          <MaterialIcons size={23} name="edit"  />
+                        </TouchableOpacity>
+                        <Text style={styles.cardSubTitle}>Des</Text>
+                        <Text style={styles.cardSubTitle}>{item.tempoDescanso}</Text>
+                        <TouchableOpacity>
+                          <MaterialIcons size={23} name="edit"  />
+                        </TouchableOpacity>
+                    </View>
+                  </View>
+              )}
+              >
+            </FlatList>
+
+            <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
+              <MaterialIcons 
+                size={23} 
+                name={listaTreinoExpandida ? 'arrow-upward' : 'arrow-downward'}  
+                />
+            </TouchableOpacity>
           </View>
+          
+          )}
         </View>
+      </View>
+    </View>
   )
+}
+
+export function criarListaDeTreinoPadrao(quantidade:number): Treino[]{
+  //Criando uma lista padrão de treinos
+  const lista: Treino[] = [];
+  for (let index = 0; index < quantidade; index++) {
+    lista.push( 
+      {
+        id: (index + 1).toString(), 
+        tipo: {sigla: 'Time', valor: 'Time'}, 
+        tempoCronometro: `${0}:${45}`,
+        tempoDescanso: `${0}:${15}`,
+      }
+    )
+  }
+
+  return lista;
 }
 
 const styles = StyleSheet.create({
