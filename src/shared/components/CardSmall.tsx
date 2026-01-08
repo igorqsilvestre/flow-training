@@ -27,47 +27,48 @@ export interface IPropsCardSmall {
 export const CardSmall = ({tipo}: IPropsCardSmall) => {
   const [open, setOpen] = useState<boolean>(false);
   const [listaExpandida, setListaExpandida] = useState(false);
+  const [type, setType] = useState< 'preparacao' | 'exercicio' | 'ciclos'>();
 
   const [configuracoes, setConfiguracoes] = useState<PropsCard>();
 
   useEffect(()=>{
     if(tipo === 'preparacao'){
-      return (
-        setConfiguracoes({
-          backgroundColor: theme.colors.preparation,
-          title:'Preparação',
-          tempo: {
-            minuto: 0,
-            dezenaDosSegundos: 1,
-            unidadeDosSegundos: 0
-          },
-          tempoFormatado: '0 : 10',
-          tipoTempo:'cronometro'
-        })
-      )
+      setConfiguracoes({
+        backgroundColor: theme.colors.preparation,
+        title:'Preparação',
+        tempo: {
+          minuto: 0,
+          dezenaDosSegundos: 1,
+          unidadeDosSegundos: 0
+        },
+        tempoFormatado: '0 : 10',
+        tipoTempo:'cronometro'
+      });
+      setType(tipo);
+      return;
     }
 
     if(tipo === 'exercicio'){
-      return (
-        setConfiguracoes({
-          backgroundColor: theme.colors.exercise,
-          title: 'Quantidade de exercícios',
-          quantidade: 4,
-          modoExercicio: true,
-          tipoTempo:'repeticao',
-        })
-      )
+      setConfiguracoes({
+        backgroundColor: theme.colors.exercise,
+        title: 'Quantidade de exercícios',
+        quantidade: 4,
+        modoExercicio: true,
+        tipoTempo:'repeticao',
+      });
+      setType(tipo);
+      return;
     }
 
     if(tipo === 'ciclos'){
-      return (
-        setConfiguracoes({
-           backgroundColor: theme.colors.cycles,
-          title: 'Ciclos', 
-          quantidade: 1, 
-          tipoTempo:'repeticao'
-        })  
-      )
+      setConfiguracoes({
+          backgroundColor: theme.colors.cycles,
+        title: 'Ciclos', 
+        quantidade: 1, 
+        tipoTempo:'repeticao'
+      });  
+      setType(tipo);
+      return;
     }
      
   },[tipo])
@@ -98,10 +99,45 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
     setOpen(false);
   }
 
+  const restart = () => {
+    if(configuracoes){
+      if(type === 'preparacao'){
+        setConfiguracoes({
+          ...configuracoes,
+          tempo: {
+            minuto: 0,
+            dezenaDosSegundos: 1,
+            unidadeDosSegundos: 0
+          },
+          tempoFormatado: '0 : 10'
+        });
+        return;
+      }
+
+      if(type === 'exercicio'){
+        setConfiguracoes({
+          ...configuracoes,
+          quantidade: 4
+        });
+        return;
+      }
+
+      if(type === 'ciclos'){
+          setConfiguracoes({
+            ...configuracoes,
+            quantidade: 1
+          });
+          return;
+      }
+
+    }
+   
+  }
+
 
   return (
         <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
-          <TouchableOpacity style={styles.cardIconRefresh}>
+          <TouchableOpacity style={styles.cardIconRefresh} onPress={restart}>
             <MaterialIcons size={28} name="restart-alt"  />
           </TouchableOpacity>
           <View>
