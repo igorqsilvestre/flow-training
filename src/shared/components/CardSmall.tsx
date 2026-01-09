@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { CustomModal } from "./CustomModal";
+import { CustomModalTemp } from "./CustomModalTemp";
 
 const ITEM_HEIGHT = 32;
 const MAX_ITEMS_VISIBLE = 2;
@@ -12,6 +12,7 @@ type TempoCronometroFormatado = `${number}:${number}${number}`;
 type PropsCard = {
     backgroundColor: string;
     title: string;
+    tipoTempo: 'cronometro' | 'repeticao' | 'cronometroComrepeticao';
     tempoRepeticao?: number;
     tempoCronometro?: TempoCronometroFormatado;
 }
@@ -42,6 +43,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.preparation,
         title:'Preparação',
+        tipoTempo: 'cronometro',
         tempoCronometro: `${0}:${10}`,
       });
       setType(tipo);
@@ -52,6 +54,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.exercise,
         title: 'Quantidade de exercícios',
+        tipoTempo: 'cronometroComrepeticao',
         tempoRepeticao: 4
       });
       setListaTreino(criarListaDeTreinoPadrao(4));
@@ -63,6 +66,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.cycles,
         title: 'Ciclos', 
+        tipoTempo: 'repeticao',
         tempoRepeticao: 1, 
       });  
       setType(tipo);
@@ -73,7 +77,8 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
   const tempoOuQuantidaderRecebidos = (
     tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
-    tempoRrepeticao?: {quantidade: number})=> {
+    tempoRrepeticao?: {quantidade: number}
+    ) => {
 
     if(configuracoes){
       if(tempoRrepeticao && tempoRrepeticao.quantidade){
@@ -140,11 +145,11 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
           <Text>{configuracoes?.tempoRepeticao ? configuracoes.tempoRepeticao : configuracoes?.tempoCronometro}</Text>
 
           {open && (
-            <CustomModal 
+            <CustomModalTemp 
               title={configuracoes?.title} 
-              tipoTempo={configuracoes?.tempoRepeticao ? 'repeticao' :'cronometro'} 
+              tipoTempo={configuracoes?.tipoTempo} 
               visible={open} 
-              onClose={tempoOuQuantidaderRecebidos}
+              onAdicionar={tempoOuQuantidaderRecebidos}
             />
           )}              
 
@@ -156,9 +161,6 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
           <View
             style={styles.containerList}
           >
-            <TouchableOpacity style={{alignSelf: 'flex-end'}}>
-              <MaterialIcons size={23} name="edit"  />
-            </TouchableOpacity>
 
             <FlatList 
               data={listaTreino}
@@ -177,25 +179,24 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               showsVerticalScrollIndicator={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
               scrollEnabled={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
               renderItem={({ item }) => (
-                  <View>
-                    <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
-                  
-                    <View style={styles.contentExercicio}>
-                        <Text style={styles.cardSubTitle}>{item.tipo.sigla}</Text>
-                        <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometro}</Text>
-                        <TouchableOpacity>
-                          <MaterialIcons size={23} name="edit"  />
-                        </TouchableOpacity>
-                        <Text style={styles.cardSubTitle}>Des</Text>
-                        <Text style={styles.cardSubTitle}>{item.tempoDescanso}</Text>
-                        <TouchableOpacity>
-                          <MaterialIcons size={23} name="edit"  />
-                        </TouchableOpacity>
-                    </View>
+                <View>
+                  <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
+                
+                  <View style={styles.contentExercicio}>
+                      <Text style={styles.cardSubTitle}>{item.tipo.sigla}</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometro}</Text>
+                      <TouchableOpacity>
+                        <MaterialIcons size={23} name="edit"  />
+                      </TouchableOpacity>
+                      <Text style={styles.cardSubTitle}>Des</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempoDescanso}</Text>
+                      <TouchableOpacity>
+                        <MaterialIcons size={23} name="edit"  />
+                      </TouchableOpacity>
                   </View>
+                </View>
               )}
-              >
-            </FlatList>
+            />
 
             <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
               <MaterialIcons 
