@@ -27,6 +27,12 @@ type Treino = {
   tempoRepeticao?: number;
 }
 
+type TempoCronometro = {
+  minuto: number, 
+  dezenaDosSegundos: number, 
+  unidadeDosSegundos: number
+}
+
 export interface IPropsCardSmall {
   tipo: 'preparacao' | 'exercicio' | 'ciclos'
 }
@@ -75,23 +81,57 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
      
   },[tipo])
 
-  const tempoOuQuantidaderRecebidos = (
+  const adicionarTempo = (
+    tempoCronometroComRepeticao?: {
+        tempoExercicio?:{
+          exercicioMinuto: number,
+          exercicioDezenaDosSegundos: number,
+          exercicioUnidadeDosSegundos: number;
+        },
+        tempoDescanso?:{
+          descansoMinuto: number,
+          descansoDezenaDosSegundos: number,
+          descansoUnidadeDosSegundos: number
+        } 
+      },
     tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
-    tempoRrepeticao?: {quantidade: number}
+    tempoRepeticao?: {quantidade: number}
     ) => {
 
     if(configuracoes){
-      if(tempoRrepeticao && tempoRrepeticao.quantidade){
+
+      if(tempoRepeticao?.quantidade && tempoCronometroComRepeticao?.tempoExercicio && tempoCronometroComRepeticao?.tempoDescanso){
         setConfiguracoes({
           ...configuracoes,
-          tempoRepeticao: tempoRrepeticao.quantidade
-        })
-        setListaTreino(criarListaDeTreinoPadrao(tempoRrepeticao.quantidade));
+          tempoRepeticao: tempoRepeticao.quantidade
+        });
+        setListaTreino(criarListaDeTreinoPadrao(
+          tempoRepeticao.quantidade, 
+          {
+            minuto: tempoCronometroComRepeticao.tempoExercicio.exercicioMinuto,
+            dezenaDosSegundos: tempoCronometroComRepeticao.tempoExercicio.exercicioDezenaDosSegundos,
+            unidadeDosSegundos:  tempoCronometroComRepeticao.tempoExercicio.exercicioUnidadeDosSegundos,
+          },
+          {
+            minuto: tempoCronometroComRepeticao.tempoDescanso.descansoMinuto,
+            dezenaDosSegundos: tempoCronometroComRepeticao.tempoDescanso.descansoDezenaDosSegundos,
+            unidadeDosSegundos:  tempoCronometroComRepeticao.tempoDescanso.descansoUnidadeDosSegundos,
+          }
+        ));
         setOpen(false);
         return;
       }
 
-      if(tempoCronometro && (tempoCronometro.minuto || tempoCronometro.dezenaDosSegundos || tempoCronometro.unidadeDosSegundos)){
+      if(tempoRepeticao?.quantidade){
+        setConfiguracoes({
+          ...configuracoes,
+          tempoRepeticao: tempoRepeticao.quantidade
+        })
+        setOpen(false);
+        return;
+      }
+
+      if(tempoCronometro?.minuto || tempoCronometro?.dezenaDosSegundos || tempoCronometro?.unidadeDosSegundos){
         setConfiguracoes({
           ...configuracoes,
           tempoCronometro: `${tempoCronometro.minuto}:${tempoCronometro.dezenaDosSegundos}${tempoCronometro.unidadeDosSegundos}` as TempoCronometroFormatado
@@ -99,6 +139,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
         setOpen(false);
         return;
       }
+
     }
     setOpen(false);
   }
@@ -149,7 +190,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               title={configuracoes?.title} 
               tipoTempo={configuracoes?.tipoTempo} 
               visible={open} 
-              onAdicionar={tempoOuQuantidaderRecebidos}
+              onAdicionar={adicionarTempo}
             />
           )}              
 
@@ -213,7 +254,12 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
   )
 }
 
-export function criarListaDeTreinoPadrao(quantidade:number): Treino[]{
+export function criarListaDeTreinoPadrao(
+  quantidade:number, 
+  tempoExercicio?:TempoCronometro,
+  tempoDescanso?:TempoCronometro
+): Treino[]{
+
   //Criando uma lista padrão de treinos
   const lista: Treino[] = [];
   for (let index = 0; index < quantidade; index++) {
@@ -221,8 +267,8 @@ export function criarListaDeTreinoPadrao(quantidade:number): Treino[]{
       {
         id: (index + 1).toString(), 
         tipo: {sigla: 'Time', valor: 'Time'}, 
-        tempoCronometro: `${0}:${45}`,
-        tempoDescanso: `${0}:${15}`,
+        tempoCronometro:`${tempoExercicio?.minuto ?? 0}:${tempoExercicio?.dezenaDosSegundos ?? 4}${tempoExercicio?.unidadeDosSegundos ?? 5}`,
+        tempoDescanso: `${tempoDescanso?.minuto ?? 0}:${tempoDescanso?.dezenaDosSegundos ?? 1}${tempoDescanso?.unidadeDosSegundos ?? 5}`,
       }
     )
   }

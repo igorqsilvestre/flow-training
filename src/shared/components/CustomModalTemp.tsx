@@ -7,12 +7,25 @@ import { ContadorCronometroComRepeticao } from "./ContadorCronometroComRepeticao
 import { ContadorRepeticao } from "./ContadorRepeticao";
 
 
+
 export interface ICustomModalProps {
   title: string | undefined;
   chooseType?: boolean;
   tipoTempo: 'cronometro' | 'repeticao' | 'cronometroComrepeticao' | undefined;
   visible: boolean;
   onAdicionar: (
+    tempoCronometroComRepeticao?: {
+      tempoExercicio?:{
+        exercicioMinuto: number,
+        exercicioDezenaDosSegundos: number,
+        exercicioUnidadeDosSegundos: number;
+      },
+      tempoDescanso?:{
+        descansoMinuto: number,
+        descansoDezenaDosSegundos: number,
+        descansoUnidadeDosSegundos: number
+      } 
+    },
     tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
     tempoRepeticao?: {quantidade: number}
   ) => void;
@@ -31,11 +44,47 @@ export function CustomModalTemp({title, tipoTempo, chooseType, visible, onAdicio
     : tipoTempo;
 
     function handleAdicionar(
+      tempoCronometroComRepeticao?: {
+        tempoExercicio?:{
+          exercicioMinuto: number,
+          exercicioDezenaDosSegundos: number,
+          exercicioUnidadeDosSegundos: number;
+        },
+        tempoDescanso?:{
+          descansoMinuto: number,
+          descansoDezenaDosSegundos: number,
+          descansoUnidadeDosSegundos: number
+        } 
+      },
       tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
       tempoRepeticao?: {quantidade: number}
     ){
+
+      if(tempoCronometroComRepeticao?.tempoExercicio && tempoCronometroComRepeticao.tempoDescanso && tempoRepeticao){
+        onAdicionar(
+         {
+          tempoExercicio: {
+            exercicioMinuto: tempoCronometroComRepeticao.tempoExercicio?.exercicioMinuto,
+            exercicioDezenaDosSegundos: tempoCronometroComRepeticao.tempoExercicio?.exercicioDezenaDosSegundos,
+            exercicioUnidadeDosSegundos: tempoCronometroComRepeticao.tempoExercicio?.exercicioUnidadeDosSegundos
+          },
+          tempoDescanso: {
+            descansoMinuto: tempoCronometroComRepeticao.tempoDescanso?.descansoMinuto,
+            descansoDezenaDosSegundos: tempoCronometroComRepeticao.tempoDescanso?.descansoDezenaDosSegundos,
+            descansoUnidadeDosSegundos: tempoCronometroComRepeticao.tempoDescanso?.descansoUnidadeDosSegundos
+          }
+         },
+         undefined,
+         {
+          quantidade: tempoRepeticao.quantidade
+         }
+        )
+        return;
+      }
+
       if(tempoCronometro){
         onAdicionar(
+          undefined,
           {
             minuto: tempoCronometro?.minuto,
             dezenaDosSegundos: tempoCronometro?.dezenaDosSegundos,
@@ -44,8 +93,10 @@ export function CustomModalTemp({title, tipoTempo, chooseType, visible, onAdicio
         )
         return; 
       }
+
        if(tempoRepeticao){
         onAdicionar(
+         undefined,
          undefined,
          {
           quantidade: tempoRepeticao.quantidade

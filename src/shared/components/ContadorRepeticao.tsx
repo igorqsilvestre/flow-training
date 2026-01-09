@@ -5,6 +5,18 @@ import { theme } from "../themes/theme";
 
 export interface IContadorRepeticaoProps {
     onAdicionar: (
+        tempoCronometroComRepeticao?: {
+            tempoExercicio?:{
+                exercicioMinuto: number,
+                exercicioDezenaDosSegundos: number,
+                exercicioUnidadeDosSegundos: number;
+            },
+            tempoDescanso?:{
+                descansoMinuto: number,
+                descansoDezenaDosSegundos: number,
+                descansoUnidadeDosSegundos: number
+            } 
+        },
         tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
         tempoRepeticao?: {quantidade: number},
     ) => void;
@@ -17,6 +29,7 @@ export const ContadorRepeticao = ({ onAdicionar }: IContadorRepeticaoProps) => {
 
     function handleAdicionar() {
       onAdicionar(
+        undefined,
         undefined,
         {
           quantidade
