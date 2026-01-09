@@ -2,6 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
+import { formatarTempo } from "../utils/formatarTempo";
 import { CustomModalTemp } from "./CustomModalTemp";
 
 const ITEM_HEIGHT = 32;
@@ -267,8 +268,18 @@ export function criarListaDeTreinoPadrao(
       {
         id: (index + 1).toString(), 
         tipo: {sigla: 'Time', valor: 'Time'}, 
-        tempoCronometro:`${tempoExercicio?.minuto ?? 0}:${tempoExercicio?.dezenaDosSegundos ?? 4}${tempoExercicio?.unidadeDosSegundos ?? 5}`,
-        tempoDescanso: `${tempoDescanso?.minuto ?? 0}:${tempoDescanso?.dezenaDosSegundos ?? 1}${tempoDescanso?.unidadeDosSegundos ?? 5}`,
+        tempoCronometro: formatarTempo(
+          tempoExercicio?.minuto,
+          tempoExercicio?.dezenaDosSegundos,
+          tempoExercicio?.unidadeDosSegundos,
+          { minuto: 0, dezena: 4, unidade: 5 } // padrão 00:45
+        ),
+        tempoDescanso: formatarTempo(
+          tempoDescanso?.minuto,
+          tempoDescanso?.dezenaDosSegundos,
+          tempoDescanso?.unidadeDosSegundos,
+          { minuto: 0, dezena: 1, unidade: 5 } // padrão 00:15
+        ),
       }
     )
   }

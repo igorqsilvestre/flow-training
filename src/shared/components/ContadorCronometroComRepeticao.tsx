@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import ComboBox from "./Combo_temp";
@@ -53,28 +53,6 @@ export const ContadorCronometroComRepeticao = ({ onAdicionar }: IContadorCronome
 
     const [quantidade, setQuantidade] = useState(0);
     const [tipo, setTipo] = useState<string | undefined>();
-
-    useEffect(() => {
-    if (
-        exercicioMinuto === 0 &&
-        exercicioDezenaDosSegundos === 0 &&
-        exercicioUnidadeDosSegundos === 0
-    ) {
-        setExercicioDezenaDosSegundos(4);
-        setExercicioUnidadeDosSegundos(5);
-    }
-    }, [exercicioMinuto, exercicioDezenaDosSegundos, exercicioUnidadeDosSegundos]);
-
-    useEffect(() => {
-    if (
-        descansoMinuto === 0 &&
-        descansoDezenaDosSegundos === 0 &&
-        descansoUnidadeDosSegundos === 0
-    ) {
-        setDescansoDezenaDosSegundos(1);
-        setDescansoUnidadeDosSegundos(5);
-    }
-    }, [descansoMinuto, descansoDezenaDosSegundos, descansoUnidadeDosSegundos]);
 
     
     function handleAdicionar() {
