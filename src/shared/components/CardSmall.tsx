@@ -242,7 +242,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
             <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
               <MaterialIcons 
-                size={23} 
+                size={25} 
                 name={listaTreinoExpandida ? 'arrow-upward' : 'arrow-downward'}  
                 />
             </TouchableOpacity>
