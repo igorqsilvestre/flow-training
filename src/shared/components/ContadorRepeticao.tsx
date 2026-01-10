@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60
+        paddingHorizontal: 60,
+        
     },
     containerContagemSeparator: {
         gap: 2,
@@ -89,11 +90,13 @@ const styles = StyleSheet.create({
     },
     containerContagemBotao: {
         width: 50,
+        padding: 4,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
         width: 50,
+        padding: 4,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     },
     footer: {
         marginTop: 20,
-        paddingVertical: 4,
+        paddingVertical: 8,
         paddingHorizontal: 20,
         marginBottom: 4,
         borderRadius: 10,

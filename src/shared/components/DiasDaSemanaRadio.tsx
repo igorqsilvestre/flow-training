@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: theme.fonts.family.bold,
-    fontSize: 16,
+    fontSize: theme.fonts.sizes.large,
     color: theme.colors.white
   },
   radioFora: {

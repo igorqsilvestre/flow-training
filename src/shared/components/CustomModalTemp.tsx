@@ -166,6 +166,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     textAlign: 'center',
     fontFamily: theme.fonts.family.bold,
-    fontSize: 15
+    fontSize: theme.fonts.sizes.medium
   },
 });

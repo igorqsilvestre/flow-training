@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontFamily: theme.fonts.family.regular,
-    fontSize: 14,
+    fontSize: theme.fonts.sizes.medium,
     color: theme.colors.primary,
   },
 });

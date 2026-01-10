@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 10,
         top: 4,
-        fontSize: 12,
+        fontSize: theme.fonts.sizes.body,
         fontFamily: theme.fonts.family.medium,
         color: theme.colors.primary
     },
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
     cardTitle: {
         textAlign: 'center',
         fontFamily: theme.fonts.family.bold,
-        fontSize: 16,
+        fontSize: theme.fonts.sizes.large,
         color: theme.colors.primary
     },
     cardSubtitle: {
         fontFamily: theme.fonts.family.regular,
-        fontSize: 64,
+        fontSize: theme.fonts.sizes.extraLarge,
         color: theme.colors.primary
     },
     cardButtonExercise: {

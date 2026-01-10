@@ -179,7 +179,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
   return (
     <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
       <TouchableOpacity style={styles.cardIconRefresh} onPress={restart}>
-        <MaterialIcons size={28} name="restart-alt"  />
+        <MaterialIcons size={30} name="restart-alt"  />
       </TouchableOpacity>
       <View>
         <View style={{gap:8, paddingBottom: type === 'exercicio' ? 0 : 20, alignItems: 'center' }}>
@@ -196,7 +196,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
           )}              
 
           <TouchableOpacity onPress={() => setOpen(true)}>
-            <MaterialIcons size={23} name="edit"  />
+            <MaterialIcons size={25} name="edit"  />
           </TouchableOpacity>
 
           {type === 'exercicio'  && (
@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontFamily:  theme.fonts.family.bold,
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     color: theme.colors.primary
   },
   cardSubTitle: {
     fontFamily:  theme.fonts.family.regular,
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     color: theme.colors.primary
   },
   cardIconRefresh: {

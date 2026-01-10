@@ -86,13 +86,13 @@ export default function Index() {
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: theme.fonts.sizes.medium,
     fontFamily: theme.fonts.family.boldItalic,
     color: theme.colors.secundary
   },
   subtitle: {
     fontFamily: theme.fonts.family.bold,
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     color: theme.colors.white
   },
   contentFooter: {
@@ -101,13 +101,13 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.footer
   },
   titleFooter: {
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     fontFamily: theme.fonts.family.bold,
     color: theme.colors.primary
   },
   textBody: {
     fontFamily: theme.fonts.family.regular,
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     color: theme.colors.primary
   }
 });

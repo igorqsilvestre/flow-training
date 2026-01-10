@@ -35,16 +35,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
-    padding: 4
+    padding: 6
   },
   labelButtonExercise: {
     fontFamily: theme.fonts.family.bold,
-    fontSize: 12,
+    fontSize: theme.fonts.sizes.body,
     color: theme.colors.primary
   },
   buttonDelete: {
     backgroundColor: theme.colors.white,
     borderRadius: 10,
-    padding: 4,
+    padding: 6,
   }
 });
