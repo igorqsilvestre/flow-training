@@ -41,19 +41,19 @@ export const CardBig = (props: IPropsCardBig) => {
                     )}
                     {props.modoContagem.usarModoContagem && !props.modoDescanso && (
                         <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                            <MaterialIcons size={18} name="stop"  color={theme.colors.white}/>
-                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: 12 }}>Parar</Text>
+                            <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
                         </TouchableOpacity>
                     )}
 
                     {props.modoContagem.usarModoContagem && props.modoDescanso && (
                       <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
                          <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: 12 }}>+20s</Text>
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>+20s</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                            <MaterialIcons size={18} name="stop"  color={theme.colors.white}/>
-                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: 12 }}>Parar</Text>
+                            <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>Parar</Text>
                         </TouchableOpacity>  
                       </View>
                     )}
@@ -66,8 +66,8 @@ export const CardBig = (props: IPropsCardBig) => {
                     )}
                      {props.modoRepeticao.usarModoRepeticao && (
                         <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                            <MaterialIcons size={18} name="check"  color={theme.colors.white}/>
-                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: 12 }}>Concluído</Text>
+                            <MaterialIcons size={20} name="check"  color={theme.colors.white}/>
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>Concluído</Text>
                         </TouchableOpacity>
                     )}
 
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     cardButtonExercise: {
         width: 153,
         borderRadius: 10,
-        paddingVertical: 2,
+        paddingVertical: 4,
         gap: 5,
         flexDirection: 'row',
         justifyContent: 'center',
