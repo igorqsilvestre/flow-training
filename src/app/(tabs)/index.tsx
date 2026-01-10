@@ -86,7 +86,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
-    fontSize: theme.fonts.sizes.medium,
+    fontSize: theme.fonts.sizes.large,
     fontFamily: theme.fonts.family.boldItalic,
     color: theme.colors.secundary
   },
