@@ -3,7 +3,7 @@ import { Modal, StyleSheet, Text, View } from "react-native";
 import { theme } from "../themes/theme";
 import ComboBox from "./Combo_temp";
 import { ContadorCronometro } from "./ContadorCronometro";
-import { ContadorCronometroComRepeticao } from "./ContadorCronometroComRepeticao";
+import { ContadorEspecificoTreino } from "./ContadorEspecificoTreino";
 import { ContadorRepeticao } from "./ContadorRepeticao";
 
 
@@ -11,7 +11,7 @@ import { ContadorRepeticao } from "./ContadorRepeticao";
 export interface ICustomModalProps {
   title: string | undefined;
   chooseType?: boolean;
-  tipoTempo: 'cronometro' | 'repeticao' | 'cronometroComrepeticao' | undefined;
+  tipoTempo: 'cronometro' | 'repeticao' | 'especificoTreino'  | undefined;
   visible: boolean;
   onAdicionar: (
     tempoCronometroComRepeticao?: {
@@ -131,8 +131,8 @@ export function CustomModalTemp({title, tipoTempo, chooseType, visible, onAdicio
                 <ContadorRepeticao onAdicionar={handleAdicionar}/>
               )}
 
-              {modo === 'cronometroComrepeticao' && (
-                <ContadorCronometroComRepeticao onAdicionar={handleAdicionar}/>
+              {modo === 'especificoTreino' && (
+                <ContadorEspecificoTreino onAdicionar={handleAdicionar}/>
               )}    
              
 

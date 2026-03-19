@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { formatarTempo } from "../utils/formatarTempo";
+import { criarListaDeTreinoPadrao } from "../utils/auxiliarDeTreino";
 import { CustomModalTemp } from "./CustomModalTemp";
 
 const ITEM_HEIGHT = 32;
@@ -13,7 +13,7 @@ type TempoCronometroFormatado = `${number}:${number}${number}`;
 type PropsCard = {
     backgroundColor: string;
     title: string;
-    tipoTempo: 'cronometro' | 'repeticao' | 'cronometroComrepeticao';
+    tipoTempo: 'cronometro' | 'repeticao' | 'especificoTreino';
     tempoRepeticao?: number;
     tempoCronometro?: TempoCronometroFormatado;
 }
@@ -26,12 +26,6 @@ type Treino = {
   tempoCronometro?: TempoCronometroFormatado;
   tempoDescanso?: TempoCronometroFormatado;
   tempoRepeticao?: number;
-}
-
-type TempoCronometro = {
-  minuto: number, 
-  dezenaDosSegundos: number, 
-  unidadeDosSegundos: number
 }
 
 export interface IPropsCardSmall {
@@ -61,7 +55,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       setConfiguracoes({
         backgroundColor: theme.colors.exercise,
         title: 'Quantidade de exercícios',
-        tipoTempo: 'cronometroComrepeticao',
+        tipoTempo: 'especificoTreino',
         tempoRepeticao: 4
       });
       setListaTreino(criarListaDeTreinoPadrao(4));
@@ -222,19 +216,20 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               scrollEnabled={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
               renderItem={({ item }) => (
                 <View>
-                  <Text style={{textAlign: 'center', ...styles.cardSubTitle}}>Exercício {item.id}º</Text>
+                  <View style={{flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4}}>
+                    <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
+                    <TouchableOpacity>
+                      <MaterialIcons size={23} name="edit"  />
+                    </TouchableOpacity>
+                  </View>
                 
                   <View style={styles.contentExercicio}>
                       <Text style={styles.cardSubTitle}>{item.tipo.sigla}</Text>
                       <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometro}</Text>
-                      <TouchableOpacity>
-                        <MaterialIcons size={23} name="edit"  />
-                      </TouchableOpacity>
+                      <Text> - </Text>
                       <Text style={styles.cardSubTitle}>Des</Text>
                       <Text style={styles.cardSubTitle}>{item.tempoDescanso}</Text>
-                      <TouchableOpacity>
-                        <MaterialIcons size={23} name="edit"  />
-                      </TouchableOpacity>
+                      
                   </View>
                 </View>
               )}
@@ -255,42 +250,11 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
   )
 }
 
-export function criarListaDeTreinoPadrao(
-  quantidade:number, 
-  tempoExercicio?:TempoCronometro,
-  tempoDescanso?:TempoCronometro
-): Treino[]{
-
-  //Criando uma lista padrão de treinos
-  const lista: Treino[] = [];
-  for (let index = 0; index < quantidade; index++) {
-    lista.push( 
-      {
-        id: (index + 1).toString(), 
-        tipo: {sigla: 'Time', valor: 'Time'}, 
-        tempoCronometro: formatarTempo(
-          tempoExercicio?.minuto,
-          tempoExercicio?.dezenaDosSegundos,
-          tempoExercicio?.unidadeDosSegundos,
-          { minuto: 0, dezena: 4, unidade: 5 } // padrão 00:45
-        ),
-        tempoDescanso: formatarTempo(
-          tempoDescanso?.minuto,
-          tempoDescanso?.dezenaDosSegundos,
-          tempoDescanso?.unidadeDosSegundos,
-          { minuto: 0, dezena: 1, unidade: 5 } // padrão 00:15
-        ),
-      }
-    )
-  }
-
-  return lista;
-}
-
 const styles = StyleSheet.create({
   card: {
     borderRadius: 10,
   },
+
   cardTitle: {
     fontFamily:  theme.fonts.family.bold,
     fontSize: theme.fonts.sizes.body,

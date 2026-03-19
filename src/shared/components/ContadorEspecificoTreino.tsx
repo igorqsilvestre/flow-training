@@ -4,24 +4,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import ComboBox from "./Combo_temp";
 
-type Exercicio = {
-    minuto?: number;
-    dezenaDosSegundos?: number;
-    unidadeDosSegundos?: number;
-}
-
-type Descanso = {
-    minuto?: number;
-    dezenaDosSegundos?: number;
-    unidadeDosSegundos?: number;
-}
 
 enum TipoCronometro {
   EXEC = 'exec',
   DESC = 'desc',
 }
 
-export interface IContadorCronometroComRepeticaoProps {
+export interface IContadorEspecificoTreino {
     onAdicionar: (
         tempoCronometroComRepeticao?: {
            tempoExercicio?:{
@@ -39,7 +28,9 @@ export interface IContadorCronometroComRepeticaoProps {
         tempoRepeticao?: {quantidade: number},
     ) => void;
 }
-export const ContadorCronometroComRepeticao = ({ onAdicionar }: IContadorCronometroComRepeticaoProps) => {
+export const ContadorEspecificoTreino = ({ onAdicionar }: IContadorEspecificoTreino) => {
+
+     const [openContagem, setOpenContagem] = useState<boolean>(false);
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
@@ -78,25 +69,29 @@ export const ContadorCronometroComRepeticao = ({ onAdicionar }: IContadorCronome
 
     return (
         <>
-            <View>
-                <View style={styles.containerTitle}>
-                    <Text style={styles.title}>Vezes</Text>
-                </View>
-
-                <View style={styles.containerContagem}>
-                    <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev < 50 ? prev + 1 : 0))}>
-                            <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                        </TouchableOpacity>
-                        <View style={styles.containerContagemTempo}>
-                            <Text style={styles.tempoLabel}>{quantidade}</Text>
-                        </View>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev > 0 ? prev - 1 : 0))}>
-                            <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                        </TouchableOpacity>
+            {openContagem && (
+                <View>
+                    <View style={styles.containerTitle}>
+                        <Text style={styles.title}>Vezes</Text>
                     </View>
-                </View>
+                
+
+                    <View style={styles.containerContagem}>
+                        <View style={styles.containerContagemSeparator}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                                </TouchableOpacity>
+                                <View style={styles.containerContagemTempo}>
+                                    <Text style={styles.tempoLabel}>{quantidade}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                                </TouchableOpacity>
+                        </View>
+                    </View>
             </View>
+            )}
+           
 
             <ComboBox 
               value={tipo}
