@@ -1,27 +1,13 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorRepeticaoProps {
-    onAdicionar: (
-        tempoRepeticao: {quantidade: number},
-    ) => void;
+    quantidade: number;
+    onChangeQuantidade: (valor: number) => void;
 }
 
-
-export const ContadorRepeticao = ({ onAdicionar }: IContadorRepeticaoProps) => {
-    //Repetição
-    const [quantidade, setQuantidade] = useState(0);
-
-    function handleAdicionar() {
-      onAdicionar(
-        {
-          quantidade
-        }
-      )
-    }
-
+export const ContadorRepeticao = ({onChangeQuantidade, quantidade}: IContadorRepeticaoProps) => {
     return (
         <>
             <View>
@@ -31,13 +17,13 @@ export const ContadorRepeticao = ({ onAdicionar }: IContadorRepeticaoProps) => {
 
                 <View style={styles.containerContagem}>
                     <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => onChangeQuantidade(quantidade < 50 ? quantidade + 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
                             <Text style={styles.tempoLabel}>{quantidade}</Text>
                         </View>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev > 0 ? prev - 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => onChangeQuantidade(quantidade > 0 ? quantidade - 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                         </TouchableOpacity>
                     </View>
@@ -87,18 +73,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: theme.fonts.sizes.medium
     },
-    footer: {
-        marginTop: 20,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        marginBottom: 4,
-        borderRadius: 10,
-        backgroundColor: theme.colors.header
-    },
-    footerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.medium
-    }
-
 });

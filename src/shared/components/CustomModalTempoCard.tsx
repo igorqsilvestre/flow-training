@@ -1,4 +1,5 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import { ContadorCronometro } from "./ContadorCronometro";
 import { ContadorRepeticao } from "./ContadorRepeticao";
@@ -24,29 +25,19 @@ export function CustomModalTempoCard({
   onAdicionarRepeticao,
 }: ICustomModalTempoCardProps) {
 
-    function handleAdicionarCronometro(
-      tempoCronometro: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
-    ){
-        onAdicionarCronometro(
-          {
-            minuto: tempoCronometro.minuto,
-            dezenaDosSegundos: tempoCronometro.dezenaDosSegundos,
-            unidadeDosSegundos: tempoCronometro.unidadeDosSegundos
-          },
-        )
-        return; 
-    }
+   const [quantidade, setQuantidade] = useState(0);
 
-    function handleAdicionarRepeticao(
-      tempoRepeticao: {quantidade: number},
-    ){
-        onAdicionarRepeticao(
-          {
-           quantidade: tempoRepeticao.quantidade
-          },
-        )
-        return; 
-    }
+   const handleAdicionar = () => {
+      if(tipoTempo === 'repeticao'){
+        onAdicionarRepeticao({
+          quantidade
+        });
+      }
+      if(tipoTempo === 'cronometro'){
+
+      }
+   }
+
 
   return (
     <Modal transparent animationType="fade" visible={visible}>
@@ -55,33 +46,21 @@ export function CustomModalTempoCard({
               <View style={styles.header}>
                 <Text style={styles.headerTitle}>{title}</Text>
               </View>
-
-              {/*
-                {chooseType && (
-                <ComboBox 
-                value={tipo}
-                onChange={setTipo}
-                valores={[
-                  {label:'Time', valor:'time'}, {label:'Repetição', valor:'rep'}
-                ]}/>
-              )}
-              */}
-              
    
               {tipoTempo === 'cronometro' && (
-                <ContadorCronometro onAdicionar={handleAdicionarCronometro}/>
+                <ContadorCronometro />
               )}
 
               {tipoTempo === 'repeticao' && (
-                <ContadorRepeticao onAdicionar={handleAdicionarRepeticao}/>
+                <ContadorRepeticao 
+                    quantidade={quantidade}
+                    onChangeQuantidade={setQuantidade}
+                />
               )}
 
-              {tipoTempo === 'repeticaoComCronometro' && (
-                <View>
-                  <ContadorRepeticao onAdicionar={handleAdicionarRepeticao}/>
-                  <ContadorCronometro onAdicionar={handleAdicionarCronometro}/>
-                </View>
-              )}
+              <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
+                <Text style={styles.footerTitle}>Adicionar</Text>
+              </TouchableOpacity>
            
         </View>
       </View>
@@ -114,4 +93,17 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.family.bold,
     fontSize: theme.fonts.sizes.medium
   },
+  footer: {
+        marginTop: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        marginBottom: 4,
+        borderRadius: 10,
+        backgroundColor: theme.colors.header
+    },
+  footerTitle: {
+        textAlign: 'center',
+        fontFamily: theme.fonts.family.regular,
+        fontSize: theme.fonts.sizes.medium
+  }
 });
