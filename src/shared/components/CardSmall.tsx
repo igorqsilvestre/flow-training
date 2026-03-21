@@ -3,20 +3,14 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import { criarListaDeTreinoPadrao } from "../utils/auxiliarDeTreino";
-import { CustomModalTemp } from "./CustomModalTemp";
+import { CustomModalTempoCard } from "./CustomModalTempoCard";
+import { CustomModalTempoExercicio } from "./CustomModalTempoExercicio";
 
 const ITEM_HEIGHT = 32;
 const MAX_ITEMS_VISIBLE = 2;
 
 type TempoCronometroFormatado = `${number}:${number}${number}`;
 
-type PropsCard = {
-    backgroundColor: string;
-    title: string;
-    tipoTempo: 'cronometro' | 'repeticao' | 'especificoTreino';
-    tempoRepeticao?: number;
-    tempoCronometro?: TempoCronometroFormatado;
-}
 type Treino = {
   id: string;
   tipo : {
@@ -29,139 +23,129 @@ type Treino = {
 }
 
 export interface IPropsCardSmall {
-  tipo: 'preparacao' | 'exercicio' | 'ciclos'
+  tipo: 'preparacao' | 'treino' | 'ciclos'
 }
 export const CardSmall = ({tipo}: IPropsCardSmall) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openTempCard, setOpenTempCard] = useState<boolean>(false);
+  const [openTempExercicio, setOpenTempExercicio] = useState<boolean>(false);
+
   const [listaTreinoExpandida, setListaTreinoExpandida] = useState(false);
   const [listaTreino, setListaTreino] = useState<Treino[]>([]);
-  const [type, setType] = useState< 'preparacao' | 'exercicio' | 'ciclos'>();
+  const [tipoCard, setTipoCard] = useState< 'preparacao' | 'treino' | 'ciclos'>();
 
-  const [configuracoes, setConfiguracoes] = useState<PropsCard>();
+  const [configuracoesCard, setConfiguracoesCard] = useState<{
+    backgroundColor: string;
+    title: string;
+    tipoTempo: 'cronometro' | 'repeticao' | 'repeticaoComCronometro' ;
+    tempoRepeticao?: number;
+    tempoCronometro?: TempoCronometroFormatado;
+  }>();
+
+
+  const [configuracoesExercicio, setConfiguracoesExercicio] = useState<{
+    title: string;
+  }>();
 
   useEffect(()=>{
     if(tipo === 'preparacao'){
-      setConfiguracoes({
+      setConfiguracoesCard({
         backgroundColor: theme.colors.preparation,
         title:'Preparação',
         tipoTempo: 'cronometro',
         tempoCronometro: `${0}:${10}`,
       });
-      setType(tipo);
+      setTipoCard(tipo);
       return;
     }
 
-    if(tipo === 'exercicio'){
-      setConfiguracoes({
+    if(tipo === 'treino'){
+      setConfiguracoesCard({
         backgroundColor: theme.colors.exercise,
         title: 'Quantidade de exercícios',
-        tipoTempo: 'especificoTreino',
+        tipoTempo: 'repeticaoComCronometro',
         tempoRepeticao: 4
       });
       setListaTreino(criarListaDeTreinoPadrao(4));
-      setType(tipo);
+      setTipoCard(tipo);
       return;
     }
 
     if(tipo === 'ciclos'){
-      setConfiguracoes({
+      setConfiguracoesCard({
         backgroundColor: theme.colors.cycles,
         title: 'Ciclos', 
         tipoTempo: 'repeticao',
         tempoRepeticao: 1, 
       });  
-      setType(tipo);
+      setTipoCard(tipo);
       return;
     }
      
   },[tipo])
 
-  const adicionarTempo = (
-    tempoCronometroComRepeticao?: {
-        tempoExercicio?:{
-          exercicioMinuto: number,
-          exercicioDezenaDosSegundos: number,
-          exercicioUnidadeDosSegundos: number;
-        },
-        tempoDescanso?:{
-          descansoMinuto: number,
-          descansoDezenaDosSegundos: number,
-          descansoUnidadeDosSegundos: number
-        } 
-      },
-    tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number}, 
-    tempoRepeticao?: {quantidade: number}
+  const adicionarTempoCronometroCard = (
+    tempoCronometro: {minuto?: number, dezenaDosSegundos?: number, unidadeDosSegundos?: number}, 
     ) => {
 
-    if(configuracoes){
-
-      if(tempoRepeticao?.quantidade && tempoCronometroComRepeticao?.tempoExercicio && tempoCronometroComRepeticao?.tempoDescanso){
-        setConfiguracoes({
-          ...configuracoes,
-          tempoRepeticao: tempoRepeticao.quantidade
-        });
-        setListaTreino(criarListaDeTreinoPadrao(
-          tempoRepeticao.quantidade, 
-          {
-            minuto: tempoCronometroComRepeticao.tempoExercicio.exercicioMinuto,
-            dezenaDosSegundos: tempoCronometroComRepeticao.tempoExercicio.exercicioDezenaDosSegundos,
-            unidadeDosSegundos:  tempoCronometroComRepeticao.tempoExercicio.exercicioUnidadeDosSegundos,
-          },
-          {
-            minuto: tempoCronometroComRepeticao.tempoDescanso.descansoMinuto,
-            dezenaDosSegundos: tempoCronometroComRepeticao.tempoDescanso.descansoDezenaDosSegundos,
-            unidadeDosSegundos:  tempoCronometroComRepeticao.tempoDescanso.descansoUnidadeDosSegundos,
-          }
-        ));
-        setOpen(false);
-        return;
-      }
-
-      if(tempoRepeticao?.quantidade){
-        setConfiguracoes({
-          ...configuracoes,
-          tempoRepeticao: tempoRepeticao.quantidade
-        })
-        setOpen(false);
-        return;
-      }
-
+    if(configuracoesCard){
       if(tempoCronometro?.minuto || tempoCronometro?.dezenaDosSegundos || tempoCronometro?.unidadeDosSegundos){
-        setConfiguracoes({
-          ...configuracoes,
+        setConfiguracoesCard({
+          ...configuracoesCard,
           tempoCronometro: `${tempoCronometro.minuto}:${tempoCronometro.dezenaDosSegundos}${tempoCronometro.unidadeDosSegundos}` as TempoCronometroFormatado
         })
-        setOpen(false);
+        setOpenTempCard(false);
         return;
       }
 
     }
-    setOpen(false);
+    setOpenTempCard(false);
+  }
+
+  const adicionarTempoRepeticaoCard = (
+    tempoRepeticao: {quantidade: number}
+    ) => {
+    if(configuracoesCard){
+      if(tempoRepeticao?.quantidade){
+        setConfiguracoesCard({
+          ...configuracoesCard,
+          tempoRepeticao: tempoRepeticao.quantidade
+        })
+        setOpenTempCard(false);
+        return;
+      }
+    }
+    setOpenTempCard(false);
+  }
+
+  const adicionarTempoExercicio = (
+  ) => {
+    console.log('tempo exercício');
+    setOpenTempExercicio(false);
   }
 
   const restart = () => {
-    if(configuracoes){
-      if(type === 'preparacao'){
-        setConfiguracoes({
-          ...configuracoes,
+    if(configuracoesCard){
+      if(tipoCard === 'preparacao'){
+        setConfiguracoesCard({
+          ...configuracoesCard,
           tempoCronometro:`${0}:${10}`,
          
         });
         return;
       }
 
-      if(type === 'exercicio'){
-        setConfiguracoes({
-          ...configuracoes,
+      if(tipoCard === 'treino'){
+        setConfiguracoesCard({
+          ...configuracoesCard,
           tempoRepeticao: 4
         });
         setListaTreino(criarListaDeTreinoPadrao(4));
         return;
       }
 
-      if(type === 'ciclos'){
-          setConfiguracoes({
-            ...configuracoes,
+      if(tipoCard === 'ciclos'){
+          setConfiguracoesCard({
+            ...configuracoesCard,
             tempoRepeticao: 1
           });
           return;
@@ -171,29 +155,38 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
 
   return (
-    <View style={ {backgroundColor: configuracoes?.backgroundColor, ...styles.card} }>
+    <View style={ {backgroundColor: configuracoesCard?.backgroundColor, ...styles.card} }>
       <TouchableOpacity style={styles.cardIconRefresh} onPress={restart}>
         <MaterialIcons size={30} name="restart-alt"  />
       </TouchableOpacity>
       <View>
-        <View style={{gap:8, paddingBottom: type === 'exercicio' ? 0 : 20, alignItems: 'center' }}>
-          <Text style={styles.cardTitle}>{ configuracoes?.title }</Text>
-          <Text>{configuracoes?.tempoRepeticao ? configuracoes.tempoRepeticao : configuracoes?.tempoCronometro}</Text>
+        <View style={{gap:8, paddingBottom: tipoCard === 'treino' ? 0 : 20, alignItems: 'center' }}>
+          <Text style={styles.cardTitle}>{ configuracoesCard?.title }</Text>
+          <Text>{configuracoesCard?.tempoRepeticao ? configuracoesCard.tempoRepeticao : configuracoesCard?.tempoCronometro}</Text>
 
-          {open && (
-            <CustomModalTemp 
-              title={configuracoes?.title} 
-              tipoTempo={configuracoes?.tipoTempo} 
-              visible={open} 
-              onAdicionar={adicionarTempo}
+          {openTempCard && (
+            <CustomModalTempoCard 
+              title={configuracoesCard?.title} 
+              tipoTempo={configuracoesCard?.tipoTempo} 
+              visible={openTempCard} 
+              onAdicionarCronometro={adicionarTempoCronometroCard}
+              onAdicionarRepeticao={adicionarTempoRepeticaoCard}
             />
-          )}              
+          )} 
 
-          <TouchableOpacity onPress={() => setOpen(true)}>
+          {openTempExercicio && (
+            <CustomModalTempoExercicio
+              title={configuracoesExercicio?.title}  
+              visible={openTempExercicio}
+              onAdicionarTempoExercicio={adicionarTempoExercicio} 
+            />
+          )}             
+
+          <TouchableOpacity onPress={() => setOpenTempCard(true)}>
             <MaterialIcons size={25} name="edit"  />
           </TouchableOpacity>
 
-          {type === 'exercicio'  && (
+          {tipoCard === 'treino'  && (
           <View
             style={styles.containerList}
           >
@@ -208,7 +201,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
                 paddingHorizontal: 4,
                 rowGap: 4,
                   maxHeight: listaTreinoExpandida
-                  ? ITEM_HEIGHT * (configuracoes?.tempoRepeticao || 4) //mostra tudo
+                  ? ITEM_HEIGHT * (configuracoesCard?.tempoRepeticao || 4) //mostra tudo
                   : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
                   
               }}
@@ -219,7 +212,12 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
                   <View style={{flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4}}>
                     <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
                     <TouchableOpacity>
-                      <MaterialIcons size={23} name="edit"  />
+                      <MaterialIcons size={23} name="edit"  onPress={() => {
+                        setConfiguracoesExercicio({
+                          title: 'Exercício '+item.id
+                        });
+                        setOpenTempExercicio(true);
+                      }}/>
                     </TouchableOpacity>
                   </View>
                 
@@ -252,7 +250,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 10,
+    borderRadius: 15,
   },
 
   cardTitle: {

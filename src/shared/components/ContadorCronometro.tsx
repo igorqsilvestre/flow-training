@@ -1,44 +1,11 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorCronometroProps {
-    onAdicionar: (
-        tempoCronometroComRepeticao?: {
-            tempoExercicio?:{
-                exercicioMinuto: number,
-                exercicioDezenaDosSegundos: number,
-                exercicioUnidadeDosSegundos: number;
-            },
-            tempoDescanso?:{
-                descansoMinuto: number,
-                descansoDezenaDosSegundos: number,
-                descansoUnidadeDosSegundos: number
-            } 
-        },
-        tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
-        tempoRepeticao?: {quantidade: number},
-    ) => void;
 }
-export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) => {
+export const ContadorCronometro = () => {
 
-    //Cronômetro
-    const [minuto, setMinuto] = useState(0);
-    const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
-    const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
-
-    function handleAdicionar() {
-      onAdicionar(
-        undefined,
-        {
-          minuto,
-          dezenaDosSegundos,
-          unidadeDosSegundos,
-        },
-        undefined
-      )
-    }
 
     return (
         <>
@@ -96,10 +63,6 @@ export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) =>
                 </View>
             </View>
            
-           
-            <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
-                <Text style={styles.footerTitle}>Adicionar</Text>
-            </TouchableOpacity>
         </>
         
     )
