@@ -7,7 +7,7 @@ export const theme =  {
     preparation: '#E8EA9F',
     exercise: '#8BBBE2',
     cycles: '#F58080',
-    wrong: '#FF0000',
+    wrong: '#ff4d4f',
     secundary: '#A1A1A1',
     white: '#FFFFFF',
     botaoPreparation: '#2F3E1F',
@@ -16,6 +16,7 @@ export const theme =  {
   },
   fonts: {
     sizes: {
+      small: 11,
       body: 13,
       medium: 15,
       large: 17,

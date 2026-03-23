@@ -6,7 +6,7 @@ import { criarListaDeTreino } from "../utils/auxiliarDeTreino";
 import { CustomModalTempoCard } from "./CustomModalTempoCard";
 import { CustomModalTempoExercicio } from "./CustomModalTempoExercicio";
 
-const ITEM_HEIGHT = 32;
+const ITEM_HEIGHT = 35;
 const MAX_ITEMS_VISIBLE = 2;
 
 type TempoCronometroFormatado = `${number}:${number}${number}`;
@@ -264,8 +264,8 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               columnWrapperStyle={{justifyContent: 'space-between', }}
               
               style={{
-                paddingHorizontal: 4,
-                rowGap: 4,
+                paddingHorizontal: 5,
+                rowGap: 5,
                   maxHeight: listaTreinoExpandida
                   ? ITEM_HEIGHT * (configuracoesCard?.tempoRepeticao || 4) //mostra tudo
                   : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2

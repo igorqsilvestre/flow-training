@@ -24,13 +24,13 @@ export const ContadorRepeticao = ({onAdicionar}: IContadorRepeticaoProps) => {
 
                 <View style={styles.containerContagem}>
                     <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(quantidade < 50 ? quantidade + 1 : 0)}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
                             <Text style={styles.tempoLabel}>{quantidade}</Text>
                         </View>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(quantidade > 0 ? quantidade - 1 : 0)}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                         </TouchableOpacity>
                     </View>
