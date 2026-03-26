@@ -78,8 +78,7 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
     }
 
     return (
-        <>
-       
+        <>  
             <View>
                 <View style={styles.containerTitle}>
                     <Text style={styles.title}>Vezes</Text>
@@ -104,7 +103,7 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
               value={tipo}
               onChange={setTipo}
               valores={[
-                {label:'Exercício', valor:'exec'}, {label:'Descanso', valor:'desc'}
+                {label:'Exercício', valor: TipoCronometro.EXEC}, {label:'Descanso', valor: TipoCronometro.DESC}
             ]}/>
            
 

@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { criarListaDeTreino } from "../utils/auxiliarDeTreino";
+import { criarListaDeTreino, editarListaDeTreino, TempoCronometro, Treino } from "../utils/auxiliarDeTreino";
 import { CustomModalTempoCard } from "./CustomModalTempoCard";
 import { CustomModalTempoExercicio } from "./CustomModalTempoExercicio";
 
@@ -10,17 +10,6 @@ const ITEM_HEIGHT = 35;
 const MAX_ITEMS_VISIBLE = 2;
 
 type TempoCronometroFormatado = `${number}:${number}${number}`;
-
-type Treino = {
-  id: string;
-  tipo : {
-    sigla: 'Rep' | 'Time',
-    valor: 'Repetição' | 'Time'
-  };
-  tempoCronometro?: TempoCronometroFormatado;
-  tempoDescanso?: TempoCronometroFormatado;
-  tempoRepeticao?: number;
-}
 
 export interface IPropsCardSmall {
   tipo: 'preparacao' | 'treino' | 'ciclos'
@@ -41,10 +30,14 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
     tempoCronometro?: TempoCronometroFormatado;
   }>();
 
-
   const [configuracoesExercicio, setConfiguracoesExercicio] = useState<{
+    id:string;
     title: string;
+    tempoExercicio?: TempoCronometro,
+    tempoDescanso: TempoCronometro,
+    tempoRepeticao?: number
   }>();
+
 
   useEffect(()=>{
     if(tipo === 'preparacao'){
@@ -168,8 +161,20 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
     }
   
 
-  const adicionarTempoExercicio = () => {
-    console.log('tempo exercício');
+  const adicionarTempoExercicio = (
+    sigla: 'Time' | 'Rep',
+    id: string,
+    tempoDescanso: TempoCronometro,
+    tempoExercicio?: TempoCronometro,
+    tempoRepeticao?: number
+  ) => {
+    editarListaDeTreino(listaTreino, {
+      sigla,
+      id,
+      tempoDescanso,
+      tempoCronometro: tempoExercicio,
+      tempoRepeticao: tempoRepeticao
+    });
     setOpenTempExercicio(false);
   }
 
@@ -242,8 +247,8 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
           {openTempExercicio && (
             <CustomModalTempoExercicio
-              title={configuracoesExercicio?.title}  
-              visible={openTempExercicio}
+              visible={openTempExercicio} 
+              configuracoesExercicio={configuracoesExercicio}
               onAdicionarTempoExercicio={adicionarTempoExercicio} 
             />
           )}             
@@ -280,19 +285,23 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
                     <TouchableOpacity>
                       <MaterialIcons size={23} name="edit"  onPress={() => {
                         setConfiguracoesExercicio({
-                          title: 'Exercício '+item.id
-                        });
+                          id: item.id,
+                          title:`Exercício ${item.id}º`,
+                          tempoExercicio: item?.tempoCronometro,
+                          tempoRepeticao: item?.tempoRepeticao,
+                          tempoDescanso: item.tempoDescanso
+                        })
                         setOpenTempExercicio(true);
                       }}/>
                     </TouchableOpacity>
                   </View>
                 
                   <View style={styles.contentExercicio}>
-                      <Text style={styles.cardSubTitle}>{item.tipo.sigla}</Text>
-                      <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometro}</Text>
+                      <Text style={styles.cardSubTitle}>{item.sigla}</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometroFormatado}</Text>
                       <Text> - </Text>
                       <Text style={styles.cardSubTitle}>Des</Text>
-                      <Text style={styles.cardSubTitle}>{item.tempoDescanso}</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempoDescansoFormatado}</Text>
                       
                   </View>
                 </View>
