@@ -4,37 +4,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorRepeticaoProps {
-    onAdicionar: (
-        tempoCronometroComRepeticao?: {
-            tempoExercicio?:{
-                exercicioMinuto: number,
-                exercicioDezenaDosSegundos: number,
-                exercicioUnidadeDosSegundos: number;
-            },
-            tempoDescanso?:{
-                descansoMinuto: number,
-                descansoDezenaDosSegundos: number,
-                descansoUnidadeDosSegundos: number
-            } 
-        },
-        tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
-        tempoRepeticao?: {quantidade: number},
-    ) => void;
+    onAdicionar: ( quantidade: number ) => void;
 }
 
+export const ContadorRepeticao = ({onAdicionar}: IContadorRepeticaoProps) => {
 
-export const ContadorRepeticao = ({ onAdicionar }: IContadorRepeticaoProps) => {
-    //Repetição
     const [quantidade, setQuantidade] = useState(0);
 
-    function handleAdicionar() {
-      onAdicionar(
-        undefined,
-        undefined,
-        {
-          quantidade
-        }
-      )
+    function handleAdicionar(){
+        onAdicionar(quantidade);
     }
 
     return (
@@ -46,21 +24,22 @@ export const ContadorRepeticao = ({ onAdicionar }: IContadorRepeticaoProps) => {
 
                 <View style={styles.containerContagem}>
                     <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
                             <Text style={styles.tempoLabel}>{quantidade}</Text>
                         </View>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade((prev) => (prev > 0 ? prev - 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>    
+            </View>
+
             <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
                 <Text style={styles.footerTitle}>Adicionar</Text>
-            </TouchableOpacity>  
+            </TouchableOpacity>    
         </>
       
     )
@@ -105,7 +84,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: theme.fonts.sizes.medium
     },
-    footer: {
+     footer: {
         marginTop: 20,
         paddingVertical: 8,
         paddingHorizontal: 20,
@@ -118,5 +97,4 @@ const styles = StyleSheet.create({
         fontFamily: theme.fonts.family.regular,
         fontSize: theme.fonts.sizes.medium
     }
-
 });

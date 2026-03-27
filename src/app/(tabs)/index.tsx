@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface Data {
   id: string,
-  type: 'preparacao' | 'exercicio' | 'ciclos'
+  type: 'preparacao' | 'treino' | 'ciclos'
 }
 
 export default function Index() {
@@ -16,7 +16,7 @@ export default function Index() {
 
   const data:Data[]  = [
     { id: '1', type: 'preparacao' },
-    { id: '2', type: 'exercicio' },
+    { id: '2', type: 'treino' },
     { id: '3', type: 'ciclos' },
   ]
 
@@ -27,7 +27,7 @@ export default function Index() {
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
         paddingBottom: insets.bottom,
-        gap: 8
+        gap: 10
       }}
 
       ListHeaderComponent={() => (
@@ -45,9 +45,9 @@ export default function Index() {
           );
         }
 
-        if(item.type === 'exercicio'){
+        if(item.type === 'treino'){
           return (
-            <CardSmall tipo='exercicio'/>
+            <CardSmall tipo='treino'/>
           );
         }
 
@@ -58,24 +58,17 @@ export default function Index() {
       }}
 
       ListFooterComponent={() => (
-        <View>
-          <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={() => router.push('/training')} >
-              <MaterialIcons size={28} name="play-circle" color='#FFF'/>
-              <Text style={styles.subtitle}>Iniciar</Text>
-            </TouchableOpacity>
+        <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
+          <TouchableOpacity style={{alignItems: 'center'}} onPress={() => router.push('/training')} >
+            <MaterialIcons size={28} name="play-circle" color='#FFF'/>
+            <Text style={styles.subtitle}>Iniciar</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity style={{alignItems: 'center'}}>
-              <MaterialIcons size={28} name="save" color='#FFF'/>
-              <Text style={styles.subtitle}>Salvar</Text>
-            </TouchableOpacity>
-          </View>
-
-            <View style={styles.contentFooter}>
-              <Text style={styles.titleFooter}>Siglas</Text>
-              <Text style={styles.textBody}>Rep: Repetição - Time: Tempo - Des: Descanso</Text>
-            </View>
-      </View>
+          <TouchableOpacity style={{alignItems: 'center'}}>
+            <MaterialIcons size={28} name="save" color='#FFF'/>
+            <Text style={styles.subtitle}>Salvar</Text>
+          </TouchableOpacity>
+        </View>
       )}
     >
     

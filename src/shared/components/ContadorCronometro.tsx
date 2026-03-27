@@ -4,40 +4,20 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorCronometroProps {
-    onAdicionar: (
-        tempoCronometroComRepeticao?: {
-            tempoExercicio?:{
-                exercicioMinuto: number,
-                exercicioDezenaDosSegundos: number,
-                exercicioUnidadeDosSegundos: number;
-            },
-            tempoDescanso?:{
-                descansoMinuto: number,
-                descansoDezenaDosSegundos: number,
-                descansoUnidadeDosSegundos: number
-            } 
-        },
-        tempoCronometro?: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
-        tempoRepeticao?: {quantidade: number},
-    ) => void;
+     onAdicionar: ( 
+        minuto: number, 
+        dezenaDosSegundos: number,
+        unidadeDosSegundos: number
+     ) => void;
 }
-export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) => {
+export const ContadorCronometro = ({onAdicionar}: IContadorCronometroProps) => {
 
-    //Cronômetro
     const [minuto, setMinuto] = useState(0);
     const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
     const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
 
-    function handleAdicionar() {
-      onAdicionar(
-        undefined,
-        {
-          minuto,
-          dezenaDosSegundos,
-          unidadeDosSegundos,
-        },
-        undefined
-      )
+     function handleAdicionar(){
+        onAdicionar(minuto,dezenaDosSegundos,unidadeDosSegundos);
     }
 
     return (
@@ -70,7 +50,7 @@ export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) =>
                     {/*Segundos*/}
                     <View style={styles.containerContagemMinutos}>
                         <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
@@ -82,7 +62,7 @@ export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) =>
                         </View>
 
                         <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
@@ -93,13 +73,13 @@ export const ContadorCronometro = ({ onAdicionar }: IContadorCronometroProps) =>
                         </TouchableOpacity>  
                         </View>
                     </View>
-                </View>
+                </View> 
             </View>
-           
-           
-            <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
+
+             <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
                 <Text style={styles.footerTitle}>Adicionar</Text>
             </TouchableOpacity>
+           
         </>
         
     )
@@ -163,5 +143,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: theme.fonts.family.regular,
         fontSize: theme.fonts.sizes.medium
-  }
+    }
 });
