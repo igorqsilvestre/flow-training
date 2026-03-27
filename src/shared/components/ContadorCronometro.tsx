@@ -50,7 +50,7 @@ export const ContadorCronometro = ({onAdicionar}: IContadorCronometroProps) => {
                     {/*Segundos*/}
                     <View style={styles.containerContagemMinutos}>
                         <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>
@@ -62,7 +62,7 @@ export const ContadorCronometro = ({onAdicionar}: IContadorCronometroProps) => {
                         </View>
 
                         <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
                         <View style={styles.containerContagemTempo}>

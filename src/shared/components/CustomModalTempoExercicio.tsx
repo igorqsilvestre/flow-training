@@ -93,17 +93,16 @@ export function CustomModalTempoExercicio(
             onAdicionarTempoExercicio(
                 "Time",
                  id,
+                 {
+                    minuto: descansoMinuto,
+                    dezenaDosSegundos: descansoDezenaDosSegundos,
+                    unidadeDosSegundos: descansoUnidadeDosSegundos
+                },
                 {
                     minuto: exercicioMinuto,
                     dezenaDosSegundos: exercicioDezenaDosSegundos,
                     unidadeDosSegundos: exercicioUnidadeDosSegundos
-                },
-               {
-                    minuto: descansoMinuto,
-                    dezenaDosSegundos: descansoDezenaDosSegundos,
-                    unidadeDosSegundos: descansoUnidadeDosSegundos
-                }
-                
+                },     
             )
             return;
         }
@@ -118,7 +117,7 @@ export function CustomModalTempoExercicio(
                     unidadeDosSegundos: descansoUnidadeDosSegundos
                 },
                 undefined,
-                quantidade
+                quantidade === 0 ? 10 : quantidade
             )
             return;
         }
@@ -174,7 +173,7 @@ export function CustomModalTempoExercicio(
                             {/*Segundos*/}
                             <View style={styles.containerContagemMinutos}>
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
@@ -186,7 +185,7 @@ export function CustomModalTempoExercicio(
                                 </View>
 
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
@@ -214,7 +213,7 @@ export function CustomModalTempoExercicio(
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioMinuto}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoMinuto}</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
@@ -229,11 +228,11 @@ export function CustomModalTempoExercicio(
                             {/*Segundos*/}
                             <View style={styles.containerContagemMinutos}>
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioDezenaDosSegundos}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoDezenaDosSegundos}</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
@@ -241,11 +240,11 @@ export function CustomModalTempoExercicio(
                                 </View>
 
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioUnidadeDosSegundos }</Text>
+                                    <Text style={styles.tempoLabel}>{descansoUnidadeDosSegundos }</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
@@ -290,7 +289,7 @@ export function CustomModalTempoExercicio(
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioMinuto}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoMinuto}</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
@@ -305,11 +304,11 @@ export function CustomModalTempoExercicio(
                             {/*Segundos*/}
                             <View style={styles.containerContagemMinutos}>
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioDezenaDosSegundos}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoDezenaDosSegundos}</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
@@ -317,11 +316,11 @@ export function CustomModalTempoExercicio(
                                 </View>
 
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{exercicioUnidadeDosSegundos }</Text>
+                                    <Text style={styles.tempoLabel}>{descansoUnidadeDosSegundos }</Text>
                                 </View>
                                 <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>

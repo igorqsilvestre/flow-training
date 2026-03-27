@@ -29,41 +29,26 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
-    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(4);
-    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(5);
+    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(0);
+    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(0);
     
     //Crônometro do descanso
     const [descansoMinuto, setDescansoMinuto] = useState(0);
-    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(1);
-    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(5);
+    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(0);
+    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(0);
 
     const [quantidade, setQuantidade] = useState(0);
     const [tipo, setTipo] = useState<string | undefined>();
 
 
-     function handleAdicionar(){
-
-        let novoValorExercicioMinuto = exercicioMinuto;
-        let novoValorExercicioDezenaDosSegundos = exercicioDezenaDosSegundos;
-        let novoValorExercicioUnidadeDosSegundos = exercicioUnidadeDosSegundos;
-
-        if(exercicioMinuto == 0 && exercicioDezenaDosSegundos == 0 && exercicioUnidadeDosSegundos == 0){
-            novoValorExercicioMinuto = 0;
-            novoValorExercicioDezenaDosSegundos = 4;
-            novoValorExercicioUnidadeDosSegundos = 5;
-
-            setExercicioMinuto(novoValorExercicioMinuto);
-            setExercicioDezenaDosSegundos(novoValorExercicioDezenaDosSegundos);
-            setExercicioUnidadeDosSegundos(novoValorExercicioUnidadeDosSegundos);
-        }
-
+     function handleAdicionar(){  
         if(quantidade > 0){
              onAdicionar(
             {
                 tempoExercicio: {
-                    exercicioMinuto: novoValorExercicioMinuto,
-                    exercicioDezenaDosSegundos: novoValorExercicioDezenaDosSegundos ,
-                    exercicioUnidadeDosSegundos: novoValorExercicioUnidadeDosSegundos
+                    exercicioMinuto: exercicioMinuto,
+                    exercicioDezenaDosSegundos: exercicioDezenaDosSegundos ,
+                    exercicioUnidadeDosSegundos: exercicioUnidadeDosSegundos
                 },
                 tempoDescanso: {
                     descansoMinuto,
@@ -153,10 +138,10 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
                             <View style={styles.containerContagemSeparator}>
                             <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
                                 if(tipo === TipoCronometro.EXEC){
-                                    setExercicioDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0));
+                                    setExercicioDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
                                 }
                                 if(tipo === TipoCronometro.DESC){
-                                    setDescansoDezenaDosSegundos((prev) => (prev < 50 ? prev + 1 : 0));
+                                    setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
                                 }
                             }}>
                                 <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
@@ -179,10 +164,10 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
                             <View style={styles.containerContagemSeparator}>
                             <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
                                 if(tipo === TipoCronometro.EXEC){
-                                    setExercicioUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0));
+                                    setExercicioUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
                                 }
                                 if(tipo === TipoCronometro.DESC){
-                                    setDescansoUnidadeDosSegundos((prev) => (prev < 50 ? prev + 1 : 0));
+                                    setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
                                 }
                             }}>
                                 <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>

@@ -212,7 +212,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       if(tipoCard === 'ciclos'){
           setConfiguracoesCard({
             ...configuracoesCard,
-            tempoRepeticao: 1
+            tempoRepeticao: 0
           });
           return;
       }
@@ -266,21 +266,22 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               data={listaTreino}
               keyExtractor={(item) => item.id}
               numColumns={2}
-              columnWrapperStyle={{justifyContent: 'space-between', }}
+              columnWrapperStyle={{ }}
               
               style={{
                 paddingHorizontal: 5,
                 rowGap: 5,
-                  maxHeight: listaTreinoExpandida
-                  ? ITEM_HEIGHT * (configuracoesCard?.tempoRepeticao || 4) //mostra tudo
-                  : ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2
-                  
+                  ...(listaTreinoExpandida
+                    ? {}
+                    : {
+                        maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2 linhas
+                      })
               }}
               showsVerticalScrollIndicator={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
               scrollEnabled={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
               renderItem={({ item }) => (
-                <View>
-                  <View style={{flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4}}>
+                <View style={{width: '50%', paddingHorizontal: 8}}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4 }}>
                     <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
                     <TouchableOpacity>
                       <MaterialIcons size={23} name="edit"  onPress={() => {
@@ -298,7 +299,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
                 
                   <View style={styles.contentExercicio}>
                       <Text style={styles.cardSubTitle}>{item.sigla}</Text>
-                      <Text style={styles.cardSubTitle}>{item.tempoRepeticao ? item.tempoRepeticao : item.tempoCronometroFormatado}</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempoRepeticaoFormatada ? item.tempoRepeticaoFormatada : item.tempoCronometroFormatado}</Text>
                       <Text> - </Text>
                       <Text style={styles.cardSubTitle}>Des</Text>
                       <Text style={styles.cardSubTitle}>{item.tempoDescansoFormatado}</Text>
@@ -308,7 +309,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               )}
             />
 
-            <TouchableOpacity style={{alignSelf: 'center', marginTop: 4}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
+            <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
               <MaterialIcons 
                 size={25} 
                 name={listaTreinoExpandida ? 'arrow-upward' : 'arrow-downward'}  
@@ -326,6 +327,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 15,
+    overflow: 'hidden',
   },
 
   cardTitle: {
@@ -352,7 +354,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 1
   },
 
    contentExercicio: {
@@ -360,6 +361,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     paddingVertical: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
     borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 4,
