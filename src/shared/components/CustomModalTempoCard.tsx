@@ -1,8 +1,11 @@
 import { Modal, StyleSheet, Text, View } from "react-native";
 import { theme } from "../themes/theme";
+import { TempoCronometro } from "../utils/auxiliarDeTreino";
 import { ContadorCronometro } from "./ContadorCronometro";
 import { ContadorRepeticao } from "./ContadorRepeticao";
 import { ContadorRepeticaoComCronometro } from "./ContadorRepeticaoComCronometro";
+
+type TempoCronometroFormatado = `${number}:${number}${number}`;
 
 
 export interface ICustomModalTempoCardProps {
@@ -10,31 +13,29 @@ export interface ICustomModalTempoCardProps {
   chooseType?: boolean;
   tipoTempo: 'cronometro' | 'repeticao' | 'repeticaoComCronometro' | undefined;
   visible: boolean;
-  onAdicionarCronometro: (
-    minuto: number, 
-    dezenaDosSegundos: number, 
-    unidadeDosSegundos: number,
-  ) => void;
+   configuracoesTempo:{
+    tempoCronometro?: TempoCronometro | undefined;
+    tempoRepeticaoComCronometro?: {
+        tempoExercicio?: TempoCronometro;
+        tempoDescanso?: TempoCronometro;
+    };
+    tempoRepeticao?: number;
+  }
+  onAdicionarCronometro: (tempo: TempoCronometro) => void;
   onAdicionarRepeticao: (quantidade: number) => void;
   onAdicionarRepeticaoComCronometro: (
      tempoCronometro: {
-        tempoExercicio: {
-            exercicioMinuto: number,
-            exercicioDezenaDosSegundos: number ,
-            exercicioUnidadeDosSegundos: number
-        },
-        tempoDescanso: {
-            descansoMinuto: number,
-            descansoDezenaDosSegundos: number,
-            descansoUnidadeDosSegundos: number
-        },
-       }, tempoRepeticao: { quantidade: number }
+        tempoExercicio: TempoCronometro
+        tempoDescanso: TempoCronometro,
+       }, 
+     tempoRepeticao: { quantidade: number }
   ) => void;
 }
 export function CustomModalTempoCard({
   title, 
   tipoTempo, 
   visible,
+  configuracoesTempo,
   onAdicionarCronometro,
   onAdicionarRepeticao,
   onAdicionarRepeticaoComCronometro 
@@ -45,10 +46,13 @@ export function CustomModalTempoCard({
     dezenaDosSegundos: number,
     unidadeDosSegundos: number
    ) => {
+
     onAdicionarCronometro(
-      minuto,
-      dezenaDosSegundos,
-      unidadeDosSegundos
+      {
+        minuto,
+        dezenaDosSegundos,
+        unidadeDosSegundos
+      }
     );
    };
    
@@ -74,14 +78,14 @@ export function CustomModalTempoCard({
     onAdicionarRepeticaoComCronometro(
      {
         tempoExercicio: {
-          exercicioMinuto: tempoCronometro.tempoExercicio.exercicioMinuto,
-          exercicioDezenaDosSegundos: tempoCronometro.tempoExercicio.exercicioDezenaDosSegundos,
-          exercicioUnidadeDosSegundos: tempoCronometro.tempoExercicio.exercicioUnidadeDosSegundos
+          minuto: tempoCronometro.tempoExercicio.exercicioMinuto,
+          dezenaDosSegundos: tempoCronometro.tempoExercicio.exercicioDezenaDosSegundos,
+          unidadeDosSegundos: tempoCronometro.tempoExercicio.exercicioUnidadeDosSegundos
         },
         tempoDescanso: {
-          descansoMinuto: tempoCronometro.tempoDescanso.descansoMinuto,
-          descansoDezenaDosSegundos: tempoCronometro.tempoDescanso.descansoDezenaDosSegundos,
-          descansoUnidadeDosSegundos: tempoCronometro.tempoDescanso.descansoUnidadeDosSegundos
+          minuto: tempoCronometro.tempoDescanso.descansoMinuto,
+          dezenaDosSegundos: tempoCronometro.tempoDescanso.descansoDezenaDosSegundos,
+          unidadeDosSegundos: tempoCronometro.tempoDescanso.descansoUnidadeDosSegundos
         },
      },{ quantidade: tempoRepeticao.quantidade }
     );
@@ -97,19 +101,28 @@ export function CustomModalTempoCard({
               </View>
    
               {tipoTempo === 'cronometro' && (
-                <ContadorCronometro 
+                <ContadorCronometro
+                  tempoCronometro={configuracoesTempo?.tempoCronometro ?? {minuto: 0, dezenaDosSegundos: 0, unidadeDosSegundos: 0}}
                   onAdicionar={handleAdicionarCronometro}
                 />
               )}
 
               {tipoTempo === 'repeticao' && (
                 <ContadorRepeticao 
-                   onAdicionar={handleAdicionarRepeticao}
+                  tempoRepeticao={configuracoesTempo.tempoRepeticao ?? 0} 
+                  onAdicionar={handleAdicionarRepeticao}
                 />
               )}
 
                {tipoTempo === 'repeticaoComCronometro' && (
                 <ContadorRepeticaoComCronometro
+                   tempoRepeticaoComCronometro={
+                    {
+                      tempoRepeticao: configuracoesTempo.tempoRepeticao ?? 0,
+                      tempoRepeticaoExercicio: configuracoesTempo.tempoRepeticaoComCronometro?.tempoExercicio ?? {minuto: 0, dezenaDosSegundos: 0, unidadeDosSegundos: 0},
+                      tempoRepeticaoDescanso: configuracoesTempo.tempoRepeticaoComCronometro?.tempoDescanso ?? {minuto: 0, dezenaDosSegundos: 0, unidadeDosSegundos: 0}
+                    }
+                   }
                    onAdicionar={handleAdicionarRepeticaoComCronometro}
                 />
               )}

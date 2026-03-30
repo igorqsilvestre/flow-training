@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import ComboBox from "./Combo_temp";
@@ -10,6 +10,13 @@ enum TipoCronometro {
 }
 
 export interface IContadorRepeticaoComCronometroProps {
+
+    tempoRepeticaoComCronometro?:{
+        tempoRepeticao: number,
+        tempoRepeticaoExercicio: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
+        tempoRepeticaoDescanso: {minuto: number, dezenaDosSegundos: number, unidadeDosSegundos: number},
+    }
+
      onAdicionar: ( 
        tempoCronometro: {
         tempoExercicio: {
@@ -25,7 +32,7 @@ export interface IContadorRepeticaoComCronometroProps {
        }, tempoRepeticao: { quantidade: number }
      ) => void;
 }
-export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticaoComCronometroProps) => {
+export const ContadorRepeticaoComCronometro = ({tempoRepeticaoComCronometro, onAdicionar}: IContadorRepeticaoComCronometroProps) => {
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
@@ -39,6 +46,20 @@ export const ContadorRepeticaoComCronometro = ({onAdicionar}: IContadorRepeticao
 
     const [quantidade, setQuantidade] = useState(0);
     const [tipo, setTipo] = useState<string | undefined>();
+
+    useEffect(() => {
+        if(tempoRepeticaoComCronometro){
+            setQuantidade(tempoRepeticaoComCronometro.tempoRepeticao);
+
+            setExercicioMinuto(tempoRepeticaoComCronometro.tempoRepeticaoExercicio.minuto);
+            setExercicioDezenaDosSegundos(tempoRepeticaoComCronometro.tempoRepeticaoExercicio.dezenaDosSegundos);
+            setExercicioUnidadeDosSegundos(tempoRepeticaoComCronometro.tempoRepeticaoExercicio.unidadeDosSegundos);
+
+            setDescansoMinuto(tempoRepeticaoComCronometro.tempoRepeticaoDescanso.minuto);
+            setDescansoDezenaDosSegundos(tempoRepeticaoComCronometro.tempoRepeticaoDescanso.dezenaDosSegundos);
+            setDescansoUnidadeDosSegundos(tempoRepeticaoComCronometro.tempoRepeticaoDescanso.unidadeDosSegundos);
+        }
+    },[])
 
 
      function handleAdicionar(){  

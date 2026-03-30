@@ -1,15 +1,22 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorRepeticaoProps {
+    tempoRepeticao?: number;
     onAdicionar: ( quantidade: number ) => void;
 }
 
-export const ContadorRepeticao = ({onAdicionar}: IContadorRepeticaoProps) => {
+export const ContadorRepeticao = ({tempoRepeticao, onAdicionar}: IContadorRepeticaoProps) => {
 
     const [quantidade, setQuantidade] = useState(0);
+
+    useEffect(() => {
+        if(tempoRepeticao){
+            setQuantidade(tempoRepeticao);
+        }
+    },[])
 
     function handleAdicionar(){
         onAdicionar(quantidade);

@@ -1,22 +1,35 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 export interface IContadorCronometroProps {
+     tempoCronometro?: {
+        minuto: number, 
+        dezenaDosSegundos: number,
+        unidadeDosSegundos: number
+     }
      onAdicionar: ( 
         minuto: number, 
         dezenaDosSegundos: number,
         unidadeDosSegundos: number
      ) => void;
 }
-export const ContadorCronometro = ({onAdicionar}: IContadorCronometroProps) => {
+export const ContadorCronometro = ({tempoCronometro,onAdicionar}: IContadorCronometroProps) => {
 
     const [minuto, setMinuto] = useState(0);
     const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
     const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
 
-     function handleAdicionar(){
+    useEffect(() => {
+        if(tempoCronometro){
+            setMinuto(tempoCronometro.minuto);
+            setDezenaDosSegundos(tempoCronometro.dezenaDosSegundos);
+            setUnidadeDosSegundos(tempoCronometro.unidadeDosSegundos);
+        }
+    },[])
+
+    function handleAdicionar(){
         onAdicionar(minuto,dezenaDosSegundos,unidadeDosSegundos);
     }
 
