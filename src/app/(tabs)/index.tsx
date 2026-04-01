@@ -1,7 +1,9 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
+import { ModalGravarTreino } from '@/src/shared/components/ModalGravarTreino';
 import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,6 +15,7 @@ export interface Data {
 
 export default function Index() {
   const insets = useSafeAreaInsets();
+  const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
 
   const data:Data[]  = [
     { id: '1', type: 'preparacao' },
@@ -21,8 +24,12 @@ export default function Index() {
   ]
 
   return (
-
-    <FlatList
+    <>
+     {openTempGravarTreino && (<ModalGravarTreino
+      visible={openTempGravarTreino}
+      onClose={() => setOpenTempGravarTreino(false)}
+     />)}
+     <FlatList
       data={data}
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
@@ -37,6 +44,7 @@ export default function Index() {
           </Text>
         </View>
       )}
+
 
       renderItem={({item}) => {
         if(item.type === 'preparacao'){
@@ -64,7 +72,7 @@ export default function Index() {
             <Text style={styles.subtitle}>Iniciar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={{alignItems: 'center'}}>
+          <TouchableOpacity style={{alignItems: 'center'}} onPress={() => setOpenTempGravarTreino(true)}>
             <MaterialIcons size={28} name="save" color='#FFF'/>
             <Text style={styles.subtitle}>Salvar</Text>
           </TouchableOpacity>
@@ -73,6 +81,8 @@ export default function Index() {
     >
     
     </FlatList>
+    </>
+   
   );
 }
 

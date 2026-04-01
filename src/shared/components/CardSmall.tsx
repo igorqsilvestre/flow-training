@@ -240,7 +240,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               configuracoesExercicio={configuracoesExercicio}
               onAdicionarTempoExercicio={adicionarTempoExercicio} 
             />
-          )}             
+          )}         
 
           <TouchableOpacity onPress={() => setOpenTempCard(true)}>
             <MaterialIcons size={25} name="edit"  />
