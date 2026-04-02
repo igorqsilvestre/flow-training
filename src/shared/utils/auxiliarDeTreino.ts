@@ -1,11 +1,5 @@
-export type TempoCronometro = {
-  minuto: number, 
-  dezenaDosSegundos: number, 
-  unidadeDosSegundos: number
-}
-
-type TempoCronometroFormatado = `${number}:${number}${number}`;
-type TempoRepeticaoFormatada = `${number}x`
+import { Exercicio } from "../types/Exercicio";
+import { TempoCronometro, TempoCronometroFormatado } from "../types/tempos";
 
 function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undefined){
   if(!tempoCronometro){
@@ -28,53 +22,42 @@ function formatarCronometro(
     return `${minuto}:${dezenaDosSegundos}${unidadeDosSegundos}`
 }
 
-export type Treino = {
-  id: string;
-  sigla: 'Time' | 'Rep'
-  tempoRepeticao?: number;
-  tempoCronometro?: TempoCronometro,
-  tempoDescanso: TempoCronometro,
-  tempoCronometroFormatado?: TempoCronometroFormatado;
-  tempoDescansoFormatado?: TempoCronometroFormatado;
-  tempoRepeticaoFormatada?: TempoRepeticaoFormatada;
-}
 
+export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercicioASerAtualizado: Exercicio){
+  listaDeExercicios.forEach((item) => {
+    if(item.id === exercicioASerAtualizado.id){
+      item.sigla = exercicioASerAtualizado.sigla;
 
-export function editarListaDeTreino(listaDeTreino: Treino[], treinoASerAtualizado: Treino){
-  listaDeTreino.forEach((item) => {
-    if(item.id === treinoASerAtualizado.id){
-      item.sigla = treinoASerAtualizado.sigla;
-
-      if(treinoASerAtualizado.tempoRepeticao){
-        item.tempoRepeticao =  treinoASerAtualizado.tempoRepeticao;
-        item.tempoRepeticaoFormatada = `${treinoASerAtualizado.tempoRepeticao}x`;
+      if(exercicioASerAtualizado.tempoRepeticao){
+        item.tempoRepeticao =  exercicioASerAtualizado.tempoRepeticao;
+        item.tempoRepeticaoFormatada = `${exercicioASerAtualizado.tempoRepeticao}x`;
       }
 
-      if(verificaSeExercicioEstaZerado(treinoASerAtualizado.tempoCronometro)){
-        item.tempoCronometro = treinoASerAtualizado.tempoCronometro;
+      if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
+        item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
         item.tempoCronometroFormatado = formatarCronometro(
-          treinoASerAtualizado.tempoCronometro!.minuto,
-          treinoASerAtualizado.tempoCronometro!.dezenaDosSegundos,
-          treinoASerAtualizado.tempoCronometro!.unidadeDosSegundos
+          exercicioASerAtualizado.tempoCronometro!.minuto,
+          exercicioASerAtualizado.tempoCronometro!.dezenaDosSegundos,
+          exercicioASerAtualizado.tempoCronometro!.unidadeDosSegundos
         );
       }
       
-      item.tempoDescanso = treinoASerAtualizado.tempoDescanso;
+      item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
       item.tempoDescansoFormatado = formatarCronometro(
-        treinoASerAtualizado.tempoDescanso.minuto,
-        treinoASerAtualizado.tempoDescanso.dezenaDosSegundos,
-        treinoASerAtualizado.tempoDescanso.unidadeDosSegundos,
+        exercicioASerAtualizado.tempoDescanso.minuto,
+        exercicioASerAtualizado.tempoDescanso.dezenaDosSegundos,
+        exercicioASerAtualizado.tempoDescanso.unidadeDosSegundos,
       );
       return;
     }
   });
 }
 
-export function criarListaDeTreino(
+export function criarListaDeExercicios(
   quantidadeDeExercicios:number, 
   tempoExercicio:TempoCronometro,
   tempoDescanso:TempoCronometro
-): Treino[]{
+): Exercicio[]{
 
   if(!verificaSeExercicioEstaZerado(tempoExercicio)){
     tempoExercicio.minuto = 0;
@@ -82,8 +65,8 @@ export function criarListaDeTreino(
     tempoExercicio.unidadeDosSegundos = 5;
   }
 
-  //Criando uma lista padrão de treinos
-  const lista: Treino[] = [];
+  //Criando uma lista padrão de exercícios
+  const lista: Exercicio[] = [];
   for (let index = 0; index < quantidadeDeExercicios; index++) {
     lista.push( 
       {

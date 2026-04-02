@@ -2,6 +2,7 @@ import { theme } from '@/src/shared/themes/theme';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+
 type Props = {
   visible: boolean;
   onClose: () => void;

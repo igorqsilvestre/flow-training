@@ -2,7 +2,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { criarListaDeTreino, editarListaDeTreino, TempoCronometro, Treino } from "../utils/auxiliarDeTreino";
+import { Exercicio } from "../types/Exercicio";
+import { TempoCronometro } from "../types/tempos";
+import { criarListaDeExercicios, editarListaDeExercicios } from "../utils/auxiliarDeTreino";
 import { CustomModalTempoCard } from "./CustomModalTempoCard";
 import { CustomModalTempoExercicio } from "./CustomModalTempoExercicio";
 
@@ -18,8 +20,8 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
   const [openTempCard, setOpenTempCard] = useState<boolean>(false);
   const [openTempExercicio, setOpenTempExercicio] = useState<boolean>(false);
 
-  const [listaTreinoExpandida, setListaTreinoExpandida] = useState(false);
-  const [listaTreino, setListaTreino] = useState<Treino[]>([]);
+  const [listaExerciciosExpandida, setListaExerciciosExpandida] = useState(false);
+  const [listaExercicios, setListaExercicios] = useState<Exercicio[]>([]);
  
 
   const [configuracoesCard, setConfiguracoesCard] = useState<{
@@ -85,7 +87,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
         }
       });
 
-      setListaTreino(criarListaDeTreino(
+      setListaExercicios(criarListaDeExercicios(
         tempoRepeticao,
         tempoExercicio,
         tempoDescanso
@@ -169,7 +171,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
          
         });
 
-        setListaTreino(criarListaDeTreino(
+        setListaExercicios(criarListaDeExercicios(
           tempoRepeticao.quantidade,
           {
             minuto: tempoCronometro.tempoExercicio.minuto,
@@ -197,7 +199,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
     tempoExercicio?: TempoCronometro,
     tempoRepeticao?: number
   ) => {
-    editarListaDeTreino(listaTreino, {
+    editarListaDeExercicios(listaExercicios, {
       sigla,
       id,
       tempoDescanso,
@@ -252,7 +254,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
           >
 
             <FlatList 
-              data={listaTreino}
+              data={listaExercicios}
               keyExtractor={(item) => item.id}
               numColumns={2}
               columnWrapperStyle={{ }}
@@ -260,14 +262,14 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               style={{
                 paddingHorizontal: 5,
                 rowGap: 5,
-                  ...(listaTreinoExpandida
+                  ...(listaExerciciosExpandida
                     ? {}
                     : {
                         maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2 linhas
                       })
               }}
-              showsVerticalScrollIndicator={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
-              scrollEnabled={!listaTreinoExpandida && (listaTreino.length || 4) > MAX_ITEMS_VISIBLE}
+              showsVerticalScrollIndicator={!listaExerciciosExpandida && (listaExercicios.length || 4) > MAX_ITEMS_VISIBLE}
+              scrollEnabled={!listaExerciciosExpandida && (listaExercicios.length || 4) > MAX_ITEMS_VISIBLE}
               renderItem={({ item }) => (
                 <View style={{width: '50%', paddingHorizontal: 8}}>
                   <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4 }}>
@@ -298,10 +300,10 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
               )}
             />
 
-            <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => setListaTreinoExpandida(prev => !prev)}>
+            <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => setListaExerciciosExpandida(prev => !prev)}>
               <MaterialIcons 
                 size={25} 
-                name={listaTreinoExpandida ? 'arrow-upward' : 'arrow-downward'}  
+                name={listaExerciciosExpandida ? 'arrow-upward' : 'arrow-downward'}  
                 />
             </TouchableOpacity>
           </View>
