@@ -1,20 +1,31 @@
 import { theme } from '@/src/shared/themes/theme';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+import { criarTreino, getTreinos } from '../services/treinoStorage';
+import { Exercicio } from '../types/exercicio';
+import { TempoCronometro } from '../types/tempos';
+
 
 type Props = {
+  treino: {
+    tempoPreparacao?: TempoCronometro,
+    tempoCiclos?: number,
+    listaDeExercicios?: Exercicio[]
+  },
   visible: boolean;
   onClose: () => void;
 };
-export function ModalGravarTreino({ visible, onClose }: Props){
-
-    const [text, onChangeText] = useState('');
+export function ModalGravarTreino({ treino, visible, onClose }: Props){
+    const router = useRouter();
+    const [nome, setNome] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
     const [keyboardOpen, setKeyboardOpen] = useState(false);
+    
 
     useEffect(() => {
+        //Controlando o teclado do celular para abrir e fechar
         const show = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardOpen(true);
         });
@@ -29,16 +40,31 @@ export function ModalGravarTreino({ visible, onClose }: Props){
         };
     }, []);
 
-    function onSalvar(){
-         if(!text || text.trim() === ''){
+    async function onSalvar(){
+
+        if(!nome || nome.trim() === ''){
             setErrorMessage('Não pode estar vazio !');
             return;
         }
 
-        if(text.length > 30){
+        if(nome.length > 30){
             setErrorMessage('Tamanho maior que 30 caracteres !');
             return;
         }
+        console.log('lista de exercicios',treino.listaDeExercicios);
+        console.log('tempos de ciclos',treino.tempoCiclos);
+        console.log('tempo preparação',treino.tempoPreparacao);
+        if(treino.listaDeExercicios && treino.tempoCiclos && treino.tempoPreparacao){
+            await criarTreino({
+                nome,
+                tempoPreparacao: treino.tempoPreparacao,
+                tempoCiclos: treino.tempoCiclos,
+                listaDeExercicios: treino.listaDeExercicios
+            });
+        }
+        
+        const lista = await getTreinos();
+        console.log('Treinos salvos:', lista);
 
         setErrorMessage('');
         onClose();
@@ -64,8 +90,8 @@ export function ModalGravarTreino({ visible, onClose }: Props){
                     ...styles.input,
                     borderColor: errorMessage ? '#ff4d4f' : '#000000'
                     }}
-                    onChangeText={onChangeText}
-                    value={text}
+                    onChangeText={setNome}
+                    value={nome}
                 />
                 {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
             </View>

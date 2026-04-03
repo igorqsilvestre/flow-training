@@ -1,6 +1,8 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
 import { ModalGravarTreino } from '@/src/shared/components/ModalGravarTreino';
 import { theme } from '@/src/shared/themes/theme';
+import { Exercicio } from '@/src/shared/types/exercicio';
+import { TempoCronometro } from '@/src/shared/types/tempos';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -16,6 +18,9 @@ export interface Data {
 export default function Index() {
   const insets = useSafeAreaInsets();
   const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
+  const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>();
+  const [tempoCiclos, setTempoCiclos] = useState<number>();
+  const [listaDeExercicios, setListaExercicios] = useState<Exercicio[]>();
 
   const data:Data[]  = [
     { id: '1', type: 'preparacao' },
@@ -23,9 +28,37 @@ export default function Index() {
     { id: '3', type: 'ciclos' },
   ]
 
+  function onAdicionarTreino(
+    tempoPreparacao?: TempoCronometro,
+    tempoCiclos?: number,
+    listaDeExercicios?: Exercicio[]
+  ) {
+
+    if(tempoPreparacao){
+      console.log(tempoPreparacao);
+      setTempoPrepacao(tempoPreparacao);
+    }
+
+    if(tempoCiclos){
+       console.log(tempoCiclos);
+      setTempoCiclos(tempoCiclos);
+    }
+
+    if(listaDeExercicios){
+       console.log(listaDeExercicios);
+      setListaExercicios(listaDeExercicios);
+    }
+
+  }
+
   return (
     <>
      {openTempGravarTreino && (<ModalGravarTreino
+      treino={{
+        tempoPreparacao,
+        tempoCiclos,
+        listaDeExercicios
+      }}
       visible={openTempGravarTreino}
       onClose={() => setOpenTempGravarTreino(false)}
      />)}
@@ -49,18 +82,18 @@ export default function Index() {
       renderItem={({item}) => {
         if(item.type === 'preparacao'){
           return (
-            <CardSmall tipo='preparacao'/>
+            <CardSmall adicionarTreino={onAdicionarTreino} tipo='preparacao'/>
           );
         }
 
         if(item.type === 'treino'){
           return (
-            <CardSmall tipo='treino'/>
+            <CardSmall adicionarTreino={onAdicionarTreino} tipo='treino'/>
           );
         }
 
         return (
-           <CardSmall tipo='ciclos'/>
+           <CardSmall adicionarTreino={onAdicionarTreino} tipo='ciclos'/>
         );
 
       }}

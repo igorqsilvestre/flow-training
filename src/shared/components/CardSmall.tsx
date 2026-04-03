@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { Exercicio } from "../types/Exercicio";
+import { Exercicio } from "../types/exercicio";
 import { TempoCronometro } from "../types/tempos";
 import { criarListaDeExercicios, editarListaDeExercicios } from "../utils/auxiliarDeTreino";
 import { CustomModalTempoCard } from "./CustomModalTempoCard";
@@ -14,9 +14,14 @@ const MAX_ITEMS_VISIBLE = 2;
 type TempoCronometroFormatado = `${number}:${number}${number}`;
 
 export interface IPropsCardSmall {
-  tipo: 'preparacao' | 'treino' | 'ciclos'
+  tipo: 'preparacao' | 'treino' | 'ciclos',
+  adicionarTreino: (
+    tempoPreparacao?: TempoCronometro,
+    tempoCiclos?: number,
+    listaDeExercicios?: Exercicio[]
+  ) => void;
 }
-export const CardSmall = ({tipo}: IPropsCardSmall) => {
+export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
   const [openTempCard, setOpenTempCard] = useState<boolean>(false);
   const [openTempExercicio, setOpenTempExercicio] = useState<boolean>(false);
 
@@ -53,19 +58,24 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
 
   const adicionandoValoresPadraoNoCard = (tipo: string) => {
      if(tipo === 'preparacao'){
+      
+      const tempoCronometro = {
+        minuto: 0,
+        dezenaDosSegundos: 1,
+        unidadeDosSegundos: 0
+      }
+
       setConfiguracoesCard({
         backgroundColor: theme.colors.preparation,
         title:'Preparação',
         tipoTempo: 'cronometro',
         configuracoesTempo:{
-          tempoCronometro: {
-          minuto: 0,
-          dezenaDosSegundos: 1,
-          unidadeDosSegundos: 0
-        },
-        tempoCronometroFormatado: `${0}:${10}`,
+          tempoCronometro,
+          tempoCronometroFormatado: `${0}:${10}`,
         }
       });
+
+      adicionarTreino(tempoCronometro,undefined,undefined);
       return;
     }
 
@@ -92,18 +102,23 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
         tempoExercicio,
         tempoDescanso
       ));
+
+      adicionarTreino(undefined,undefined,listaExercicios);
       return;
     }
 
     if(tipo === 'ciclos'){
+      const tempoRepeticao = 0
+
       setConfiguracoesCard({
         backgroundColor: theme.colors.cycles,
         title: 'Ciclos', 
         tipoTempo: 'repeticao',
         configuracoesTempo: {
-          tempoRepeticao: 0, 
+          tempoRepeticao 
         }
       });
+      adicionarTreino(undefined,tempoRepeticao,undefined);
       return;
     }
   }
@@ -120,6 +135,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
             tempoCronometroFormatado: `${tempo.minuto}:${tempo.dezenaDosSegundos}${tempo.unidadeDosSegundos}` as TempoCronometroFormatado
           }
         })
+        adicionarTreino(configuracoesCard.configuracoesTempo.tempoCronometro, undefined, undefined);
         setOpenTempCard(false);
         return;
       }
@@ -136,6 +152,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
            tempoRepeticao: quantidade
          }
         })
+        adicionarTreino(undefined, configuracoesCard.configuracoesTempo.tempoRepeticao, undefined);
         setOpenTempCard(false);
         return;
       }
@@ -184,6 +201,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
             unidadeDosSegundos:  tempoCronometro.tempoDescanso.unidadeDosSegundos,
           }
         ))
+          adicionarTreino(undefined, undefined, listaExercicios);
           setOpenTempCard(false);
           return;
         }
@@ -206,6 +224,7 @@ export const CardSmall = ({tipo}: IPropsCardSmall) => {
       tempoCronometro: tempoExercicio,
       tempoRepeticao: tempoRepeticao
     });
+    adicionarTreino(undefined, undefined, listaExercicios);
     setOpenTempExercicio(false);
   }
 
