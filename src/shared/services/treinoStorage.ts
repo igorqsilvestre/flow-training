@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Treino } from '../types/Treino';
-
+import { Treino } from '../types/treino';
 
 const KEY = '@treinos';
 
