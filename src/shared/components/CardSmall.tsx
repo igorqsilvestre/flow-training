@@ -14,14 +14,28 @@ const MAX_ITEMS_VISIBLE = 2;
 type TempoCronometroFormatado = `${number}:${number}${number}`;
 
 interface IPropsCardSmall {
-  tipo: 'preparacao' | 'treino' | 'ciclos',
+
+  tipo: 'preparacao' | 'treino' | 'ciclos';
+
+  tempoPreparacao?: TempoCronometro;
+  tempoCiclos?: number;
+  exercicios?: Exercicio[];
+
   adicionarTreino: (
     tempoPreparacao?: TempoCronometro,
     tempoCiclos?: number,
     listaDeExercicios?: Exercicio[]
   ) => void;
 }
-export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
+export const CardSmall = (
+  {
+    tempoPreparacao,
+    tempoCiclos,
+    exercicios, 
+    tipo,
+    adicionarTreino 
+  }: IPropsCardSmall) => {
+
   const [openTempCard, setOpenTempCard] = useState<boolean>(false);
   const [openTempExercicio, setOpenTempExercicio] = useState<boolean>(false);
 
@@ -53,17 +67,16 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
   }>();
 
   useEffect(()=>{
-
    adicionandoValoresPadraoNoCard(tipo);
   },[])
 
   const adicionandoValoresPadraoNoCard = (tipo: string) => {
      if(tipo === 'preparacao'){
-      
+
       const tempoCronometro = {
-        minuto: 0,
-        dezenaDosSegundos: 1,
-        unidadeDosSegundos: 0
+        minuto: tempoPreparacao?.minuto || 0,
+        dezenaDosSegundos: tempoPreparacao?.dezenaDosSegundos || 1,
+        unidadeDosSegundos: tempoPreparacao?.unidadeDosSegundos || 0
       }
 
       setConfiguracoesCard({
@@ -81,9 +94,20 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
     }
 
     if(tipo === 'treino'){
-      const tempoRepeticao = 4;
+      let lista = null;
+      const tempoRepeticao = exercicios?.length || 4;
       const tempoExercicio = { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 };
       const tempoDescanso = { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 };
+
+      if(!exercicios){
+        lista = criarListaDeExercicios(
+          tempoRepeticao,
+          tempoExercicio,
+          tempoDescanso
+        );
+      }else{
+        lista = exercicios;
+      }
 
       setConfiguracoesCard({
         backgroundColor: theme.colors.exercise,
@@ -97,20 +121,15 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
           }
         }
       });
+      
 
-      const exercicios = criarListaDeExercicios(
-        tempoRepeticao,
-        tempoExercicio,
-        tempoDescanso
-      )
-
-      setListaExercicios(exercicios);
+      setListaExercicios(lista);
       adicionarTreino(undefined,undefined,exercicios);
       return;
     }
 
     if(tipo === 'ciclos'){
-      const tempoRepeticao = 0
+      const tempoRepeticao = tempoCiclos || 0;
 
       setConfiguracoesCard({
         backgroundColor: theme.colors.cycles,

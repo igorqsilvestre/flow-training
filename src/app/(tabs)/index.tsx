@@ -1,33 +1,53 @@
 import { CardSmall } from '@/src/shared/components/CardSmall';
 import { ModalGravarTreino } from '@/src/shared/components/ModalGravarTreino';
+import { getTreino } from '@/src/shared/services/treinoStorage';
 import { theme } from '@/src/shared/themes/theme';
 import { Exercicio } from '@/src/shared/types/exercicio';
 import { TempoCronometro } from '@/src/shared/types/tempos';
 import { MaterialIcons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
-interface Data {
+interface DataCard {
   id: string,
   type: 'preparacao' | 'treino' | 'ciclos'
 }
 
 
-export default function Index(id?: string) {
+export default function Index(id: string | undefined) {
   const insets = useSafeAreaInsets();
   const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
+
   const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>();
   const [tempoCiclos, setTempoCiclos] = useState<number>();
   const [listaDeExercicios, setListaExercicios] = useState<Exercicio[]>();
 
-  const data:Data[]  = [
+  const dataCard:DataCard[]  = [
     { id: '1', type: 'preparacao' },
     { id: '2', type: 'treino' },
     { id: '3', type: 'ciclos' },
   ]
+
+    useFocusEffect(
+      useCallback(() => {
+       if(id){
+        carregarTreino(id);
+       }
+      }, [])
+    );
+
+    async function carregarTreino(id: string){
+        const treino = await getTreino(id);
+        if(treino){
+          setTempoPrepacao(treino.tempoPreparacao);
+          setTempoCiclos(treino.tempoCiclos);
+          setListaExercicios(listaDeExercicios);
+        }
+   
+    }
 
   function onAdicionarTreino(
     tempoPreparacao?: TempoCronometro,
@@ -59,7 +79,7 @@ export default function Index(id?: string) {
       onClose={() => setOpenTempGravarTreino(false)}
      />)}
      <FlatList
-      data={data}
+      data={dataCard}
       keyExtractor={(item) => item.id}
       contentContainerStyle={{
         paddingBottom: insets.bottom,
@@ -78,18 +98,30 @@ export default function Index(id?: string) {
       renderItem={({item}) => {
         if(item.type === 'preparacao'){
           return (
-            <CardSmall adicionarTreino={onAdicionarTreino} tipo='preparacao'/>
+            <CardSmall 
+              tempoPreparacao={tempoPreparacao}
+              adicionarTreino={onAdicionarTreino} 
+              tipo='preparacao'
+            />
           );
         }
 
         if(item.type === 'treino'){
           return (
-            <CardSmall adicionarTreino={onAdicionarTreino} tipo='treino'/>
+            <CardSmall 
+              exercicios={listaDeExercicios}
+              adicionarTreino={onAdicionarTreino} 
+              tipo='treino'
+            />
           );
         }
 
         return (
-           <CardSmall adicionarTreino={onAdicionarTreino} tipo='ciclos'/>
+           <CardSmall 
+            tempoCiclos={tempoCiclos}
+            adicionarTreino={onAdicionarTreino} 
+            tipo='ciclos'
+           />
         );
 
       }}
