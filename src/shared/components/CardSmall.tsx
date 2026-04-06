@@ -13,7 +13,7 @@ const MAX_ITEMS_VISIBLE = 2;
 
 type TempoCronometroFormatado = `${number}:${number}${number}`;
 
-export interface IPropsCardSmall {
+interface IPropsCardSmall {
   tipo: 'preparacao' | 'treino' | 'ciclos',
   adicionarTreino: (
     tempoPreparacao?: TempoCronometro,
@@ -53,6 +53,7 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
   }>();
 
   useEffect(()=>{
+
    adicionandoValoresPadraoNoCard(tipo);
   },[])
 
@@ -97,13 +98,14 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
         }
       });
 
-      setListaExercicios(criarListaDeExercicios(
+      const exercicios = criarListaDeExercicios(
         tempoRepeticao,
         tempoExercicio,
         tempoDescanso
-      ));
+      )
 
-      adicionarTreino(undefined,undefined,listaExercicios);
+      setListaExercicios(exercicios);
+      adicionarTreino(undefined,undefined,exercicios);
       return;
     }
 
@@ -188,7 +190,7 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
          
         });
 
-        setListaExercicios(criarListaDeExercicios(
+        const exercicios = criarListaDeExercicios(
           tempoRepeticao.quantidade,
           {
             minuto: tempoCronometro.tempoExercicio.minuto,
@@ -200,10 +202,12 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
             dezenaDosSegundos: tempoCronometro.tempoDescanso.dezenaDosSegundos,
             unidadeDosSegundos:  tempoCronometro.tempoDescanso.unidadeDosSegundos,
           }
-        ))
-          adicionarTreino(undefined, undefined, listaExercicios);
-          setOpenTempCard(false);
-          return;
+        );
+
+        setListaExercicios(exercicios);
+        adicionarTreino(undefined, undefined, exercicios);
+        setOpenTempCard(false);
+        return;
         }
       }
        setOpenTempCard(false);
@@ -217,14 +221,16 @@ export const CardSmall = ({ tipo,adicionarTreino }: IPropsCardSmall) => {
     tempoExercicio?: TempoCronometro,
     tempoRepeticao?: number
   ) => {
-    editarListaDeExercicios(listaExercicios, {
+    const exerciciosAtualizados = editarListaDeExercicios(listaExercicios, {
       sigla,
       id,
       tempoDescanso,
       tempoCronometro: tempoExercicio,
       tempoRepeticao: tempoRepeticao
     });
-    adicionarTreino(undefined, undefined, listaExercicios);
+
+    setListaExercicios(exerciciosAtualizados);
+    adicionarTreino(undefined, undefined, exerciciosAtualizados);
     setOpenTempExercicio(false);
   }
 

@@ -1,47 +1,82 @@
-import { getTreinos } from '@/src/shared/services/treinoStorage';
+import { ModalDelete } from '@/src/shared/components/ModalDelete';
+import { deleteTreino, getTreinos } from '@/src/shared/services/treinoStorage';
 import { theme } from '@/src/shared/themes/theme';
+import { Treino } from '@/src/shared/types/treino';
 import { MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MeusTreinos() {
 
+  const [listaTreinos, setListaTreinos] = useState<Treino[]>([]);
+  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarTreinos();
+    }, [])
+  );
 
   async function carregarTreinos(){
     const treinos = await getTreinos();
-    console.log(treinos);
+    setListaTreinos(treinos);
+  }
+
+  async function deletarTreino(id: string){
+    await deleteTreino(id);
+    setOpenModalDelete(false);
+    carregarTreinos();
   }
 
   return (
-    <>
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.buttonExercise}>
-          <Text style={styles.labelButtonExercise}>Treino peito e biceps</Text>
-          <MaterialIcons size={20} name="arrow-forward"/>
-        </TouchableOpacity>
-
-        
-
-        <TouchableOpacity style={styles.buttonDelete}>
-          <MaterialIcons size={20} name="delete"/>
-        </TouchableOpacity>
+  <FlatList
+    data={listaTreinos}
+    keyExtractor={(item) => item.id}
+    contentContainerStyle={{
+     paddingTop: 50,
+     gap: 20
+    }}
+    renderItem={({item}) => {
+      return ( 
+        <View style={styles.container}>
+          {openModalDelete && (
+            <ModalDelete
+            visible={openModalDelete}
+            onClose={() => setOpenModalDelete(false)}
+            onDelete={() => deletarTreino(item.id)}
+            />
+          )}
+          <TouchableOpacity style={styles.buttonExercise}>
+            <Text style={styles.labelButtonExercise}>{item.nome}</Text>
+            <MaterialIcons size={20} name="arrow-forward"/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonDelete} onPress={() => setOpenModalDelete(true)}>
+            <MaterialIcons size={20} name="delete"/>
+          </TouchableOpacity>
       </View>
-    </>
+      )
+    }}
+    >
+  </FlatList>
+  
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    gap: 30,
   },
   buttonExercise: {
     borderRadius: 10,
     backgroundColor: theme.colors.white,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
-    padding: 6
+    justifyContent: 'space-between',
+    padding: 6,
+    width: '80%'
+  
   },
   labelButtonExercise: {
     fontFamily: theme.fonts.family.bold,

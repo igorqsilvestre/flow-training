@@ -1,4 +1,4 @@
-import { Exercicio } from "../types/Exercicio";
+import { Exercicio } from "../types/exercicio";
 import { TempoCronometro, TempoCronometroFormatado } from "../types/tempos";
 
 function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undefined){
@@ -51,6 +51,7 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
       return;
     }
   });
+  return listaDeExercicios;
 }
 
 export function criarListaDeExercicios(

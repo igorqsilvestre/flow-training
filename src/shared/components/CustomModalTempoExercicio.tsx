@@ -2,7 +2,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { TempoCronometro } from "../utils/auxiliarDeTreino";
+
+import { TempoCronometro } from "../types/tempos";
 import ComboBox from "./Combo_temp";
 
 enum TipoCronometro {
@@ -125,8 +126,6 @@ export function CustomModalTempoExercicio(
 
 
   return (
-    <>
-
     <Modal transparent animationType="fade" visible={visible}>
         <View style={styles.overlay}>
             <View style={styles.modal}>
@@ -339,7 +338,6 @@ export function CustomModalTempoExercicio(
            
         </View>
     </Modal>
-    </>
   );
 }
 

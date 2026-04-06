@@ -2,8 +2,7 @@ import { theme } from '@/src/shared/themes/theme';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-
-import { criarTreino, getTreinos } from '../services/treinoStorage';
+import { checkNomeExists, criarTreino } from '../services/treinoStorage';
 import { Exercicio } from '../types/exercicio';
 import { TempoCronometro } from '../types/tempos';
 
@@ -18,10 +17,10 @@ type Props = {
   onClose: () => void;
 };
 export function ModalGravarTreino({ treino, visible, onClose }: Props){
-    const router = useRouter();
     const [nome, setNome] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [keyboardOpen, setKeyboardOpen] = useState(false);
+    const  router = useRouter();
     
 
     useEffect(() => {
@@ -51,11 +50,15 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
             setErrorMessage('Tamanho maior que 30 caracteres !');
             return;
         }
-        console.log('lista de exercicios',treino.listaDeExercicios);
-        console.log('tempos de ciclos',treino.tempoCiclos);
-        console.log('tempo preparação',treino.tempoPreparacao);
-        if(treino.listaDeExercicios && treino.tempoCiclos && treino.tempoPreparacao){
+
+        if(await checkNomeExists(nome)){
+            setErrorMessage('Nome de treino já existe !');
+            return;
+        }
+
+       if(treino.listaDeExercicios && treino.tempoCiclos !== undefined && treino.tempoCiclos !== null && treino.tempoPreparacao){
             await criarTreino({
+                id: Date.now().toString() + Math.random().toString(36).slice(2, 8),
                 nome,
                 tempoPreparacao: treino.tempoPreparacao,
                 tempoCiclos: treino.tempoCiclos,
@@ -63,9 +66,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
             });
         }
         
-        const lista = await getTreinos();
-        console.log('Treinos salvos:', lista);
-
+        router.push('/meusTreinos');
         setErrorMessage('');
         onClose();
     }

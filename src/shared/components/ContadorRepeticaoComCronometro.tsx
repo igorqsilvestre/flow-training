@@ -9,7 +9,7 @@ enum TipoCronometro {
   DESC = 'desc',
 }
 
-export interface IContadorRepeticaoComCronometroProps {
+interface IContadorRepeticaoComCronometroProps {
 
     tempoRepeticaoComCronometro?:{
         tempoRepeticao: number,

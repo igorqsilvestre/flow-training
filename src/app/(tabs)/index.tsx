@@ -10,12 +10,13 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
-export interface Data {
+interface Data {
   id: string,
   type: 'preparacao' | 'treino' | 'ciclos'
 }
 
-export default function Index() {
+
+export default function Index(id?: string) {
   const insets = useSafeAreaInsets();
   const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
   const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>();
@@ -33,22 +34,17 @@ export default function Index() {
     tempoCiclos?: number,
     listaDeExercicios?: Exercicio[]
   ) {
-
     if(tempoPreparacao){
-      console.log(tempoPreparacao);
       setTempoPrepacao(tempoPreparacao);
     }
 
-    if(tempoCiclos){
-       console.log(tempoCiclos);
+    if(tempoCiclos !== undefined && tempoCiclos !== null){
       setTempoCiclos(tempoCiclos);
     }
 
     if(listaDeExercicios){
-       console.log(listaDeExercicios);
       setListaExercicios(listaDeExercicios);
     }
-
   }
 
   return (

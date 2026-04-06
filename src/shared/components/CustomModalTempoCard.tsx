@@ -1,14 +1,11 @@
 import { Modal, StyleSheet, Text, View } from "react-native";
 import { theme } from "../themes/theme";
-import { TempoCronometro } from "../utils/auxiliarDeTreino";
+import { TempoCronometro } from "../types/tempos";
 import { ContadorCronometro } from "./ContadorCronometro";
 import { ContadorRepeticao } from "./ContadorRepeticao";
 import { ContadorRepeticaoComCronometro } from "./ContadorRepeticaoComCronometro";
 
-type TempoCronometroFormatado = `${number}:${number}${number}`;
-
-
-export interface ICustomModalTempoCardProps {
+interface ICustomModalTempoCardProps {
   title: string | undefined;
   chooseType?: boolean;
   tipoTempo: 'cronometro' | 'repeticao' | 'repeticaoComCronometro' | undefined;

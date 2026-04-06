@@ -60,11 +60,8 @@ export async function checkNomeExists(nome: string){
 export async function criarTreino(treino: Treino){
     const treinos = await getTreinos();
 
-    const id = Date.now().toString() + Math.random().toString(36).slice(2, 8);
-
     const novaLista = [...treinos, {
         ...treino,
-        id,
     }]; 
 
     await saveTreinos(novaLista);

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
-export interface IContadorCronometroProps {
+interface IContadorCronometroProps {
      tempoCronometro?: {
         minuto: number, 
         dezenaDosSegundos: number,
