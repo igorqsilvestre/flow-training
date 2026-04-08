@@ -73,7 +73,8 @@ export default function Index(id: string | undefined) {
       treino={{
         tempoPreparacao,
         tempoCiclos,
-        listaDeExercicios
+        listaDeExercicios,
+        id
       }}
       visible={openTempGravarTreino}
       onClose={() => setOpenTempGravarTreino(false)}

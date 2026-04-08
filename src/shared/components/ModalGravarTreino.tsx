@@ -2,7 +2,7 @@ import { theme } from '@/src/shared/themes/theme';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { checkNomeExists, criarTreino } from '../services/treinoStorage';
+import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
 import { Exercicio } from '../types/exercicio';
 import { TempoCronometro } from '../types/tempos';
 
@@ -11,7 +11,8 @@ type Props = {
   treino: {
     tempoPreparacao?: TempoCronometro,
     tempoCiclos?: number,
-    listaDeExercicios?: Exercicio[]
+    listaDeExercicios?: Exercicio[],
+    id: string | undefined
   },
   visible: boolean;
   onClose: () => void;
@@ -24,7 +25,11 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     
 
     useEffect(() => {
-        //Controlando o teclado do celular para abrir e fechar
+       controlarTecladoDigitacaoParaInput();
+    }, []);
+
+    function controlarTecladoDigitacaoParaInput(){
+         //Controlando o teclado do celular para abrir e fechar
         const show = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardOpen(true);
         });
@@ -37,7 +42,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
             show.remove();
             hide.remove();
         };
-    }, []);
+    }
 
     async function onSalvar(){
 
@@ -57,13 +62,23 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
         }
 
        if(treino.listaDeExercicios && treino.tempoCiclos !== undefined && treino.tempoCiclos !== null && treino.tempoPreparacao){
-            await criarTreino({
-                id: Date.now().toString() + Math.random().toString(36).slice(2, 8),
-                nome,
-                tempoPreparacao: treino.tempoPreparacao,
-                tempoCiclos: treino.tempoCiclos,
-                listaDeExercicios: treino.listaDeExercicios
-            });
+            if(treino.id){
+                await updateTreino({
+                    id: treino.id,
+                    listaDeExercicios: treino.listaDeExercicios,
+                    nome,
+                    tempoCiclos: treino.tempoCiclos,
+                    tempoPreparacao: treino.tempoPreparacao
+                })
+            }else{
+                await criarTreino({
+                    id: Date.now().toString() + Math.random().toString(36).slice(2, 8),
+                    nome,
+                    tempoPreparacao: treino.tempoPreparacao,
+                    tempoCiclos: treino.tempoCiclos,
+                    listaDeExercicios: treino.listaDeExercicios
+                });
+            }
         }
         
         router.push('/meusTreinos');
@@ -82,7 +97,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
         ]}>
             <View style={styles.modal}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Gravar Treino</Text>
+                <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
             </View>
             <View style={styles.content}>
                 <Text style={styles.label}>Nome</Text>
@@ -103,7 +118,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.footerAction} onPress={onSalvar}>
-                    <Text style={styles.footerTitle}>Salvar</Text>
+                    <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
                 </TouchableOpacity>
             </View>
             </View>

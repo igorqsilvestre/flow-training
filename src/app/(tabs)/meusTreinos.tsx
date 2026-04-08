@@ -3,7 +3,7 @@ import { deleteTreino, getTreinos } from '@/src/shared/services/treinoStorage';
 import { theme } from '@/src/shared/themes/theme';
 import { Treino } from '@/src/shared/types/treino';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -11,6 +11,7 @@ export default function MeusTreinos() {
 
   const [listaTreinos, setListaTreinos] = useState<Treino[]>([]);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
+  const  router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -27,6 +28,13 @@ export default function MeusTreinos() {
     await deleteTreino(id);
     setOpenModalDelete(false);
     carregarTreinos();
+  }
+
+  function irParaAPaginaInicialPassandoOId(id: string){
+     router.push({
+      pathname: '/',
+      params: {id}
+     });
   }
 
   return (
@@ -47,7 +55,7 @@ export default function MeusTreinos() {
             onDelete={() => deletarTreino(item.id)}
             />
           )}
-          <TouchableOpacity style={styles.buttonExercise}>
+          <TouchableOpacity style={styles.buttonExercise} onPress={() => irParaAPaginaInicialPassandoOId(item.id)}>
             <Text style={styles.labelButtonExercise}>{item.nome}</Text>
             <MaterialIcons size={20} name="arrow-forward"/>
           </TouchableOpacity>
