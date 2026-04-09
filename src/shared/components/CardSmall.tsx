@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native
 import { theme } from "../themes/theme";
 import { Exercicio } from "../types/exercicio";
 import { TempoCronometro } from "../types/tempos";
-import { criarListaDeExercicios, editarListaDeExercicios } from "../utils/auxiliarDeTreino";
+import { criarListaDeExercicios, editarListaDeExercicios, formatarCronometro } from "../utils/auxiliarDeTreino";
 import { CustomModalTempoCard } from "./CustomModalTempoCard";
 import { CustomModalTempoExercicio } from "./CustomModalTempoExercicio";
 
@@ -85,7 +85,7 @@ export const CardSmall = (
         tipoTempo: 'cronometro',
         configuracoesTempo:{
           tempoCronometro,
-          tempoCronometroFormatado: `${0}:${10}`,
+          tempoCronometroFormatado: formatarCronometro(tempoCronometro),
         }
       });
 
@@ -124,7 +124,7 @@ export const CardSmall = (
       
 
       setListaExercicios(lista);
-      adicionarTreino(undefined,undefined,exercicios);
+      adicionarTreino(undefined,undefined,lista);
       return;
     }
 

@@ -40,7 +40,7 @@ export async function getTreino(id:string) {
     }
 }
 
-export async function checkNomeExists(nome: string){
+export async function checkNomeExists(nome: string, id: string | undefined){
     try {
         const data = await AsyncStorage.getItem(KEY);
         if(!data) return false;
@@ -48,7 +48,8 @@ export async function checkNomeExists(nome: string){
         const listaDeTreinos = JSON.parse(data) as Treino[];
 
         return listaDeTreinos.some(t =>
-            t.nome.toUpperCase().trim() === nome.toUpperCase().trim()
+            t.nome.toUpperCase().trim() === nome.toUpperCase().trim() &&
+            t.id !== id
         );
 
     } catch (error) {

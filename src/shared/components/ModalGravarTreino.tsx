@@ -1,5 +1,5 @@
 import { theme } from '@/src/shared/themes/theme';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
@@ -12,6 +12,7 @@ type Props = {
     tempoPreparacao?: TempoCronometro,
     tempoCiclos?: number,
     listaDeExercicios?: Exercicio[],
+    nome?: string, 
     id: string | undefined
   },
   visible: boolean;
@@ -21,10 +22,10 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     const [nome, setNome] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [keyboardOpen, setKeyboardOpen] = useState(false);
-    const  router = useRouter();
     
 
     useEffect(() => {
+       setNome(treino.nome || '');
        controlarTecladoDigitacaoParaInput();
     }, []);
 
@@ -56,7 +57,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
             return;
         }
 
-        if(await checkNomeExists(nome)){
+        if(await checkNomeExists(nome, treino.id)){
             setErrorMessage('Nome de treino já existe !');
             return;
         }

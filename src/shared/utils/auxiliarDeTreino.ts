@@ -14,12 +14,16 @@ function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undef
  
 }
 
-function formatarCronometro(
-  minuto: number , 
-  dezenaDosSegundos:number , 
-  unidadeDosSegundos: number 
-): TempoCronometroFormatado {
-    return `${minuto}:${dezenaDosSegundos}${unidadeDosSegundos}`
+export function formatarCronometro({
+  minuto,
+  dezenaDosSegundos,
+  unidadeDosSegundos
+}: {
+  minuto: number;
+  dezenaDosSegundos: number;
+  unidadeDosSegundos: number;
+}): TempoCronometroFormatado {
+  return `${minuto}:${dezenaDosSegundos}${unidadeDosSegundos}`
 }
 
 
@@ -35,19 +39,11 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
 
       if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
         item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
-        item.tempoCronometroFormatado = formatarCronometro(
-          exercicioASerAtualizado.tempoCronometro!.minuto,
-          exercicioASerAtualizado.tempoCronometro!.dezenaDosSegundos,
-          exercicioASerAtualizado.tempoCronometro!.unidadeDosSegundos
-        );
+        item.tempoCronometroFormatado = formatarCronometro(exercicioASerAtualizado.tempoCronometro!);
       }
       
       item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
-      item.tempoDescansoFormatado = formatarCronometro(
-        exercicioASerAtualizado.tempoDescanso.minuto,
-        exercicioASerAtualizado.tempoDescanso.dezenaDosSegundos,
-        exercicioASerAtualizado.tempoDescanso.unidadeDosSegundos,
-      );
+      item.tempoDescansoFormatado = formatarCronometro( exercicioASerAtualizado.tempoDescanso);
       return;
     }
   });
@@ -75,8 +71,8 @@ export function criarListaDeExercicios(
         sigla: 'Time',
         tempoCronometro: tempoExercicio,
         tempoDescanso: tempoDescanso,
-        tempoCronometroFormatado: formatarCronometro(tempoExercicio.minuto, tempoExercicio.dezenaDosSegundos, tempoExercicio.unidadeDosSegundos),
-        tempoDescansoFormatado: formatarCronometro(tempoDescanso.minuto, tempoDescanso.dezenaDosSegundos, tempoDescanso.unidadeDosSegundos)
+        tempoCronometroFormatado: formatarCronometro(tempoExercicio),
+        tempoDescansoFormatado: formatarCronometro(tempoDescanso)
       }
     )
   }
