@@ -1,4 +1,4 @@
-import { TempoCronometro, TempoCronometroFormatado, TempoRepeticaoFormatada } from "./tempos";
+import { TempoCronometro } from "./tempos";
 
 export type Exercicio = {
   id: string;
@@ -6,7 +6,4 @@ export type Exercicio = {
   tempoRepeticao?: number;
   tempoCronometro?: TempoCronometro,
   tempoDescanso: TempoCronometro,
-  tempoCronometroFormatado?: TempoCronometroFormatado;
-  tempoDescansoFormatado?: TempoCronometroFormatado;
-  tempoRepeticaoFormatada?: TempoRepeticaoFormatada;
 }

@@ -1,14 +1,16 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 interface IContadorRepeticaoProps {
+    title: string | undefined;
     tempoRepeticao?: number;
+    visible: boolean;
     onAdicionar: ( quantidade: number ) => void;
 }
 
-export const ContadorRepeticao = ({tempoRepeticao, onAdicionar}: IContadorRepeticaoProps) => {
+export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar}: IContadorRepeticaoProps) => {
 
     const [quantidade, setQuantidade] = useState(0);
 
@@ -23,7 +25,12 @@ export const ContadorRepeticao = ({tempoRepeticao, onAdicionar}: IContadorRepeti
     }
 
     return (
-        <>
+    <Modal transparent animationType="fade" visible={visible}>
+        <View style={styles.overlay}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>{title}</Text>
+            </View>
+
             <View>
                 <View style={styles.containerTitle}>
                     <Text style={styles.title}>Vezes</Text>
@@ -34,9 +41,11 @@ export const ContadorRepeticao = ({tempoRepeticao, onAdicionar}: IContadorRepeti
                         <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                         </TouchableOpacity>
+
                         <View style={styles.containerContagemTempo}>
                             <Text style={styles.tempoLabel}>{quantidade}</Text>
                         </View>
+
                         <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
                             <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                         </TouchableOpacity>
@@ -47,13 +56,37 @@ export const ContadorRepeticao = ({tempoRepeticao, onAdicionar}: IContadorRepeti
             <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
                 <Text style={styles.footerTitle}>Adicionar</Text>
             </TouchableOpacity>    
-        </>
-      
+        </View>
+    </Modal>
     )
 }
 
 
 const styles = StyleSheet.create({
+    overlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modal: {
+        borderRadius: 10,
+        width: '95%',
+        backgroundColor: "#fff",
+        alignItems: 'center',
+        overflow: 'hidden',
+        gap: 30
+    },
+    header: {
+        backgroundColor: theme.colors.header,
+        width: '100%',
+        padding: 10
+    },
+     headerTitle: {
+        textAlign: 'center',
+        fontFamily: theme.fonts.family.bold,
+        fontSize: theme.fonts.sizes.medium
+    },
     containerTitle: {
         flexDirection: 'row',
         justifyContent: 'space-between',

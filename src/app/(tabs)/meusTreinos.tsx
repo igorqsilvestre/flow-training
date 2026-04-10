@@ -34,7 +34,6 @@ export default function MeusTreinos() {
 
   function irParaAPaginaDeEdiçaoPassandoOId(id: string){
     if (navegando) return; 
-
     setNavegando(true);
     router.push(`/editTreino/${id}`);
   }

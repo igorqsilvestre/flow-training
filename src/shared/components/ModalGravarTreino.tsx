@@ -25,6 +25,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     
 
     useEffect(() => {
+       console.log(treino.listaDeExercicios);
        setNome(treino.nome || '');
        controlarTecladoDigitacaoParaInput();
     }, []);
@@ -61,6 +62,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
             setErrorMessage('Nome de treino já existe !');
             return;
         }
+
 
        if(treino.listaDeExercicios && treino.tempoCiclos !== undefined && treino.tempoCiclos !== null && treino.tempoPreparacao){
             if(treino.id){

@@ -27,7 +27,7 @@ export type TemposExercicio = {
   }
 }
 
-export interface ICustomModalTempoProps {
+export interface IContadorExercicioProps {
   visible: boolean;
   configuracoesExercicio?: {
      id: string;
@@ -44,12 +44,12 @@ export interface ICustomModalTempoProps {
     tempoRepeticao?: number
   ) => void;
 }
-export function CustomModalTempoExercicio(
+export function ContadorExercicio(
     { 
         visible,
         configuracoesExercicio,
         onAdicionarTempoExercicio
-    }: ICustomModalTempoProps) {
+    }: IContadorExercicioProps) {
 
    //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);

@@ -34,23 +34,21 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
 
       if(exercicioASerAtualizado.tempoRepeticao){
         item.tempoRepeticao =  exercicioASerAtualizado.tempoRepeticao;
-        item.tempoRepeticaoFormatada = `${exercicioASerAtualizado.tempoRepeticao}x`;
       }
 
       if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
         item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
-        item.tempoCronometroFormatado = formatarCronometro(exercicioASerAtualizado.tempoCronometro!);
       }
       
       item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
-      item.tempoDescansoFormatado = formatarCronometro( exercicioASerAtualizado.tempoDescanso);
       return;
     }
   });
   return listaDeExercicios;
 }
 
-export function criarListaDeExercicios(
+
+export function criarListaDeExerciciosDeTempoCronometro(
   quantidadeDeExercicios:number, 
   tempoExercicio:TempoCronometro,
   tempoDescanso:TempoCronometro
@@ -71,8 +69,6 @@ export function criarListaDeExercicios(
         sigla: 'Time',
         tempoCronometro: tempoExercicio,
         tempoDescanso: tempoDescanso,
-        tempoCronometroFormatado: formatarCronometro(tempoExercicio),
-        tempoDescansoFormatado: formatarCronometro(tempoDescanso)
       }
     )
   }
