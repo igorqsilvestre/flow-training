@@ -65,26 +65,26 @@ export const CardSmall = (
   }>();
 
   useEffect(()=>{
-    console.log(exercicios);
    adicionandoValoresNoCard(tipo);
   },[])
 
   const adicionandoValoresNoCard = (
-    tipo: string
+    tipo: string,
+    resetar: boolean = false
   ) => {
-     
+   
     if(tipo === 'preparacao'){
       const tempo = {
-        minuto: tempoPreparacao?.minuto || 0,
-        dezenaDosSegundos: tempoPreparacao?.dezenaDosSegundos || 1,
-        unidadeDosSegundos: tempoPreparacao?.unidadeDosSegundos || 0
+        minuto: resetar == true ? 0 : tempoPreparacao?.minuto || 0,
+        dezenaDosSegundos: resetar == true ? 1 : tempoPreparacao?.dezenaDosSegundos || 1,
+        unidadeDosSegundos: resetar == true ? 0 : tempoPreparacao?.unidadeDosSegundos || 0
       }
       adicionarValorNoCardPreparacao(tempo);
       return;
     }
 
     if(tipo === 'treino'){
-      const tempoRepeticao = exercicios?.length || 4;
+      const tempoRepeticao = resetar == true ? 4 :  exercicios?.length || 4;
       const tempoExercicio = { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 };
       const tempoDescanso = { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 };
 
@@ -93,7 +93,7 @@ export const CardSmall = (
     }
 
     if(tipo === 'ciclos'){
-      const tempoRepeticao = tempoCiclos || 0;
+      const tempoRepeticao = resetar == true ? 0 : tempoCiclos || 0;
       adicionarValorNoCardCiclos(tempoRepeticao);
       return;
     }
@@ -130,17 +130,17 @@ export const CardSmall = (
           tempoRepeticao
         }
     });
-    let lista: Exercicio[] = [];
+    let lista = listaDeExercicios;
 
-    if(!exercicios){
-        lista = criarListaDeExerciciosDeTempoCronometro(
-          tempoRepeticao,
-          tempoExercicio,
-          tempoDescanso
-        );
-      }else{
-        lista = exercicios;
-      }
+    if(exercicios === lista || !exercicios){
+      lista = criarListaDeExerciciosDeTempoCronometro(
+      tempoRepeticao,
+      tempoExercicio,
+      tempoDescanso
+      );
+    }else{
+      lista = exercicios;
+    }
 
     setListaDeExercicios(lista);
     adicionarTreino(undefined,undefined,lista);
@@ -182,7 +182,7 @@ export const CardSmall = (
 
   return (
     <View style={ {backgroundColor: configuracoesCard?.backgroundColor, ...styles.card} }>
-      <TouchableOpacity style={styles.cardIconRefresh} onPress={() => adicionandoValoresNoCard(tipo)}>
+      <TouchableOpacity style={styles.cardIconRefresh} onPress={() => adicionandoValoresNoCard(tipo,true)}>
         <MaterialIcons size={30} name="restart-alt"  />
       </TouchableOpacity>
       <View>
@@ -202,6 +202,7 @@ export const CardSmall = (
             <ContadorCronometro 
               title={configuracoesCard?.title} 
               visible={openModalCard}
+              onClose={() => setOpenModalCard(false)}
               tempoCronometro={configuracoesCard?.configuracoesTempo.tempoCronometro} 
               onAdicionar={adicionarValorNoCardPreparacao}
             />
@@ -211,6 +212,7 @@ export const CardSmall = (
             <ContadorRepeticaoComCronometro 
               title={configuracoesCard?.title} 
               visible={openModalCard}
+              onClose={() => setOpenModalCard(false)}
               onAdicionar={adicionarValorNoCardTreino}
             />
           )} 
@@ -219,6 +221,7 @@ export const CardSmall = (
             <ContadorRepeticao 
               title={configuracoesCard?.title} 
               visible={openModalCard}
+              onClose={() => setOpenModalCard(false)}
               tempoRepeticao={configuracoesCard.configuracoesTempo.tempoRepeticao}
               onAdicionar={adicionarValorNoCardCiclos}
             />
@@ -226,7 +229,8 @@ export const CardSmall = (
 
           {openModalTempoExercicio && (
             <ContadorExercicio
-              visible={openModalTempoExercicio} 
+              visible={openModalTempoExercicio}
+              onClose={() => setOpenModalTempoExercicio(false)} 
               configuracoesExercicio={configuracoesExercicio}
               onAdicionarTempoExercicio={adicionarTempoExercicio} 
             />

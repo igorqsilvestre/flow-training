@@ -5,14 +5,15 @@ import { theme } from "../themes/theme";
 import { TempoCronometro } from "../types/tempos";
 
 interface IContadorCronometroProps {
-     title: string | undefined;
-     visible: boolean;
-     tempoCronometro?: TempoCronometro;
-     onAdicionar: ( 
+    title: string | undefined;
+    visible: boolean;
+    tempoCronometro?: TempoCronometro;
+    onAdicionar: ( 
        tempo: TempoCronometro
-     ) => void;
+    ) => void;
+    onClose: () => void;
 }
-export const ContadorCronometro = ({title,visible,tempoCronometro,onAdicionar}: IContadorCronometroProps) => {
+export const ContadorCronometro = ({title,visible,tempoCronometro,onAdicionar, onClose}: IContadorCronometroProps) => {
 
     const [minuto, setMinuto] = useState(0);
     const [dezenaDosSegundos, setDezenaDosSegundos] = useState(0);
@@ -96,9 +97,15 @@ export const ContadorCronometro = ({title,visible,tempoCronometro,onAdicionar}: 
                     </View> 
                 </View>
 
-                <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
-                    <Text style={styles.footerTitle}>Adicionar</Text>
-                </TouchableOpacity>
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
+                
+                    <TouchableOpacity style={styles.footerAction} onPress={handleAdicionar}>
+                        <Text style={styles.footerTitle}>Adicionar</Text>
+                    </TouchableOpacity> 
+                </View>
                      
                    
             </View>
@@ -145,7 +152,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60
+        paddingHorizontal: 56
     },
     containerContagemSeparator: {
         gap: 2,
@@ -157,14 +164,14 @@ const styles = StyleSheet.create({
         fontSize: theme.fonts.sizes.medium
     },
     containerContagemBotao: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -179,15 +186,21 @@ const styles = StyleSheet.create({
     },
     footer: {
         marginTop: 20,
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+    },
+    footerTitle: {
+        textAlign: 'center',
+        fontFamily: theme.fonts.family.regular,
+        fontSize: theme.fonts.sizes.medium
+    },
+    footerAction: {
         paddingVertical: 8,
-        paddingHorizontal: 20,
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header
     },
-  footerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.medium
-    }
 });

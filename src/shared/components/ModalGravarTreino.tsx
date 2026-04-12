@@ -3,18 +3,11 @@ import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
-import { Exercicio } from '../types/exercicio';
-import { TempoCronometro } from '../types/tempos';
+import { Treino } from '../types/treino';
 
 
 type Props = {
-  treino: {
-    tempoPreparacao?: TempoCronometro,
-    tempoCiclos?: number,
-    listaDeExercicios?: Exercicio[],
-    nome?: string, 
-    id: string | undefined
-  },
+  treino: Treino,
   visible: boolean;
   onClose: () => void;
 };
@@ -25,7 +18,6 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     
 
     useEffect(() => {
-       console.log(treino.listaDeExercicios);
        setNome(treino.nome || '');
        controlarTecladoDigitacaoParaInput();
     }, []);
@@ -189,7 +181,7 @@ const styles = StyleSheet.create({
     },
     footerAction: {
         paddingVertical: 8,
-        width: '25%',
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header

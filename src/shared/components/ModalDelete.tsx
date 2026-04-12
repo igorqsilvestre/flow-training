@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 20,
+        
     },
     footerTitle: {
         textAlign: 'center',
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     },
     footerAction: {
         paddingVertical: 8,
-        width: '25%',
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header

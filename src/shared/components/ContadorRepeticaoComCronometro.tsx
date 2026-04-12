@@ -13,13 +13,14 @@ enum TipoCronometro {
 interface IContadorRepeticaoComCronometroProps {
     title: string | undefined;
     visible: boolean;
-     onAdicionar: ( 
+    onAdicionar: ( 
         tempoRepeticao: number,
         tempoExercicio: TempoCronometro, 
         tempoDescanso: TempoCronometro, 
-     ) => void;
+    ) => void;
+    onClose: () => void;
 }
-export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar}: IContadorRepeticaoComCronometroProps) => {
+export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClose}: IContadorRepeticaoComCronometroProps) => {
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
@@ -192,9 +193,15 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar}: ICon
                 )}
        
            
-                <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
-                    <Text style={styles.footerTitle}>Adicionar</Text>
-                </TouchableOpacity>  
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.footerAction} onPress={handleAdicionar}>
+                        <Text style={styles.footerTitle}>Adicionar</Text>
+                    </TouchableOpacity> 
+                </View> 
             </View>
         </View>
     </Modal>
@@ -240,7 +247,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60
+        paddingHorizontal: 56
     },
     containerContagemSeparator: {
         gap: 2,
@@ -252,14 +259,14 @@ const styles = StyleSheet.create({
         fontSize: theme.fonts.sizes.medium
     },
     containerContagemBotao: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -274,15 +281,21 @@ const styles = StyleSheet.create({
     },
     footer: {
         marginTop: 20,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        marginBottom: 4,
-        borderRadius: 10,
-        backgroundColor: theme.colors.header
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
     },
   footerTitle: {
         textAlign: 'center',
         fontFamily: theme.fonts.family.regular,
         fontSize: theme.fonts.sizes.medium
-    }
+    },
+    footerAction: {
+        paddingVertical: 8,
+        width: '35%',
+        marginBottom: 4,
+        borderRadius: 10,
+        backgroundColor: theme.colors.header
+    },
 });

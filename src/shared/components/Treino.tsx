@@ -26,7 +26,7 @@ export default function Treino({ id }: Props) {
   
     const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>();
     const [tempoCiclos, setTempoCiclos] = useState<number>();
-    const [listaDeExercicios, setListaExercicios] = useState<Exercicio[]>();
+    const [listaDeExercicios, setListaExercicios] = useState<Exercicio[]>([]);
     const [nome, setNome] = useState('');
   
     const dataCard: DataCard []  = [

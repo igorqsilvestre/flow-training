@@ -43,12 +43,14 @@ export interface IContadorExercicioProps {
     tempoExercicio?: TempoCronometro,
     tempoRepeticao?: number
   ) => void;
+  onClose: () => void;
 }
 export function ContadorExercicio(
     { 
         visible,
         configuracoesExercicio,
-        onAdicionarTempoExercicio
+        onAdicionarTempoExercicio,
+        onClose
     }: IContadorExercicioProps) {
 
    //Crônometro do exercício
@@ -62,6 +64,8 @@ export function ContadorExercicio(
     const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(0);
   
     const [quantidade, setQuantidade] = useState(0);
+
+
     const [titulo, setTitulo] = useState('');
     const [ id, setId] = useState('');
     const [tipo, setTipo] = useState('');
@@ -70,6 +74,7 @@ export function ContadorExercicio(
       if(configuracoesExercicio){
         setId(configuracoesExercicio.id);
         setTitulo(configuracoesExercicio?.title);
+
         setDescansoMinuto(configuracoesExercicio.tempoDescanso.minuto);
         setDescansoDezenaDosSegundos(configuracoesExercicio.tempoDescanso.dezenaDosSegundos);
         setDescansoUnidadeDosSegundos(configuracoesExercicio.tempoDescanso.unidadeDosSegundos);
@@ -90,6 +95,7 @@ export function ContadorExercicio(
     },[]);
 
     function handleAdicionar(tipo: string){
+
         if(tipo == TipoCronometro.Time){
             onAdicionarTempoExercicio(
                 "Time",
@@ -199,7 +205,12 @@ export function ContadorExercicio(
                     </View>
 
                     <View style={{width: '100%'}}>
-                        <Text style={{...styles.title, textAlign: 'center', backgroundColor: theme.colors.header, marginBottom: 10}}>Descanso</Text>
+                        <Text style={{...styles.title, 
+                            textAlign: 'center', 
+                            backgroundColor: theme.colors.header, 
+                            marginBottom: 10, 
+                            paddingVertical: 4
+                            }}>Descanso</Text>
                         <View style={styles.containerTitle}>
                             <Text style={styles.title}>Minutos</Text>
                             <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
@@ -331,9 +342,15 @@ export function ContadorExercicio(
                     </>
                 )}
                 
-                <TouchableOpacity style={styles.footer} onPress={() => handleAdicionar(tipo)}>
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.footerAction} onPress={() => handleAdicionar(tipo)}>
                         <Text style={styles.footerTitle}>Adicionar</Text>
-                </TouchableOpacity>  
+                    </TouchableOpacity> 
+                </View>
             </View>
            
         </View>
@@ -380,7 +397,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60
+        paddingHorizontal: 56
     },
     containerContagemSeparator: {
         gap: 2,
@@ -392,14 +409,14 @@ const styles = StyleSheet.create({
         fontSize: theme.fonts.sizes.medium
     },
     containerContagemBotao: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -414,15 +431,21 @@ const styles = StyleSheet.create({
     },
     footer: {
         marginTop: 20,
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+    },
+    footerTitle: {
+        textAlign: 'center',
+        fontFamily: theme.fonts.family.regular,
+        fontSize: theme.fonts.sizes.medium
+    },
+    footerAction: {
         paddingVertical: 8,
-        paddingHorizontal: 20,
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header
     },
-  footerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.medium
-    }
 });

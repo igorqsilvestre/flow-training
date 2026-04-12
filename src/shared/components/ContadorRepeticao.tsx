@@ -8,9 +8,10 @@ interface IContadorRepeticaoProps {
     tempoRepeticao?: number;
     visible: boolean;
     onAdicionar: ( quantidade: number ) => void;
+    onClose: () => void;
 }
 
-export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar}: IContadorRepeticaoProps) => {
+export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar, onClose}: IContadorRepeticaoProps) => {
 
     const [quantidade, setQuantidade] = useState(0);
 
@@ -27,35 +28,44 @@ export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar}: I
     return (
     <Modal transparent animationType="fade" visible={visible}>
         <View style={styles.overlay}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>{title}</Text>
-            </View>
-
-            <View>
-                <View style={styles.containerTitle}>
-                    <Text style={styles.title}>Vezes</Text>
+            <View style={styles.modal}>
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>{title}</Text>
                 </View>
 
-                <View style={styles.containerContagem}>
-                    <View style={styles.containerContagemSeparator}>
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
-                            <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                        </TouchableOpacity>
+                <View>
+                    <View style={styles.containerTitle}>
+                        <Text style={styles.title}>Vezes</Text>
+                    </View>
 
-                        <View style={styles.containerContagemTempo}>
-                            <Text style={styles.tempoLabel}>{quantidade}</Text>
+                    <View style={styles.containerContagem}>
+                        <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{quantidade}</Text>
+                            </View>
+
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>
                         </View>
-
-                        <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
-                            <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                        </TouchableOpacity>
                     </View>
                 </View>
-            </View>
 
-            <TouchableOpacity style={styles.footer} onPress={handleAdicionar}>
-                <Text style={styles.footerTitle}>Adicionar</Text>
-            </TouchableOpacity>    
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.footerAction} onPress={handleAdicionar}>
+                        <Text style={styles.footerTitle}>Adicionar</Text>
+                    </TouchableOpacity> 
+                </View>
+                  
+            </View> 
         </View>
     </Modal>
     )
@@ -100,7 +110,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60,
+        paddingHorizontal: 56,
         
     },
     containerContagemSeparator: {
@@ -108,14 +118,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     containerContagemBotao: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -126,15 +136,21 @@ const styles = StyleSheet.create({
     },
      footer: {
         marginTop: 20,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        marginBottom: 4,
-        borderRadius: 10,
-        backgroundColor: theme.colors.header
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
     },
     footerTitle: {
         textAlign: 'center',
         fontFamily: theme.fonts.family.regular,
         fontSize: theme.fonts.sizes.medium
-    }
+    },
+    footerAction: {
+        paddingVertical: 8,
+        width: '35%',
+        marginBottom: 4,
+        borderRadius: 10,
+        backgroundColor: theme.colors.header
+    },
 });
