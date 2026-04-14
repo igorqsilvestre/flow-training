@@ -41,16 +41,22 @@ export default function Treino({ id }: Props) {
   
       useEffect(() => {
         if(!id){
-          const lista = criarListaDeExerciciosDeTempoCronometro(
-            4,
-            { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
-            { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
-          );
-          setListaExercicios(lista);
+          setarValoresIniciais();
           return
         };
         carregarTreino(id);
       },[id]);
+
+      function setarValoresIniciais(){
+        setTempoPrepacao({minuto: 0, dezenaDosSegundos: 1, unidadeDosSegundos: 0})
+        const lista = criarListaDeExerciciosDeTempoCronometro(
+            4,
+            { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
+            { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
+        );
+        setListaExercicios(lista);
+        setTempoCiclos(0);
+      }
 
       async function carregarTreino(id: string){
         const treino = await getTreino(id);

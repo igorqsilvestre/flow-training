@@ -1,5 +1,6 @@
 import { ModalDelete } from '@/src/shared/components/ModalDelete';
 import { deleteTreino, getTreinos } from '@/src/shared/services/treinoStorage';
+import { useTreinoStore } from '@/src/shared/store/treinoStore';
 import { theme } from '@/src/shared/themes/theme';
 import { Treino } from '@/src/shared/types/treino';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,12 +12,10 @@ export default function MeusTreinos() {
 
   const [listaTreinos, setListaTreinos] = useState<Treino[]>([]);
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false);
-  const [navegando, setNavegando] = useState(false);
 
 
   useFocusEffect(
     useCallback(() => {
-      setNavegando(false);
       carregarTreinos();
     }, [])
   );
@@ -33,9 +32,8 @@ export default function MeusTreinos() {
   }
 
   function irParaAPaginaDeEdiçaoPassandoOId(id: string){
-    if (navegando) return; 
-    setNavegando(true);
-    router.push(`/editTreino/${id}`);
+    useTreinoStore.getState().setTreinoId(id);
+    router.navigate("/(tabs)");
   }
 
   return (
