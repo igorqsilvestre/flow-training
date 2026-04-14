@@ -3,7 +3,7 @@ import { Href, router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
-export interface IPropsCardBig {
+interface IPropsCardBig {
     title: string;
     backgroundColor: string;
     buttonColor: string;

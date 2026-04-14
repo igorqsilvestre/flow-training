@@ -42,8 +42,7 @@ export default function TabLayout () {
             name="index"
             options={{ 
                 tabBarShowLabel: false,
-                tabBarIcon: () => <MaterialIcons size={23} name="house"  />,
-           
+                tabBarIcon: () => <MaterialIcons size={23} name="house"  />
             }}
         />
         <TopTabs.Screen

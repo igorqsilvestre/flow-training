@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { theme } from '../themes/theme';
 
-export interface ComboBoxOption {
+interface ComboBoxOption {
   label: string;
   valor: string;
 }

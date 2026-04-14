@@ -20,6 +20,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
   const [loaded, error] = useFonts({
     PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf'),
     PoppinsBoldItalic: require('../../assets/fonts/Poppins-BoldItalic.ttf'),

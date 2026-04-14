@@ -1,4 +1,4 @@
-import { Exercicio } from "../types/Exercicio";
+import { Exercicio } from "../types/exercicio";
 import { TempoCronometro, TempoCronometroFormatado } from "../types/tempos";
 
 function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undefined){
@@ -14,12 +14,16 @@ function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undef
  
 }
 
-function formatarCronometro(
-  minuto: number , 
-  dezenaDosSegundos:number , 
-  unidadeDosSegundos: number 
-): TempoCronometroFormatado {
-    return `${minuto}:${dezenaDosSegundos}${unidadeDosSegundos}`
+export function formatarCronometro({
+  minuto,
+  dezenaDosSegundos,
+  unidadeDosSegundos
+}: {
+  minuto: number;
+  dezenaDosSegundos: number;
+  unidadeDosSegundos: number;
+}): TempoCronometroFormatado {
+  return `${minuto}:${dezenaDosSegundos}${unidadeDosSegundos}`
 }
 
 
@@ -30,30 +34,21 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
 
       if(exercicioASerAtualizado.tempoRepeticao){
         item.tempoRepeticao =  exercicioASerAtualizado.tempoRepeticao;
-        item.tempoRepeticaoFormatada = `${exercicioASerAtualizado.tempoRepeticao}x`;
       }
 
       if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
         item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
-        item.tempoCronometroFormatado = formatarCronometro(
-          exercicioASerAtualizado.tempoCronometro!.minuto,
-          exercicioASerAtualizado.tempoCronometro!.dezenaDosSegundos,
-          exercicioASerAtualizado.tempoCronometro!.unidadeDosSegundos
-        );
       }
       
       item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
-      item.tempoDescansoFormatado = formatarCronometro(
-        exercicioASerAtualizado.tempoDescanso.minuto,
-        exercicioASerAtualizado.tempoDescanso.dezenaDosSegundos,
-        exercicioASerAtualizado.tempoDescanso.unidadeDosSegundos,
-      );
       return;
     }
   });
+  return listaDeExercicios;
 }
 
-export function criarListaDeExercicios(
+
+export function criarListaDeExerciciosDeTempoCronometro(
   quantidadeDeExercicios:number, 
   tempoExercicio:TempoCronometro,
   tempoDescanso:TempoCronometro
@@ -74,8 +69,6 @@ export function criarListaDeExercicios(
         sigla: 'Time',
         tempoCronometro: tempoExercicio,
         tempoDescanso: tempoDescanso,
-        tempoCronometroFormatado: formatarCronometro(tempoExercicio.minuto, tempoExercicio.dezenaDosSegundos, tempoExercicio.unidadeDosSegundos),
-        tempoDescansoFormatado: formatarCronometro(tempoDescanso.minuto, tempoDescanso.dezenaDosSegundos, tempoDescanso.unidadeDosSegundos)
       }
     )
   }

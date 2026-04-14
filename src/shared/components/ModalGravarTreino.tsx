@@ -1,20 +1,37 @@
 import { theme } from '@/src/shared/themes/theme';
+import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
+import { Exercicio } from '../types/exercicio';
+import { TempoCronometro } from '../types/tempos';
 
+type TreinoWithoutId = {
+    id?: string;
+    nome: string;
+    tempoPreparacao: TempoCronometro,
+    tempoCiclos: number,
+    listaDeExercicios: Exercicio[];
+}
 
 type Props = {
+  treino: TreinoWithoutId,
   visible: boolean;
   onClose: () => void;
 };
-export function ModalGravarTreino({ visible, onClose }: Props){
-
-    const [text, onChangeText] = useState('');
+export function ModalGravarTreino({ treino, visible, onClose }: Props){
+    const [nome, setNome] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-
     const [keyboardOpen, setKeyboardOpen] = useState(false);
+    
 
     useEffect(() => {
+       setNome(treino.nome || '');
+       controlarTecladoDigitacaoParaInput();
+    }, []);
+
+    function controlarTecladoDigitacaoParaInput(){
+         //Controlando o teclado do celular para abrir e fechar
         const show = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardOpen(true);
         });
@@ -27,19 +44,47 @@ export function ModalGravarTreino({ visible, onClose }: Props){
             show.remove();
             hide.remove();
         };
-    }, []);
+    }
 
-    function onSalvar(){
-         if(!text || text.trim() === ''){
+    async function onSalvar(){
+
+        if(!nome || nome.trim() === ''){
             setErrorMessage('Não pode estar vazio !');
             return;
         }
 
-        if(text.length > 30){
+        if(nome.length > 30){
             setErrorMessage('Tamanho maior que 30 caracteres !');
             return;
         }
 
+        if(await checkNomeExists(nome, treino.id)){
+            setErrorMessage('Nome de treino já existe !');
+            return;
+        }
+
+
+       if(treino.listaDeExercicios && treino.tempoCiclos !== undefined && treino.tempoCiclos !== null && treino.tempoPreparacao){
+            if(treino.id){
+                await updateTreino({
+                    id: treino.id,
+                    listaDeExercicios: treino.listaDeExercicios,
+                    nome,
+                    tempoCiclos: treino.tempoCiclos,
+                    tempoPreparacao: treino.tempoPreparacao
+                })
+            }else{
+                await criarTreino({
+                    id: Date.now().toString() + Math.random().toString(36).slice(2, 8),
+                    nome,
+                    tempoPreparacao: treino.tempoPreparacao,
+                    tempoCiclos: treino.tempoCiclos,
+                    listaDeExercicios: treino.listaDeExercicios
+                });
+            }
+        }
+        
+        router.push('/meusTreinos');
         setErrorMessage('');
         onClose();
     }
@@ -55,7 +100,7 @@ export function ModalGravarTreino({ visible, onClose }: Props){
         ]}>
             <View style={styles.modal}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Gravar Treino</Text>
+                <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
             </View>
             <View style={styles.content}>
                 <Text style={styles.label}>Nome</Text>
@@ -64,8 +109,8 @@ export function ModalGravarTreino({ visible, onClose }: Props){
                     ...styles.input,
                     borderColor: errorMessage ? '#ff4d4f' : '#000000'
                     }}
-                    onChangeText={onChangeText}
-                    value={text}
+                    onChangeText={setNome}
+                    value={nome}
                 />
                 {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
             </View>
@@ -76,7 +121,7 @@ export function ModalGravarTreino({ visible, onClose }: Props){
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.footerAction} onPress={onSalvar}>
-                    <Text style={styles.footerTitle}>Salvar</Text>
+                    <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
                 </TouchableOpacity>
             </View>
             </View>
@@ -144,7 +189,7 @@ const styles = StyleSheet.create({
     },
     footerAction: {
         paddingVertical: 8,
-        width: '25%',
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header

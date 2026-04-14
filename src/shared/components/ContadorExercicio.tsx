@@ -2,7 +2,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { TempoCronometro } from "../utils/auxiliarDeTreino";
+
+import { TempoCronometro } from "../types/tempos";
 import ComboBox from "./Combo_temp";
 
 enum TipoCronometro {
@@ -26,7 +27,7 @@ export type TemposExercicio = {
   }
 }
 
-export interface ICustomModalTempoProps {
+export interface IContadorExercicioProps {
   visible: boolean;
   configuracoesExercicio?: {
      id: string;
@@ -35,20 +36,22 @@ export interface ICustomModalTempoProps {
      tempoDescanso: TempoCronometro,
      tempoRepeticao?: number 
   }
-  onAdicionarTempoExercicio: (
+  onEditarTempoNoExercicio: (
     sigla: 'Time' | 'Rep',
     id:string,
     tempoDescanso: TempoCronometro,
     tempoExercicio?: TempoCronometro,
     tempoRepeticao?: number
   ) => void;
+  onClose: () => void;
 }
-export function CustomModalTempoExercicio(
+export function ContadorExercicio(
     { 
         visible,
         configuracoesExercicio,
-        onAdicionarTempoExercicio
-    }: ICustomModalTempoProps) {
+        onEditarTempoNoExercicio,
+        onClose
+    }: IContadorExercicioProps) {
 
    //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
@@ -61,6 +64,8 @@ export function CustomModalTempoExercicio(
     const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(0);
   
     const [quantidade, setQuantidade] = useState(0);
+
+
     const [titulo, setTitulo] = useState('');
     const [ id, setId] = useState('');
     const [tipo, setTipo] = useState('');
@@ -69,6 +74,7 @@ export function CustomModalTempoExercicio(
       if(configuracoesExercicio){
         setId(configuracoesExercicio.id);
         setTitulo(configuracoesExercicio?.title);
+
         setDescansoMinuto(configuracoesExercicio.tempoDescanso.minuto);
         setDescansoDezenaDosSegundos(configuracoesExercicio.tempoDescanso.dezenaDosSegundos);
         setDescansoUnidadeDosSegundos(configuracoesExercicio.tempoDescanso.unidadeDosSegundos);
@@ -89,8 +95,9 @@ export function CustomModalTempoExercicio(
     },[]);
 
     function handleAdicionar(tipo: string){
+
         if(tipo == TipoCronometro.Time){
-            onAdicionarTempoExercicio(
+            onEditarTempoNoExercicio(
                 "Time",
                  id,
                  {
@@ -108,7 +115,7 @@ export function CustomModalTempoExercicio(
         }
 
         if(tipo == TipoCronometro.Rep){
-            onAdicionarTempoExercicio(
+            onEditarTempoNoExercicio(
                 "Rep",
                 id,
                 {
@@ -125,8 +132,6 @@ export function CustomModalTempoExercicio(
 
 
   return (
-    <>
-
     <Modal transparent animationType="fade" visible={visible}>
         <View style={styles.overlay}>
             <View style={styles.modal}>
@@ -200,7 +205,12 @@ export function CustomModalTempoExercicio(
                     </View>
 
                     <View style={{width: '100%'}}>
-                        <Text style={{...styles.title, textAlign: 'center', backgroundColor: theme.colors.header, marginBottom: 10}}>Descanso</Text>
+                        <Text style={{...styles.title, 
+                            textAlign: 'center', 
+                            backgroundColor: theme.colors.header, 
+                            marginBottom: 10, 
+                            paddingVertical: 4
+                            }}>Descanso</Text>
                         <View style={styles.containerTitle}>
                             <Text style={styles.title}>Minutos</Text>
                             <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
@@ -332,14 +342,19 @@ export function CustomModalTempoExercicio(
                     </>
                 )}
                 
-                <TouchableOpacity style={styles.footer} onPress={() => handleAdicionar(tipo)}>
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.footerAction} onPress={() => handleAdicionar(tipo)}>
                         <Text style={styles.footerTitle}>Adicionar</Text>
-                </TouchableOpacity>  
+                    </TouchableOpacity> 
+                </View>
             </View>
            
         </View>
     </Modal>
-    </>
   );
 }
 
@@ -382,7 +397,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 60
+        paddingHorizontal: 56
     },
     containerContagemSeparator: {
         gap: 2,
@@ -394,14 +409,14 @@ const styles = StyleSheet.create({
         fontSize: theme.fonts.sizes.medium
     },
     containerContagemBotao: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: '#B8B8B8'
     },
     containerContagemTempo: {
-        width: 50,
-        padding: 4,
+        width: 60,
+        padding: 5,
         borderRadius: 5,
         backgroundColor: theme.colors.header,
     },
@@ -416,15 +431,21 @@ const styles = StyleSheet.create({
     },
     footer: {
         marginTop: 20,
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+    },
+    footerTitle: {
+        textAlign: 'center',
+        fontFamily: theme.fonts.family.regular,
+        fontSize: theme.fonts.sizes.medium
+    },
+    footerAction: {
         paddingVertical: 8,
-        paddingHorizontal: 20,
+        width: '35%',
         marginBottom: 4,
         borderRadius: 10,
         backgroundColor: theme.colors.header
     },
-  footerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.medium
-    }
 });
