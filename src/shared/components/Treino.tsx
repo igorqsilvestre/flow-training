@@ -7,12 +7,17 @@ import { getTreino } from "../services/treinoStorage";
 import { theme } from "../themes/theme";
 import { Exercicio } from "../types/exercicio";
 import { TempoCronometro } from "../types/tempos";
+import { criarListaDeExerciciosDeTempoCronometro } from "../utils/auxiliarDeTreino";
 import { CardSmall } from "./CardSmall";
 import { ModalGravarTreino } from "./ModalGravarTreino";
 
+export type TipoCard = 'preparacao' | 'treino' | 'ciclos';
+
 type DataCard = {
   id: string,
-  type: 'preparacao' | 'treino' | 'ciclos'
+  tipo: TipoCard
+  titulo: string;
+  backgroundColor: string;
 }
 
 type Props = {
@@ -23,22 +28,28 @@ export default function Treino({ id }: Props) {
  const insets = useSafeAreaInsets();
   
     const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
-  
-    const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>();
-    const [tempoCiclos, setTempoCiclos] = useState<number>();
+    const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>({minuto: 0, dezenaDosSegundos: 1, unidadeDosSegundos: 0});
+    const [tempoCiclos, setTempoCiclos] = useState<number>(0);
     const [listaDeExercicios, setListaExercicios] = useState<Exercicio[]>([]);
     const [nome, setNome] = useState('');
   
     const dataCard: DataCard []  = [
-      { id: '1', type: 'preparacao' },
-      { id: '2', type: 'treino' },
-      { id: '3', type: 'ciclos' },
+      { id: '1', tipo: 'preparacao',  titulo:'Preparação', backgroundColor: theme.colors.preparation },
+      { id: '2', tipo: 'treino',  titulo:'Quantidade de exercícios', backgroundColor: theme.colors.exercise },
+      { id: '3', tipo: 'ciclos',  titulo:'Ciclos', backgroundColor:  theme.colors.cycles },
     ]
   
       useEffect(() => {
-        if(id){
-          carregarTreino(id);
-        }
+        if(!id){
+          const lista = criarListaDeExerciciosDeTempoCronometro(
+            4,
+            { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
+            { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
+          );
+          setListaExercicios(lista);
+          return
+        };
+        carregarTreino(id);
       },[id]);
 
       async function carregarTreino(id: string){
@@ -46,27 +57,27 @@ export default function Treino({ id }: Props) {
         if(treino){
           setTempoPrepacao(treino.tempoPreparacao);
           setTempoCiclos(treino.tempoCiclos);
-          setListaExercicios(listaDeExercicios);
+          setListaExercicios(treino.listaDeExercicios);
           setNome(treino.nome);
         } 
     }
 
-    function onAdicionarTreino(
-      tempoPreparacao?: TempoCronometro,
-      tempoCiclos?: number,
-      listaDeExercicios?: Exercicio[]
-    ) {
-      if(tempoPreparacao){
-        setTempoPrepacao(tempoPreparacao);
-      }
+    function onAdicionarTempoPreparacao(
+      tempoPreparacao: TempoCronometro,
+    ){
+      setTempoPrepacao(tempoPreparacao);
+    }
 
-      if(tempoCiclos !== undefined && tempoCiclos !== null){
-        setTempoCiclos(tempoCiclos);
-      }
+    function onAdicionarListaDeExercicios(
+      listaDeExercicios: Exercicio[]
+    ){
+      setListaExercicios(listaDeExercicios);
+    }
 
-      if(listaDeExercicios){
-        setListaExercicios(listaDeExercicios);
-      }
+     function onAdicionarTempoCiclos(
+      tempoCiclos: number,
+    ){
+      setTempoCiclos(tempoCiclos);
     }
 
     return (
@@ -100,34 +111,20 @@ export default function Treino({ id }: Props) {
 
 
       renderItem={({item}) => {
-        if(item.type === 'preparacao'){
           return (
             <CardSmall 
               tempoPreparacao={tempoPreparacao}
-              adicionarTreino={onAdicionarTreino} 
-              tipo='preparacao'
-            />
-          );
-        }
-
-        if(item.type === 'treino'){
-          return (
-            <CardSmall 
               exercicios={listaDeExercicios}
-              adicionarTreino={onAdicionarTreino} 
-              tipo='treino'
+              tempoCiclos={tempoCiclos}
+              tipo={item.tipo}
+              titulo={item.titulo}
+              backgroundColor={item.backgroundColor}
+              adicionarTempoPreparacao={onAdicionarTempoPreparacao}
+              adicionarListaDeExercicios={onAdicionarListaDeExercicios}
+              adicionarTempoCiclos={onAdicionarTempoCiclos}
+             
             />
-          );
-        }
-
-        return (
-           <CardSmall 
-            tempoCiclos={tempoCiclos}
-            adicionarTreino={onAdicionarTreino} 
-            tipo='ciclos'
-           />
-        );
-
+          )
       }}
 
       ListFooterComponent={() => (

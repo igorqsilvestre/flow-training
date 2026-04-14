@@ -3,11 +3,19 @@ import { router } from 'expo-router';
 import { useEffect, useState } from "react";
 import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
-import { Treino } from '../types/treino';
+import { Exercicio } from '../types/exercicio';
+import { TempoCronometro } from '../types/tempos';
 
+type TreinoWithoutId = {
+    id?: string;
+    nome: string;
+    tempoPreparacao: TempoCronometro,
+    tempoCiclos: number,
+    listaDeExercicios: Exercicio[];
+}
 
 type Props = {
-  treino: Treino,
+  treino: TreinoWithoutId,
   visible: boolean;
   onClose: () => void;
 };

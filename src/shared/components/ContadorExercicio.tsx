@@ -36,7 +36,7 @@ export interface IContadorExercicioProps {
      tempoDescanso: TempoCronometro,
      tempoRepeticao?: number 
   }
-  onAdicionarTempoExercicio: (
+  onEditarTempoNoExercicio: (
     sigla: 'Time' | 'Rep',
     id:string,
     tempoDescanso: TempoCronometro,
@@ -49,7 +49,7 @@ export function ContadorExercicio(
     { 
         visible,
         configuracoesExercicio,
-        onAdicionarTempoExercicio,
+        onEditarTempoNoExercicio,
         onClose
     }: IContadorExercicioProps) {
 
@@ -97,7 +97,7 @@ export function ContadorExercicio(
     function handleAdicionar(tipo: string){
 
         if(tipo == TipoCronometro.Time){
-            onAdicionarTempoExercicio(
+            onEditarTempoNoExercicio(
                 "Time",
                  id,
                  {
@@ -115,7 +115,7 @@ export function ContadorExercicio(
         }
 
         if(tipo == TipoCronometro.Rep){
-            onAdicionarTempoExercicio(
+            onEditarTempoNoExercicio(
                 "Rep",
                 id,
                 {
