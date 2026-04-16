@@ -1,19 +1,19 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Href, router } from "expo-router";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
+import { formatarSegundosParaTexto } from "../utils/auxiliarTreinoEmExecucao";
+
 
 interface IPropsCardBig {
     title: string;
     backgroundColor: string;
     buttonColor: string;
     proximaRota: Href;
-    modoExercicio?: {
-        quantidadeTotal: number;
-    };
     modoDescanso?:boolean;
     modoContagem: {
-        tempoContagem?:string;
+        tempoContagemEmSegundos?: number;
         usarModoContagem: boolean;
     };
     modoRepeticao: {
@@ -24,6 +24,30 @@ interface IPropsCardBig {
 }
 
 export const CardBig = (props: IPropsCardBig) => {
+    const [backgroundColor, setbackgroundColor] = useState('');
+    const [title, setTitle] = useState('');
+    const [segundos, setSegundos] = useState(props.modoContagem.tempoContagemEmSegundos ?? 0);
+    const [rodando, setRodando] = useState(true);
+
+    useEffect(() => {
+        if (!rodando) return;
+
+        const interval = setInterval(() => {
+            setSegundos((prev) => {
+            if (prev <= 1) {
+                clearInterval(interval);
+
+                router.push(props.proximaRota);
+                return 0;
+            }
+
+            return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [rodando]);
+
     return (
       <View style={styles.container}>
         <View style={{backgroundColor: props.backgroundColor, ...styles.card}}>
@@ -34,30 +58,40 @@ export const CardBig = (props: IPropsCardBig) => {
             <View style={styles.cardContent}>
                     <Text style={styles.cardTitle}>{props.title}</Text>
                     {props.modoContagem.usarModoContagem && (
-                        <Text style={styles.cardSubtitle}>
-                            {props.modoContagem.tempoContagem}
-                            {!props.modoContagem.tempoContagem && '00:10'}
-                        </Text>
+                       <Text style={styles.cardSubtitle}>
+                            {formatarSegundosParaTexto(segundos)}
+                       </Text>
                     )}
+                    {/*Modo Exercício*/}
                     {props.modoContagem.usarModoContagem && !props.modoDescanso && (
-                        <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
+                         <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(true)}>
+                            <MaterialIcons size={20} name="play-arrow"  color={theme.colors.white}/>
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Continuar</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(false)}>
                             <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
                             <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
                         </TouchableOpacity>
+                      </View>
                     )}
 
+                    {/*Modo descanso*/}
                     {props.modoContagem.usarModoContagem && props.modoDescanso && (
                       <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
                          <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
                             <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>+20s</Text>
                         </TouchableOpacity>
+
                         <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
                             <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
-                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>Parar</Text>
-                        </TouchableOpacity>  
+                            <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
+                    {/*Modo repetição*/}
                     {props.modoRepeticao.usarModoRepeticao && (
                         <Text style={styles.cardSubtitle}>
                             {props.modoRepeticao.tempoRepeticao}
@@ -76,11 +110,11 @@ export const CardBig = (props: IPropsCardBig) => {
 
             <View style={styles.cardFooter}>
                     <TouchableOpacity onPress={() => router.back()}>
-                        <MaterialIcons size={23} name="fast-rewind"  />
+                        <MaterialIcons size={25} name="fast-rewind"  />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => router.push(props.proximaRota)}>
-                        <MaterialIcons size={23} name="fast-forward"  />
+                        <MaterialIcons size={25} name="fast-forward"  />
                     </TouchableOpacity>
             </View>
         </View>

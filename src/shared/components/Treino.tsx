@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getTreino } from "../services/treinoStorage";
+import { useTreinoExecucaoStore } from "../store/useTreinoExecucaoStore";
 import { theme } from "../themes/theme";
 import { Exercicio } from "../types/exercicio";
 import { TempoCronometro } from "../types/tempos";
 import { criarListaDeExerciciosDeTempoCronometro } from "../utils/auxiliarDeTreino";
 import { CardSmall } from "./CardSmall";
 import { ModalGravarTreino } from "./ModalGravarTreino";
+
 
 export type TipoCard = 'preparacao' | 'treino' | 'ciclos';
 
@@ -25,7 +27,9 @@ type Props = {
 };
 
 export default function Treino({ id }: Props) {
- const insets = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
+    
+    const iniciarTreino = useTreinoExecucaoStore(s => s.iniciarTreino);
   
     const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
     const [tempoPreparacao, setTempoPrepacao] = useState<TempoCronometro>({minuto: 0, dezenaDosSegundos: 1, unidadeDosSegundos: 0});
@@ -86,6 +90,19 @@ export default function Treino({ id }: Props) {
       setTempoCiclos(tempoCiclos);
     }
 
+    function handleIniciarTreino() {
+      const treino = {
+        id: id ?? Date.now().toString() + Math.random().toString(36).slice(2, 8),
+        nome,
+        tempoPreparacao,
+        tempoCiclos,
+        listaDeExercicios
+      };
+
+      iniciarTreino(treino);
+      router.push('/training');
+    }
+
     return (
     <>
      {openTempGravarTreino && (<ModalGravarTreino
@@ -135,7 +152,7 @@ export default function Treino({ id }: Props) {
 
       ListFooterComponent={() => (
         <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
-          <TouchableOpacity style={{alignItems: 'center'}} onPress={() => router.push('/training')} >
+          <TouchableOpacity style={{alignItems: 'center'}} onPress={handleIniciarTreino} >
             <MaterialIcons size={28} name="play-circle" color='#FFF'/>
             <Text style={styles.subtitle}>Iniciar</Text>
           </TouchableOpacity>
