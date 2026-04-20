@@ -1,6 +1,6 @@
 import { TempoCronometro } from "../types/tempos";
 
-export function tempoParaSegundos(tempo?: TempoCronometro) {
+export function formatarTempoParaSegundos(tempo?: TempoCronometro) {
   if (!tempo) return 0;
 
   const segundos = tempo.dezenaDosSegundos * 10 + tempo.unidadeDosSegundos;

@@ -1,7 +1,7 @@
 import { Exercicio } from "./exercicio";
 import { Treino } from "./treino";
 
-type FaseTreino = 'preparacao' | 'execucao' | 'descanso';
+export type FaseTreino = 'preparacao' | 'execucao' | 'descanso';
 
 export type TreinoEmExecucao = {
     treino?: Treino;
