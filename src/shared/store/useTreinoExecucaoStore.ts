@@ -46,6 +46,7 @@ export const useTreinoExecucaoStore = create<TreinoEmExecucao>((set,get) => ({
 
     get exercicioAtual() {
         const { treino, indexExercicio } = get();
+
         return treino?.listaDeExercicios[indexExercicio];
     }
 }))

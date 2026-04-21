@@ -21,7 +21,7 @@ interface IPropsCardBig {
 }
 
 export const CardBig = (props: IPropsCardBig) => {
-    const [segundos, setSegundos] = useState(0);
+    const [segundos, setSegundos] = useState(props.tempoCronometroEmSegundos);
     const [rodando, setRodando] = useState(true);
 
 
@@ -29,20 +29,17 @@ export const CardBig = (props: IPropsCardBig) => {
         if (!rodando) return;
 
         const interval = setInterval(() => {
-            setSegundos((prev) => {
-            if (prev <= 1) {
-                clearInterval(interval);
-                
-                props.irParaAproximaRota();
-                return 0;
-            }
-
-            return prev - 1;
-            });
+            setSegundos((prev) => prev ? prev - 1 : prev);
         }, 1000);
 
         return () => clearInterval(interval);
     }, [rodando]);
+
+    useEffect(() => {
+        if (segundos && segundos <= 0 ) {
+            props.irParaAproximaRota();
+        }
+    }, [segundos]);
 
     
 
@@ -57,24 +54,24 @@ export const CardBig = (props: IPropsCardBig) => {
 
                 <View style={styles.cardContent}>
                         <Text style={styles.cardTitle}>{props.title}</Text>
-                        {props.tempoCronometroEmSegundos && (
+                        {segundos !== undefined && (
                             <Text style={styles.cardSubtitle}>
-                                    {formatarSegundosParaTexto(segundos)}
+                                {formatarSegundosParaTexto(segundos)}
                             </Text>
                         )}
                         {/*Modo Exercício*/}
-                        {props.tipoTreino === 'execucao' && (
+                        {segundos !== undefined && props.tipoTreino !== 'descanso' && (
                             <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
-                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(true)}>
-                                <MaterialIcons size={20} name="play-arrow"  color={theme.colors.white}/>
-                                <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Continuar</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(true)}>
+                                    <MaterialIcons size={20} name="play-arrow"  color={theme.colors.white}/>
+                                    <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Continuar</Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(false)}>
-                                <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
-                                <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
-                            </TouchableOpacity>
-                        </View>
+                                <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(false)}>
+                                    <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
+                                    <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
+                                </TouchableOpacity>
+                            </View>
                         )}
 
                         {/*Modo descanso*/}
@@ -92,12 +89,12 @@ export const CardBig = (props: IPropsCardBig) => {
                         )}
 
                         {/*Modo repetição*/}
-                        {props.tempoRepeticao && (
+                        {props.tempoRepeticao !== undefined && (
                             <Text style={styles.cardSubtitle}>
-                                {props.tempoRepeticao}
+                                {props.tempoRepeticao}x 
                             </Text>
                         )}
-                        {props.tempoRepeticao && (
+                        {props.tempoRepeticao !== undefined && (
                             <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
                                 <MaterialIcons size={20} name="check"  color={theme.colors.white}/>
                                 <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>Concluído</Text>

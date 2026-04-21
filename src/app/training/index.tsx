@@ -10,11 +10,10 @@ export default function Index() {
 
     function irParaProximaRota(){
         execucaoStorage.proximaFase();
-        router.push('/training/exercicio');
+        router.push('/training/exercicio'); 
     }
 
     return (
-
        <CardBig
        tempoCronometroEmSegundos={
         formatarTempoParaSegundos(execucaoStorage.treino?.tempoPreparacao)

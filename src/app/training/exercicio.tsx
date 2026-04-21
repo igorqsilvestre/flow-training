@@ -1,19 +1,27 @@
 import { CardBig } from "@/src/shared/components/CardBig";
 import { useTreinoExecucaoStore } from "@/src/shared/store/useTreinoExecucaoStore";
 import { theme } from "@/src/shared/themes/theme";
+import { TempoCronometro } from "@/src/shared/types/tempos";
+import { formatarTempoParaSegundos } from "@/src/shared/utils/auxiliarTreinoEmExecucao";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Exercicio() {
 
      const execucaoStorage = useTreinoExecucaoStore(s => s);
+     const [tempoCronometro, setTempoCronometro] = useState<TempoCronometro | undefined>();
+     const [tempoRepeticao, setTempoRepeticao] = useState<number | undefined>();
 
      useEffect(() => {
-       const exercicio = execucaoStorage.exercicioAtual;
+       const exercicio = execucaoStorage?.exercicioAtual;
+
        if(exercicio) {
-       cont tempoCronometro = exercicio.
+        setTempoCronometro(exercicio.tempoCronometro);
+        setTempoRepeticao(exercicio.tempoRepeticao);
+       }else{
+        console.log('undefined');
        }
-     },[])
+     },[execucaoStorage.exercicioAtual])
 
      function irParaProximaRota(){
         execucaoStorage.proximaFase();
@@ -22,12 +30,13 @@ export default function Exercicio() {
 
     return (
         <CardBig
-            
-            title={'Exercicio 'execucaoStorage.indexExercicio+1'º'}
+            tipoTreino="execucao"
+            title={`Exercicio ${execucaoStorage.indexExercicio + 1}º`}
             backgroundColor={theme.colors.exercise}
             buttonColor={theme.colors.botaoExercise}
             irParaAproximaRota={irParaProximaRota}
-            tempoCronometroEmSegundos={execucaoStorage.treino.}
+            tempoCronometroEmSegundos={formatarTempoParaSegundos(tempoCronometro)}
+            tempoRepeticao={tempoRepeticao}
         />
     )
 }

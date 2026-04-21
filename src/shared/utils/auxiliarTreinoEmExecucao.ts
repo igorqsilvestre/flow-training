@@ -8,7 +8,7 @@ export function formatarTempoParaSegundos(tempo?: TempoCronometro) {
   return tempo.minuto * 60 + segundos;
 }
 
-function segundosParaTempo(segundos: number): TempoCronometro {
+/* function segundosParaTempo(segundos: number): TempoCronometro {
   const minuto = Math.floor(segundos / 60);
   const resto = segundos % 60;
 
@@ -17,7 +17,7 @@ function segundosParaTempo(segundos: number): TempoCronometro {
     dezenaDosSegundos: Math.floor(resto / 10),
     unidadeDosSegundos: resto % 10,
   };
-}
+} */
 
 export function formatarSegundosParaTexto(segundos: number) {
   const min = Math.floor(segundos / 60);
