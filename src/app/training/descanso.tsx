@@ -6,24 +6,54 @@ import { router } from "expo-router";
 
 export default function Descanso() {
 
-    const execucaoStorage = useTreinoExecucaoStore(s => s);
+    const useStore = useTreinoExecucaoStore();
+    const exercicioAtual = useStore.treino?.listaDeExercicios?.[useStore.indexExercicio];
     
     function irParaProximaRota(){
-        execucaoStorage.proximaFase();
-        router.push('/training/exercicio');
+        if(useStore.rotaAtual === 'descanso'){
+            if(useStore.treino){
+                const ultimoExercicio = useStore.indexExercicio >= useStore.treino?.listaDeExercicios?.length - 1;
+                const ultimoCiclo = useStore.cicloAtual >= useStore.treino.tempoCiclos;
+
+                if(!ultimoExercicio){
+                    const proximaRota = 'exercicio';
+
+                    useStore.setIndex(useStore.indexExercicio + 1);
+                    useStore.setProximaRota(proximaRota);
+
+                    router.push(`/training/${proximaRota}`); 
+
+                }else if (!ultimoCiclo){
+                    const proximaRota = 'exercicio';
+
+                    useStore.setIndex(0);
+                    useStore.setCicloAtual(useStore.cicloAtual + 1);
+                    useStore.setProximaRota(proximaRota);
+
+                    router.push(`/training/${proximaRota}`);  
+                }else{
+                    const proximaRota = 'finalizado'
+
+                    useStore.setTreino(undefined);
+                    useStore.setProximaRota(proximaRota);
+                    
+                    router.push(`/training/${proximaRota}`); 
+                }
+            }
+        }
     }
 
 
     return (
         <CardBig
-        tipoTreino="descanso"
-        tempoCronometroEmSegundos={
-            formatarTempoParaSegundos(execucaoStorage.exercicioAtual?.tempoDescanso)
-        }
-        title='Descanso' 
-        backgroundColor={theme.colors.cycles} 
-        buttonColor={theme.colors.botaoDescanso}
-        irParaAproximaRota={irParaProximaRota}
+            tipoTreino="descanso"
+            tempoCronometroEmSegundos={
+                formatarTempoParaSegundos(exercicioAtual?.tempoDescanso)
+            }
+            title='Descanso' 
+            backgroundColor={theme.colors.cycles} 
+            buttonColor={theme.colors.botaoDescanso}
+            irParaAproximaRota={irParaProximaRota}
         />
     )
 }

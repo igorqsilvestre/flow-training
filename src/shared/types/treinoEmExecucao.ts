@@ -1,18 +1,17 @@
-import { Exercicio } from "./exercicio";
 import { Treino } from "./treino";
 
-export type FaseTreino = 'preparacao' | 'execucao' | 'descanso';
+export type RotaTreino = 'index' | 'exercicio' | 'descanso' | 'finalizado';
 
 export type TreinoEmExecucao = {
     treino?: Treino;
 
     indexExercicio: number;
     cicloAtual: number,
-    fase: FaseTreino;
+    rotaAtual: RotaTreino;
 
     iniciarTreino: (treino: Treino) => void;
-    proximaFase: () => void;
-    proximoExercicio: () => void;
-
-    exercicioAtual: Exercicio | undefined;
+    setProximaRota: (rota: RotaTreino) => void;
+    setTreino: (treino: Treino | undefined) => void;
+    setIndex: (index: number) => void;
+    setCicloAtual: (ciclo: number) => void;
 }

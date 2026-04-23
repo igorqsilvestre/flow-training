@@ -3,16 +3,13 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { FaseTreino } from "../types/treinoEmExecucao";
 import { formatarSegundosParaTexto } from "../utils/auxiliarTreinoEmExecucao";
-
-
 
 interface IPropsCardBig {
     title: string;
     backgroundColor: string;
     buttonColor: string;
-    tipoTreino: FaseTreino;
+    tipoTreino: 'preparacao' | 'execucao' | 'descanso';
 
     quantidadeExercicios?: string;
     tempoCronometroEmSegundos?: number;
@@ -23,7 +20,6 @@ interface IPropsCardBig {
 export const CardBig = (props: IPropsCardBig) => {
     const [segundos, setSegundos] = useState(props.tempoCronometroEmSegundos);
     const [rodando, setRodando] = useState(true);
-
 
     useEffect(() => {
         if (!rodando) return;
@@ -36,10 +32,14 @@ export const CardBig = (props: IPropsCardBig) => {
     }, [rodando]);
 
     useEffect(() => {
-        if (segundos && segundos <= 0 ) {
+        if (segundos !== undefined && segundos <= 0 ) {
             props.irParaAproximaRota();
         }
     }, [segundos]);
+
+    function adicionarMais20SegundosNoTempo() {
+        setSegundos(prev => prev ? prev + 20 : prev);
+    }
 
     
 
@@ -59,7 +59,8 @@ export const CardBig = (props: IPropsCardBig) => {
                                 {formatarSegundosParaTexto(segundos)}
                             </Text>
                         )}
-                        {/*Modo Exercício*/}
+                        
+                        {/*Modo exercício - cronômetro*/}
                         {segundos !== undefined && props.tipoTreino !== 'descanso' && (
                             <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
                                 <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => setRodando(true)}>
@@ -74,30 +75,23 @@ export const CardBig = (props: IPropsCardBig) => {
                             </View>
                         )}
 
-                        {/*Modo descanso*/}
-                        {props.tipoTreino === 'descanso' && (
-                        <View style={{flexDirection: 'row', justifyContent: 'center', gap: 10 }}>
-                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                                <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>+20s</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
-                                <MaterialIcons size={20} name="stop"  color={theme.colors.white}/>
-                                <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body }}>Parar</Text>
-                            </TouchableOpacity>
-                        </View>
-                        )}
-
-                        {/*Modo repetição*/}
+                        {/*Modo exercício - repetição*/}
                         {props.tempoRepeticao !== undefined && (
                             <Text style={styles.cardSubtitle}>
                                 {props.tempoRepeticao}x 
                             </Text>
                         )}
                         {props.tempoRepeticao !== undefined && (
-                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}}>
+                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={() => props.irParaAproximaRota()}>
                                 <MaterialIcons size={20} name="check"  color={theme.colors.white}/>
                                 <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>Concluído</Text>
+                            </TouchableOpacity>
+                        )}
+
+                        {/*Modo descanso*/}
+                        {props.tipoTreino === 'descanso' && (
+                            <TouchableOpacity style={{backgroundColor: props.buttonColor, ...styles.cardButtonExercise}} onPress={adicionarMais20SegundosNoTempo}>
+                                <Text style={{color: theme.colors.white, fontFamily: theme.fonts.family.bold, fontSize: theme.fonts.sizes.body  }}>+20s</Text>
                             </TouchableOpacity>
                         )}
 
@@ -159,7 +153,7 @@ const styles = StyleSheet.create({
     cardButtonExercise: {
         width: 153,
         borderRadius: 10,
-        paddingVertical: 4,
+        paddingVertical: 6,
         gap: 5,
         flexDirection: 'row',
         justifyContent: 'center',

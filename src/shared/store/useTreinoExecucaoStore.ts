@@ -1,54 +1,24 @@
 import { create } from "zustand";
 import { TreinoEmExecucao } from "../types/treinoEmExecucao";
 
-export const useTreinoExecucaoStore = create<TreinoEmExecucao>((set,get) => ({
+export const useTreinoExecucaoStore = create<TreinoEmExecucao>((set) => ({
     treino: undefined,
     indexExercicio: 0,
-    cicloAtual: 1,
-    fase: 'preparacao',
+    cicloAtual: 0,
+    rotaAtual: 'index',
 
     iniciarTreino: (treino) => 
         set({
             treino,
             indexExercicio: 0,
-            cicloAtual: 1,
-            fase: 'preparacao'
+            cicloAtual: 0,
+            rotaAtual: 'index'
         }),
 
-    proximaFase: () => {
-        const { fase } = get();
-
-        if(fase === 'preparacao') set({ fase: 'execucao' });
-        else if (fase === 'execucao') set({ fase: 'descanso' })
-        else if (fase === 'descanso') {
-            get().proximoExercicio();
-        }
-    },
-
-    proximoExercicio: () => {
-        const { indexExercicio, treino  } = get();
-
-        if(!treino) return;
-
-        const ultimoExercicio = 
-            indexExercicio >= treino.listaDeExercicios.length - 1;
-        
-        if(!ultimoExercicio) {
-            set({
-                indexExercicio: indexExercicio + 1,
-                fase: 'preparacao'
-            });
-        } else {
-            //treino acabou
-            set({ treino: undefined });
-        }
-    },
-
-    get exercicioAtual() {
-        const { treino, indexExercicio } = get();
-
-        return treino?.listaDeExercicios[indexExercicio];
-    }
+    setProximaRota: (rota) => set({ rotaAtual: rota }),
+    setTreino: (treino) => set({treino: treino}),
+    setIndex: (index) => set({indexExercicio: index}),
+    setCicloAtual: (ciclo) => set({ cicloAtual: ciclo }),
 }))
 
 

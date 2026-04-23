@@ -31,16 +31,20 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
   listaDeExercicios.forEach((item) => {
     if(item.id === exercicioASerAtualizado.id){
       item.sigla = exercicioASerAtualizado.sigla;
+      item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
 
       if(exercicioASerAtualizado.tempoRepeticao){
         item.tempoRepeticao =  exercicioASerAtualizado.tempoRepeticao;
+        item.tempoCronometro = undefined;
+        return;
       }
 
       if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
         item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
+        item.tempoRepeticao = undefined;
+        return;
       }
       
-      item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
       return;
     }
   });
