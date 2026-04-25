@@ -6,7 +6,15 @@ import { router } from "expo-router";
 
 export default function Exercicio() {
 
-     const {treino, indexExercicio, rotaAtual, setProximaRota} = useTreinoExecucaoStore();
+     const {
+        treino, 
+        indexExercicio, 
+        rotaAtual, 
+        setProximaRota, 
+        setIndex,
+        cicloAtual,
+        setCicloAtual
+    } = useTreinoExecucaoStore();
      const exercicioAtual = treino?.listaDeExercicios?.[indexExercicio];
 
      function irParaProximaRota(){
@@ -17,6 +25,27 @@ export default function Exercicio() {
         }
      }
 
+    function voltarRota(){
+        if(rotaAtual === 'exercicio'){
+            if(indexExercicio === 0 && cicloAtual === 0){
+                const rota = 'index';
+                setProximaRota(rota);
+            }
+            else if(indexExercicio === 0 && cicloAtual > 0){
+                const rota = 'descanso';
+                setProximaRota(rota);
+                setIndex(indexExercicio + 1);
+                setCicloAtual(cicloAtual - 1);
+            }
+            else {
+                const rota = 'descanso';
+                setProximaRota(rota);
+                setIndex(indexExercicio - 1);
+            }
+            router.back();
+        }
+    }
+
     return (
         <CardBig
             tipoTreino="execucao"
@@ -24,6 +53,7 @@ export default function Exercicio() {
             backgroundColor={theme.colors.exercise}
             buttonColor={theme.colors.botaoExercise}
             irParaAproximaRota={irParaProximaRota}
+            voltarRota={voltarRota}
             tempoCronometroEmSegundos={exercicioAtual?.tempoCronometro 
                 ? formatarTempoParaSegundos(exercicioAtual?.tempoCronometro)
                 : undefined

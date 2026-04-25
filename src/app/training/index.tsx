@@ -17,6 +17,10 @@ export default function Index() {
         } 
     }
 
+    function voltarRota(){
+       router.back();
+    }
+
     return (
        <CardBig
        tempoCronometroEmSegundos={
@@ -27,6 +31,7 @@ export default function Index() {
        backgroundColor={theme.colors.preparation} 
        buttonColor={theme.colors.botaoPreparation}
        irParaAproximaRota={irParaProximaRota}
+       voltarRota={voltarRota}
        />
     )
 }

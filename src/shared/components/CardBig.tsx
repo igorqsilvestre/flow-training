@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import { formatarSegundosParaTexto } from "../utils/auxiliarTreinoEmExecucao";
@@ -15,32 +15,47 @@ interface IPropsCardBig {
     tempoCronometroEmSegundos?: number;
     tempoRepeticao?: number;
     irParaAproximaRota: () => void;
+    voltarRota: () => void;
 }
 
 export const CardBig = (props: IPropsCardBig) => {
-    const [segundos, setSegundos] = useState(props.tempoCronometroEmSegundos);
+    const [segundos, setSegundos] = useState<number | undefined>(undefined);
     const [rodando, setRodando] = useState(true);
 
+    useFocusEffect(
+        useCallback(() => {
+            setSegundos(props.tempoCronometroEmSegundos);
+            setRodando(true);
+
+            return () => {
+                setRodando(false);
+            };
+        }, [props.tempoCronometroEmSegundos])
+    );
+
+   useEffect(() => {
+    if (!rodando || segundos === 0) return;
+
+    const interval = setInterval(() => {
+        setSegundos((prev) => {
+            if (prev === undefined) return prev;
+            if (prev <= 1) return 0;
+            return prev - 1;
+        });
+    }, 1000);
+
+    return () => clearInterval(interval);
+    }, [rodando, segundos]);
+
     useEffect(() => {
-        if (!rodando) return;
-
-        const interval = setInterval(() => {
-            setSegundos((prev) => prev ? prev - 1 : prev);
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [rodando]);
-
-    useEffect(() => {
-        if (segundos !== undefined && segundos <= 0 ) {
-            props.irParaAproximaRota();
-        }
+    if (segundos === 0) {
+        props.irParaAproximaRota();
+    }
     }, [segundos]);
 
     function adicionarMais20SegundosNoTempo() {
-        setSegundos(prev => prev ? prev + 20 : prev);
+      setSegundos(prev => (prev !== undefined ? prev + 20 : prev));
     }
-
     
 
     return (
@@ -99,7 +114,7 @@ export const CardBig = (props: IPropsCardBig) => {
 
 
                 <View style={styles.cardFooter}>
-                        <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity onPress={() => props.voltarRota()}>
                             <MaterialIcons size={25} name="fast-rewind"  />
                         </TouchableOpacity>
 

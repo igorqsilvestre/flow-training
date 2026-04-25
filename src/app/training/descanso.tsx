@@ -17,32 +17,32 @@ export default function Descanso() {
 
                 if(!ultimoExercicio){
                     const proximaRota = 'exercicio';
-
                     useStore.setIndex(useStore.indexExercicio + 1);
                     useStore.setProximaRota(proximaRota);
-
                     router.push(`/training/${proximaRota}`); 
-
                 }else if (!ultimoCiclo){
                     const proximaRota = 'exercicio';
-
                     useStore.setIndex(0);
                     useStore.setCicloAtual(useStore.cicloAtual + 1);
                     useStore.setProximaRota(proximaRota);
-
                     router.push(`/training/${proximaRota}`);  
                 }else{
                     const proximaRota = 'finalizado'
-
                     useStore.setTreino(undefined);
                     useStore.setProximaRota(proximaRota);
-                    
                     router.push(`/training/${proximaRota}`); 
                 }
             }
         }
     }
 
+   function voltarRota(){
+        if(useStore.rotaAtual === 'descanso'){
+            const rota = 'exercicio';
+            useStore.setProximaRota(rota);
+            router.back();
+        }
+    }
 
     return (
         <CardBig
@@ -54,6 +54,7 @@ export default function Descanso() {
             backgroundColor={theme.colors.cycles} 
             buttonColor={theme.colors.botaoDescanso}
             irParaAproximaRota={irParaProximaRota}
+            voltarRota={voltarRota}
         />
     )
 }
