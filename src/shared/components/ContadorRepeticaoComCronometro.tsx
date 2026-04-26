@@ -24,13 +24,13 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClos
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
-    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(0);
-    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(0);
+    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(4);
+    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(5);
     
     //Crônometro do descanso
     const [descansoMinuto, setDescansoMinuto] = useState(0);
-    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(0);
-    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(0);
+    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(1);
+    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(5);
 
     const [quantidade, setQuantidade] = useState(0);
     const [tipo, setTipo] = useState<string | undefined>();
