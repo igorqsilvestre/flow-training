@@ -1,5 +1,6 @@
+import { playSound } from '@/src/shared/utils/audio';
 import { MaterialIcons } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
@@ -27,6 +28,10 @@ export const CardBig = (props: IPropsCardBig) => {
             setSegundos(props.tempoCronometroEmSegundos);
             setRodando(true);
 
+            if (props.tipoTreino === 'execucao') {
+                playSound(require('@/assets/sounds/start.mp3'));
+            }
+
             return () => {
                 setRodando(false);
             };
@@ -48,9 +53,16 @@ export const CardBig = (props: IPropsCardBig) => {
     }, [rodando, segundos]);
 
     useEffect(() => {
-    if (segundos === 0) {
-        props.irParaAproximaRota();
-    }
+        if (
+            segundos !== undefined &&
+            segundos > 0 &&
+            segundos <= 3
+        ) {
+            playSound(require('@/assets/sounds/beep.mp3'));
+        }
+        if (segundos === 0) {
+            props.irParaAproximaRota();
+        }
     }, [segundos]);
 
     function adicionarMais20SegundosNoTempo() {
@@ -61,11 +73,10 @@ export const CardBig = (props: IPropsCardBig) => {
     return (
         <View style={styles.container}>
             <View style={{backgroundColor: props.backgroundColor, ...styles.card}}>
-                {props.quantidadeExercicios && (
-                    <Text style={styles.titleExercise}>
-                        {props.quantidadeExercicios}
-                    </Text>
-                )}
+                <TouchableOpacity style={{alignSelf: 'flex-end', paddingHorizontal: 10, paddingVertical: 4}} onPress={() => router.replace('/(tabs)')}>
+                    <MaterialIcons size={28} name="cancel"/>
+                </TouchableOpacity>
+                
 
                 <View style={styles.cardContent}>
                         <Text style={styles.cardTitle}>{props.title}</Text>
@@ -115,11 +126,11 @@ export const CardBig = (props: IPropsCardBig) => {
 
                 <View style={styles.cardFooter}>
                         <TouchableOpacity onPress={() => props.voltarRota()}>
-                            <MaterialIcons size={25} name="fast-rewind"  />
+                            <MaterialIcons size={28} name="fast-rewind"  />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => props.irParaAproximaRota()}>
-                            <MaterialIcons size={25} name="fast-forward"  />
+                            <MaterialIcons size={28} name="fast-forward"  />
                         </TouchableOpacity>
                 </View>
             </View>
