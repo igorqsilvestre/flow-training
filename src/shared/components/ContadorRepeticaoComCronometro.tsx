@@ -1,26 +1,44 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
-import { TempoCronometro } from "../types/tempos";
+import { TemposExercicio } from "../types/tempos";
 import ComboBox from "./Combo_temp";
 
 enum TipoCronometro {
-  EXEC = 'exec',
-  DESC = 'desc',
+  Time = 'time',
+  Rep = 'rep',
 }
 
 interface IContadorRepeticaoComCronometroProps {
     title: string | undefined;
     visible: boolean;
-    onAdicionar: ( 
-        tempoRepeticao: number,
-        tempoExercicio: TempoCronometro, 
-        tempoDescanso: TempoCronometro, 
+     exercicioRecebido?: {
+        id: string;
+        tempos: TemposExercicio
+    },
+     onAdicionar?: ( 
+        sigla: 'Time' | 'Rep',
+        tempoQuantidade: number,
+        tempos: TemposExercicio 
+    ) => void;
+     onEditar?: (
+        sigla: 'Time' | 'Rep',
+        id:string,
+        tempos: TemposExercicio
     ) => void;
     onClose: () => void;
 }
-export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClose}: IContadorRepeticaoComCronometroProps) => {
+export const ContadorRepeticaoComCronometro = ({
+    title,
+    visible,
+    exercicioRecebido,
+    onAdicionar,
+    onEditar,
+    onClose
+}: IContadorRepeticaoComCronometroProps) => {
+
+    const [tipo, setTipo] = useState('');
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
@@ -32,29 +50,78 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClos
     const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(1);
     const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(5);
 
+    //Tempo de repetição
+    const [repeticao, setRepeticao] = useState(0);
+
+    //Quantidade de exercícios
     const [quantidade, setQuantidade] = useState(0);
-    const [tipo, setTipo] = useState<string | undefined>();
+
+    useEffect(() => {
+        if(!exercicioRecebido)return;
+
+        setDescansoMinuto(exercicioRecebido.tempos.tempoDescanso.minuto);
+        setDescansoDezenaDosSegundos(exercicioRecebido.tempos.tempoDescanso.dezenaDosSegundos);
+        setDescansoUnidadeDosSegundos(exercicioRecebido.tempos.tempoDescanso.unidadeDosSegundos);
+
+        if(exercicioRecebido.tempos.tempoExercicio){ 
+            setExercicioMinuto(exercicioRecebido?.tempos.tempoExercicio?.minuto);
+            setExercicioDezenaDosSegundos(exercicioRecebido?.tempos.tempoExercicio?.dezenaDosSegundos);
+            setExercicioUnidadeDosSegundos(exercicioRecebido?.tempos.tempoExercicio?.unidadeDosSegundos);
+            return;
+        };
+        if(exercicioRecebido.tempos.tempoRepeticao){
+            setRepeticao(exercicioRecebido.tempos.tempoRepeticao);
+        }
+        
+       
+    },[])
 
 
-     function handleAdicionar(){  
-        if(quantidade > 0){
-            onAdicionar(
-            quantidade
-            ,
-            {
-                minuto: exercicioMinuto,
-                dezenaDosSegundos: exercicioDezenaDosSegundos ,
-                unidadeDosSegundos: exercicioUnidadeDosSegundos
-            },
-            {
-                minuto: descansoMinuto,
-                dezenaDosSegundos: descansoDezenaDosSegundos,
-                unidadeDosSegundos: descansoUnidadeDosSegundos
-            },
-           
-        );
+    function handleAdicionar(tipo: string){
+        const sigla = tipo === TipoCronometro.Rep ? 'Rep' : 'Time';
+
+        const tempoExercicio =  tipo == TipoCronometro.Time ? {
+            minuto: exercicioMinuto,
+            dezenaDosSegundos: exercicioDezenaDosSegundos,
+            unidadeDosSegundos: exercicioUnidadeDosSegundos
+        } : undefined;
+
+        const tempoRepeticao = tipo == TipoCronometro.Rep ? repeticao : undefined;
+
+        if(exercicioRecebido && onEditar){
+            onEditar(
+                sigla,
+                exercicioRecebido.id,
+                {
+                    tempoDescanso: {
+                        minuto: descansoMinuto,
+                        dezenaDosSegundos: descansoDezenaDosSegundos,
+                        unidadeDosSegundos: descansoUnidadeDosSegundos
+                    },
+                    tempoExercicio,
+                    tempoRepeticao
+                }
+            )
+
+        }else{
+            if(onAdicionar){
+                onAdicionar(
+                    sigla,
+                    quantidade,
+                    {
+                        tempoDescanso: {
+                            minuto: descansoMinuto,
+                            dezenaDosSegundos: descansoDezenaDosSegundos,
+                            unidadeDosSegundos: descansoUnidadeDosSegundos
+                        },
+                        tempoExercicio,
+                        tempoRepeticao
+                    }
+                )
+            }
         }
     }
+
 
     return (
 
@@ -64,37 +131,177 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClos
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>{title}</Text>
                 </View>
-           
-                <View>
-                    <View style={styles.containerTitle}>
-                        <Text style={styles.title}>Vezes</Text>
-                    </View>
+                {!exercicioRecebido && (
+                    <View>
+                        <View style={styles.containerTitle}>
+                            <Text style={styles.title}>Vezes</Text>
+                        </View>
 
-                    <View style={styles.containerContagem}>
-                        <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
-                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                                </TouchableOpacity>
-                                <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{quantidade}</Text>
-                                </View>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade( prev => prev > 0 ? prev - 1 : 0)}>
-                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                                </TouchableOpacity>
+                        <View style={styles.containerContagem}>
+                            <View style={styles.containerContagemSeparator}>
+                                    <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
+                                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                                    </TouchableOpacity>
+                                    <View style={styles.containerContagemTempo}>
+                                        <Text style={styles.tempoLabel}>{quantidade}</Text>
+                                    </View>
+                                    <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade( prev => prev > 0 ? prev - 1 : 0)}>
+                                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                                    </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </View>
+                )}
+               
            
-                <ComboBox 
-                value={tipo}
-                onChange={setTipo}
-                valores={[
-                    {label:'Exercício', valor: TipoCronometro.EXEC}, {label:'Descanso', valor: TipoCronometro.DESC}
+               <ComboBox 
+                    value={tipo}
+                    onChange={setTipo}
+                    valores={[
+                    {label:'Tempo crônometro', valor: TipoCronometro.Time}, 
+                    {label:'Tempo repetição', valor: TipoCronometro.Rep},
                 ]}/>
            
 
-                {tipo && (
+               {tipo == TipoCronometro.Time && (
+                <>
                     <View style={{width: '100%'}}>
+                    <View style={styles.containerTitle}>
+                        <Text style={styles.title}>Minutos</Text>
+                        <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
+                    </View>
+
+                    <View style={styles.containerContagem}>
+                        {/*Minutos*/}
+                        <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{exercicioMinuto}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/*Separador*/}
+                        <View style={styles.containerContagemSeparator}>
+                            <Text style={styles.separatorText}>:</Text>
+                        </View>
+                    
+                        {/*Segundos*/}
+                        <View style={styles.containerContagemMinutos}>
+                            <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{exercicioDezenaDosSegundos}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>  
+                            </View>
+
+                            <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{exercicioUnidadeDosSegundos }</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setExercicioUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>  
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={{width: '100%'}}>
+                    <Text style={{...styles.title, 
+                        textAlign: 'center', 
+                        backgroundColor: theme.colors.header, 
+                        marginBottom: 10, 
+                        paddingVertical: 4
+                        }}>Descanso</Text>
+                    <View style={styles.containerTitle}>
+                        <Text style={styles.title}>Minutos</Text>
+                        <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
+                    </View>
+
+                    <View style={styles.containerContagem}>
+                        {/*Minutos*/}
+                        <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{descansoMinuto}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/*Separador*/}
+                        <View style={styles.containerContagemSeparator}>
+                            <Text style={styles.separatorText}>:</Text>
+                        </View>
+                    
+                        {/*Segundos*/}
+                        <View style={styles.containerContagemMinutos}>
+                            <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{descansoDezenaDosSegundos}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>  
+                            </View>
+
+                            <View style={styles.containerContagemSeparator}>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                            </TouchableOpacity>
+                            <View style={styles.containerContagemTempo}>
+                                <Text style={styles.tempoLabel}>{descansoUnidadeDosSegundos }</Text>
+                            </View>
+                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
+                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                            </TouchableOpacity>  
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                </>
+                                   
+                )}
+               
+                {tipo == TipoCronometro.Rep && (
+                <>
+                    <View>
+                        <View style={styles.containerContagem}>
+                            <View style={styles.containerContagemSeparator}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setRepeticao(prev => prev < 50 ? prev + 1 : 0)}>
+                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
+                                </TouchableOpacity>
+                                <View style={styles.containerContagemTempo}>
+                                    <Text style={styles.tempoLabel}>{repeticao}</Text>
+                                </View>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setRepeticao( prev => prev > 0 ? prev - 1 : 0)}>
+                                    <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{width: '100%'}}>
+                        <Text style={{...styles.title, textAlign: 'center', backgroundColor: theme.colors.header, marginBottom: 10}}>Descanso</Text>
                         <View style={styles.containerTitle}>
                             <Text style={styles.title}>Minutos</Text>
                             <Text style={{...styles.title, marginRight: 10}}>Segundos</Text>
@@ -103,28 +310,13 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClos
                         <View style={styles.containerContagem}>
                             {/*Minutos*/}
                             <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioMinuto((prev) => (prev < 50 ? prev + 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoMinuto((prev) => (prev < 50 ? prev + 1 : 0));
-                                    }
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev < 50 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{tipo === TipoCronometro.EXEC ? exercicioMinuto : descansoMinuto}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoMinuto}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioMinuto((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoMinuto((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-    
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoMinuto((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                                 </TouchableOpacity>
                             </View>
@@ -137,68 +329,41 @@ export const ContadorRepeticaoComCronometro = ({title,visible,onAdicionar,onClos
                             {/*Segundos*/}
                             <View style={styles.containerContagemMinutos}>
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
-                                    }
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{tipo === TipoCronometro.EXEC ? exercicioDezenaDosSegundos : descansoDezenaDosSegundos}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoDezenaDosSegundos}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoDezenaDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                                 </TouchableOpacity>  
                                 </View>
 
                                 <View style={styles.containerContagemSeparator}>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0));
-                                    }
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev < 5 ? prev + 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                                 </TouchableOpacity>
                                 <View style={styles.containerContagemTempo}>
-                                    <Text style={styles.tempoLabel}>{tipo === TipoCronometro.EXEC ? exercicioUnidadeDosSegundos : descansoUnidadeDosSegundos}</Text>
+                                    <Text style={styles.tempoLabel}>{descansoUnidadeDosSegundos }</Text>
                                 </View>
-                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => {
-                                    if(tipo === TipoCronometro.EXEC){
-                                        setExercicioUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-                                    if(tipo === TipoCronometro.DESC){
-                                        setDescansoUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0));
-                                    }
-                                }}>
+                                <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setDescansoUnidadeDosSegundos((prev) => (prev > 0 ? prev - 1 : 0))}>
                                     <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
                                 </TouchableOpacity>  
                                 </View>
                             </View>
                         </View>
                     </View>
+                </>
                 )}
-       
+                
            
                 <View style={styles.footer}>
                     <TouchableOpacity style={styles.footerAction} onPress={onClose}>
                         <Text style={styles.footerTitle}>Cancelar</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.footerAction} onPress={handleAdicionar}>
+                    <TouchableOpacity style={styles.footerAction} onPress={() => handleAdicionar(tipo)}>
                         <Text style={styles.footerTitle}>Adicionar</Text>
                     </TouchableOpacity> 
                 </View> 

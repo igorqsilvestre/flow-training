@@ -20,11 +20,12 @@ export const ContadorCronometro = ({title,visible,tempoCronometro,onAdicionar, o
     const [unidadeDosSegundos, setUnidadeDosSegundos] = useState(0);
 
     useEffect(() => {
-        if(tempoCronometro){
-            setMinuto(tempoCronometro.minuto);
-            setDezenaDosSegundos(tempoCronometro.dezenaDosSegundos);
-            setUnidadeDosSegundos(tempoCronometro.unidadeDosSegundos);
-        }
+        if(!tempoCronometro) return;
+
+        setMinuto(tempoCronometro.minuto);
+        setDezenaDosSegundos(tempoCronometro.dezenaDosSegundos);
+        setUnidadeDosSegundos(tempoCronometro.unidadeDosSegundos);
+        
     },[])
 
     function handleAdicionar(){

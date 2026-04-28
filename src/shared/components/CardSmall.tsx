@@ -3,10 +3,9 @@ import { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 import { Exercicio } from "../types/exercicio";
-import { TempoCronometro } from "../types/tempos";
+import { TempoCronometro, TemposExercicio } from "../types/tempos";
 import { criarListaDeExerciciosDeTempoCronometro, editarListaDeExercicios, formatarCronometro } from "../utils/auxiliarDeTreino";
 import { ContadorCronometro } from "./ContadorCronometro";
-import { ContadorExercicio } from "./ContadorExercicio";
 import { ContadorRepeticao } from "./ContadorRepeticao";
 import { ContadorRepeticaoComCronometro } from "./ContadorRepeticaoComCronometro";
 import { TipoCard } from "./Treino";
@@ -28,15 +27,17 @@ interface IPropsCardSmall {
 export const CardSmall = (props: IPropsCardSmall) => {
 
   const [openModalCard, setOpenModalCard] = useState<boolean>(false);  
-  const [openModalTempoExercicio, setOpenModalTempoExercicio] = useState<boolean>(false);
   const [listaExerciciosExpandida, setListaExerciciosExpandida] = useState(false);
+  const [modoExercicio, setModoExercicio] = useState(false);
 
   const [configuracoesExercicio, setConfiguracoesExercicio] = useState<{
     id:string;
     title: string;
-    tempoExercicio?: TempoCronometro,
-    tempoDescanso: TempoCronometro,
-    tempoRepeticao?: number
+    tempos: {
+      tempoExercicio?: TempoCronometro,
+      tempoDescanso: TempoCronometro,
+      tempoRepeticao?: number
+    }
   }>();
 
 
@@ -46,15 +47,18 @@ export const CardSmall = (props: IPropsCardSmall) => {
   }
 
   const adicionarValorNoCardTreino = (
-    tempoRepeticao: number,
-    tempoExercicio: TempoCronometro, 
-    tempoDescanso: TempoCronometro, 
+    sigla: 'Time' | 'Rep',
+    tempoQuantidade: number,
+    tempos: TemposExercicio 
   ) => {;
 
     const lista = criarListaDeExerciciosDeTempoCronometro(
-      tempoRepeticao,
-      tempoExercicio,
-      tempoDescanso
+      tempoQuantidade <= 0 ? 4 : tempoQuantidade,
+      sigla,
+      tempos.tempoDescanso,
+      tempos.tempoExercicio,
+      tempos.tempoRepeticao,
+      
     )
     props.adicionarListaDeExercicios(lista);
     setOpenModalCard(false);
@@ -68,21 +72,22 @@ export const CardSmall = (props: IPropsCardSmall) => {
   const editarTempoNoExercicio = (
     sigla: 'Time' | 'Rep',
     id: string,
-    tempoDescanso: TempoCronometro,
-    tempoExercicio?: TempoCronometro,
-    tempoRepeticao?: number
+    tempos: TemposExercicio
   ) => {
     if(props.exercicios){
       const exerciciosAtualizados = editarListaDeExercicios(props.exercicios, {
         sigla,
         id,
-        tempoDescanso,
-        tempoCronometro: tempoExercicio,
-        tempoRepeticao: tempoRepeticao
+        tempos: {
+          tempoDescanso: tempos.tempoDescanso,
+          tempoExercicio: tempos.tempoExercicio,
+          tempoRepeticao: tempos.tempoRepeticao
+        }
       });
       props.adicionarListaDeExercicios(exerciciosAtualizados) ;
     }
-    setOpenModalTempoExercicio(false);
+    setModoExercicio(false);
+    setOpenModalCard(false);
   }
 
   function mostrarOTempoNoCard(tipo: TipoCard): string{
@@ -101,6 +106,7 @@ export const CardSmall = (props: IPropsCardSmall) => {
     }else if(tipo === 'treino'){
      const lista = criarListaDeExerciciosDeTempoCronometro(
       4,
+      "Time",
       { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
       { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
      );
@@ -149,14 +155,16 @@ export const CardSmall = (props: IPropsCardSmall) => {
             />
           )} 
 
-          {openModalTempoExercicio && (
-            <ContadorExercicio
-              visible={openModalTempoExercicio}
-              onClose={() => setOpenModalTempoExercicio(false)} 
-              configuracoesExercicio={configuracoesExercicio}
-              onEditarTempoNoExercicio={editarTempoNoExercicio} 
+           {modoExercicio && configuracoesExercicio && openModalCard && (
+            <ContadorRepeticaoComCronometro 
+              title={configuracoesExercicio?.title}
+              exercicioRecebido={configuracoesExercicio} 
+              visible={modoExercicio}
+              onClose={() => setModoExercicio(false)}
+              onEditar={editarTempoNoExercicio}
             />
-          )}         
+          )} 
+        
 
           <TouchableOpacity onPress={() => setOpenModalCard(true)}>
             <MaterialIcons size={25} name="edit"  />
@@ -193,11 +201,13 @@ export const CardSmall = (props: IPropsCardSmall) => {
                         setConfiguracoesExercicio({
                           id: item.id,
                           title:`Exercício ${item.id}º`,
-                          tempoExercicio: item?.tempoCronometro,
-                          tempoRepeticao: item?.tempoRepeticao,
-                          tempoDescanso: item.tempoDescanso
+                          tempos: {
+                            tempoExercicio: item?.tempos.tempoExercicio,
+                            tempoRepeticao: item?.tempos.tempoRepeticao,
+                            tempoDescanso: item.tempos.tempoDescanso
+                          }
                         })
-                        setOpenModalTempoExercicio(true);
+                        setModoExercicio(true);
                       }}/>
                     </TouchableOpacity>
                   </View>
@@ -206,16 +216,16 @@ export const CardSmall = (props: IPropsCardSmall) => {
                       <Text style={styles.cardSubTitle}>{item.sigla}</Text>
                       <Text style={styles.cardSubTitle}>
                         {
-                          item.tempoRepeticao 
-                          ? item.tempoRepeticao + 'x' 
-                          : item.tempoCronometro 
-                            ? formatarCronometro(item.tempoCronometro)
+                          item.tempos.tempoRepeticao 
+                          ? item.tempos.tempoRepeticao  + 'x' 
+                          : item.tempos.tempoExercicio 
+                            ? formatarCronometro(item.tempos.tempoExercicio)
                             : ''
                         }
                       </Text>
                       <Text> - </Text>
                       <Text style={styles.cardSubTitle}>Des</Text>
-                      <Text style={styles.cardSubTitle}>{item.tempoDescanso ? formatarCronometro(item.tempoDescanso) : ''}</Text>
+                      <Text style={styles.cardSubTitle}>{item.tempos.tempoDescanso ? formatarCronometro(item.tempos.tempoDescanso) : ''}</Text>
                       
                   </View>
                 </View>

@@ -16,9 +16,10 @@ export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar, on
     const [quantidade, setQuantidade] = useState(0);
 
     useEffect(() => {
-        if(tempoRepeticao){
-            setQuantidade(tempoRepeticao);
-        }
+        if(!tempoRepeticao) return;
+        
+        setQuantidade(tempoRepeticao);
+        
     },[])
 
     function handleAdicionar(){
