@@ -1,93 +1,57 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../themes/theme";
 
 interface IContadorRepeticaoProps {
-    title: string | undefined;
-    tempoRepeticao?: number;
-    visible: boolean;
-    onAdicionar: ( quantidade: number ) => void;
+    labelBotao: string;
+    quantidade: number;
+    changeQuantidade: (quantidade:number) => void;
+    onAdicionar: () => void;
     onClose: () => void;
 }
 
-export const ContadorRepeticao = ({visible,title,tempoRepeticao, onAdicionar, onClose}: IContadorRepeticaoProps) => {
-
-    const [quantidade, setQuantidade] = useState(0);
-
-    useEffect(() => {
-        if(!tempoRepeticao) return;
-        
-        setQuantidade(tempoRepeticao);
-        
-    },[])
-
-    function handleAdicionar(){
-        onAdicionar(quantidade);
-    }
+export const ContadorRepeticao = ({labelBotao,quantidade,changeQuantidade, onAdicionar, onClose}: IContadorRepeticaoProps) => {
 
     return (
-    <Modal transparent animationType="fade" visible={visible}>
-        <View style={styles.overlay}>
-            <View style={styles.modal}>
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>{title}</Text>
-                </View>
+    <>
 
-                <View>
-                    <View style={styles.containerTitle}>
-                        <Text style={styles.title}>Vezes</Text>
-                    </View>
+        <View>
+            <View style={styles.containerTitle}>
+                <Text style={styles.title}>Vezes</Text>
+            </View>
 
-                    <View style={styles.containerContagem}>
-                        <View style={styles.containerContagemSeparator}>
-                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev < 50 ? prev + 1 : 0)}>
-                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
-                            </TouchableOpacity>
-
-                            <View style={styles.containerContagemTempo}>
-                                <Text style={styles.tempoLabel}>{quantidade}</Text>
-                            </View>
-
-                            <TouchableOpacity style={styles.containerContagemBotao} onPress={() => setQuantidade(prev => prev > 0 ? quantidade - 1 : 0)}>
-                                <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
-                        <Text style={styles.footerTitle}>Cancelar</Text>
+            <View style={styles.containerContagem}>
+                <View style={styles.containerContagemSeparator}>
+                    <TouchableOpacity style={styles.containerContagemBotao} onPress={() => changeQuantidade(quantidade < 50 ? quantidade + 1 : 0)}>
+                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="add" color='#000'/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.footerAction} onPress={handleAdicionar}>
-                        <Text style={styles.footerTitle}>Adicionar</Text>
-                    </TouchableOpacity> 
+                    <View style={styles.containerContagemTempo}>
+                        <Text style={styles.tempoLabel}>{quantidade}</Text>
+                    </View>
+
+                    <TouchableOpacity style={styles.containerContagemBotao} onPress={() => changeQuantidade(quantidade > 0 ? quantidade - 1 : 0)}>
+                        <MaterialIcons style={{alignSelf: 'center'}} size={24} name="remove" color='#000'/>
+                    </TouchableOpacity>
                 </View>
-                  
-            </View> 
+            </View>
         </View>
-    </Modal>
+
+        <View style={styles.footer}>
+            <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                <Text style={styles.footerTitle}>Cancelar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.footerAction} onPress={() => onAdicionar()}>
+                <Text style={styles.footerTitle}>{labelBotao}</Text>
+            </TouchableOpacity> 
+        </View>
+    </>   
     )
 }
 
 
 const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modal: {
-        borderRadius: 10,
-        width: '95%',
-        backgroundColor: "#fff",
-        alignItems: 'center',
-        overflow: 'hidden',
-        gap: 30
-    },
     header: {
         backgroundColor: theme.colors.header,
         width: '100%',

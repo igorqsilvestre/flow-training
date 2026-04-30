@@ -6,7 +6,6 @@ import { Exercicio } from "../types/exercicio";
 import { TempoCronometro, TemposExercicio } from "../types/tempos";
 import { criarListaDeExerciciosDeTempoCronometro, editarListaDeExercicios, formatarCronometro } from "../utils/auxiliarDeTreino";
 import { ContadorCronometro } from "./ContadorCronometro";
-import { ContadorRepeticao } from "./ContadorRepeticao";
 import { ContadorRepeticaoComCronometro } from "./ContadorRepeticaoComCronometro";
 import { TipoCard } from "./Treino";
 
@@ -141,17 +140,17 @@ export const CardSmall = (props: IPropsCardSmall) => {
               title={props?.titulo} 
               visible={openModalCard}
               onClose={() => setOpenModalCard(false)}
-              onAdicionar={adicionarValorNoCardTreino}
+              onAdicionarQuantidadeComCronometroOuRepeticao={adicionarValorNoCardTreino}
             />
           )} 
 
           {props?.tipo === 'ciclos' &&  openModalCard && (
-            <ContadorRepeticao 
+            <ContadorRepeticaoComCronometro 
               title={props?.titulo} 
               visible={openModalCard}
               onClose={() => setOpenModalCard(false)}
-              tempoRepeticao={props?.tempoCiclos}
-              onAdicionar={adicionarValorNoCardCiclos}
+              quantidadeRecebida={props.tempoCiclos}
+              onAdicionarQuantidade={adicionarValorNoCardCiclos}
             />
           )} 
 
@@ -161,7 +160,7 @@ export const CardSmall = (props: IPropsCardSmall) => {
               exercicioRecebido={configuracoesExercicio} 
               visible={modoExercicio}
               onClose={() => setModoExercicio(false)}
-              onEditar={editarTempoNoExercicio}
+              onEditarExercicio={editarTempoNoExercicio}
             />
           )} 
         
