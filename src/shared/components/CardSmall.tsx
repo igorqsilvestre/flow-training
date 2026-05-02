@@ -52,7 +52,7 @@ export const CardSmall = (props: IPropsCardSmall) => {
   ) => {;
 
     const lista = criarListaDeExerciciosDeTempoCronometro(
-      tempoQuantidade <= 0 ? 4 : tempoQuantidade,
+      tempoQuantidade,
       sigla,
       tempos.tempoDescanso,
       tempos.tempoExercicio,
@@ -86,7 +86,6 @@ export const CardSmall = (props: IPropsCardSmall) => {
       props.adicionarListaDeExercicios(exerciciosAtualizados) ;
     }
     setModoExercicio(false);
-    setOpenModalCard(false);
   }
 
   function mostrarOTempoNoCard(tipo: TipoCard): string{
@@ -106,8 +105,9 @@ export const CardSmall = (props: IPropsCardSmall) => {
      const lista = criarListaDeExerciciosDeTempoCronometro(
       4,
       "Time",
+      { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 },
       { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
-      { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
+     
      );
      props.adicionarListaDeExercicios(lista);
     }else{
@@ -144,7 +144,7 @@ export const CardSmall = (props: IPropsCardSmall) => {
             />
           )} 
 
-          {props?.tipo === 'ciclos' &&  openModalCard && (
+          {props?.tipo === 'ciclos' && !modoExercicio && openModalCard && (
             <ContadorRepeticaoComCronometro 
               title={props?.titulo} 
               visible={openModalCard}
@@ -154,7 +154,7 @@ export const CardSmall = (props: IPropsCardSmall) => {
             />
           )} 
 
-           {modoExercicio && configuracoesExercicio && openModalCard && (
+           {modoExercicio && configuracoesExercicio && (
             <ContadorRepeticaoComCronometro 
               title={configuracoesExercicio?.title}
               exercicioRecebido={configuracoesExercicio} 

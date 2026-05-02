@@ -26,7 +26,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     
 
     useEffect(() => {
-       setNome(treino.nome || '');
+       setNome(treino.nome);
        controlarTecladoDigitacaoParaInput();
     }, []);
 

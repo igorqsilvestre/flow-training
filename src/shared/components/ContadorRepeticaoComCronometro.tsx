@@ -50,13 +50,13 @@ export const ContadorRepeticaoComCronometro = ({
 
     //Crônometro do exercício
     const [exercicioMinuto, setExercicioMinuto] = useState(0);
-    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(4);
-    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(5);
+    const [exercicioDezenaDosSegundos, setExercicioDezenaDosSegundos] = useState(0);
+    const [exercicioUnidadeDosSegundos, setExercicioUnidadeDosSegundos] = useState(0);
     
     //Crônometro do descanso
     const [descansoMinuto, setDescansoMinuto] = useState(0);
-    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(1);
-    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(5);
+    const [descansoDezenaDosSegundos, setDescansoDezenaDosSegundos] = useState(0);
+    const [descansoUnidadeDosSegundos, setDescansoUnidadeDosSegundos] = useState(0);
 
     //Tempo de repetição
     const [repeticao, setRepeticao] = useState(0);
@@ -65,8 +65,6 @@ export const ContadorRepeticaoComCronometro = ({
     const [quantidade, setQuantidade] = useState(0);
 
     useEffect(() => {
-
-        if(!exercicioRecebido || !quantidadeRecebida)return;
 
         if(exercicioRecebido){
             setDescansoMinuto(exercicioRecebido.tempos.tempoDescanso.minuto);
@@ -86,7 +84,7 @@ export const ContadorRepeticaoComCronometro = ({
         }
 
         if(quantidadeRecebida){
-            setQuantidade(quantidade);
+            setQuantidade(quantidadeRecebida);
         }
         
        
@@ -176,7 +174,7 @@ export const ContadorRepeticaoComCronometro = ({
                     <Text style={styles.headerTitle}>{title}</Text>
                 </View>
                 
-                {!exercicioRecebido && (
+                {!exercicioRecebido && !proximo && (
                     <ContadorRepeticao 
                         labelBotao={onAdicionarQuantidade ? 'Adicionar' : 'Próximo'}
                         quantidade={quantidade}
@@ -196,7 +194,6 @@ export const ContadorRepeticaoComCronometro = ({
                
                 {(proximo || exercicioRecebido) && (
                 <>
-                    
                      <ComboBox 
                         value={tipo}
                         onChange={setTipo}
