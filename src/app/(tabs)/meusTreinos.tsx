@@ -73,7 +73,8 @@ export default function MeusTreinos() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: 30,
+    gap: 20
+    
   },
   buttonExercise: {
     borderRadius: 10,
@@ -82,7 +83,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 6,
-    width: '80%'
+    width: '80%',
+    marginLeft: 6,
   
   },
   labelButtonExercise: {
