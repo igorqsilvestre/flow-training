@@ -1,0 +1,1 @@
+export type DatasTreino = Record<string, boolean>;

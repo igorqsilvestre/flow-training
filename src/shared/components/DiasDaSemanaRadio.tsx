@@ -1,26 +1,36 @@
+import { useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { theme } from "../themes/theme";
+import { DatasTreino } from "../types/datasTreino";
 
 const dias = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
 
 type Props = {
-  datasTreino: string[]; 
+  datasTreino: DatasTreino; 
 };
 
 export const DiasDaSemanaRadio = ({ datasTreino }: Props) => {
+
+ const diasAtivos = useMemo(() => {
   const inicio = inicioDaSemana();
   const fim = fimDaSemana();
 
-  const diasAtivos = new Set<number>();
+  const novosDias = new Set<number>();
 
-  datasTreino.forEach(dataStr => {
+  Object.entries(datasTreino).forEach(([dataStr, ativo]) => {
+    if (!ativo) return;
+
     const data = criarDataLocal(dataStr);
 
     if (data >= inicio && data <= fim) {
-    const indice = getIndiceSemanaSegunda(data);
-    diasAtivos.add(indice);
+      const indice = getIndiceSemanaSegunda(data);
+      novosDias.add(indice);
     }
   });
+
+  return novosDias;
+}, [datasTreino]);
+  
 
   return (
     <View style={styles.container}>

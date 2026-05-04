@@ -1,3 +1,4 @@
+import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
 import { theme } from '@/src/shared/themes/theme';
 import { playSound } from '@/src/shared/utils/audio';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,7 +10,20 @@ export default function Finalizado() {
 
     useEffect(() => {
         playSound(require('@/assets/sounds/sucess.mp3'));
+
+        const data = getDataHoje();
+        salvarDataConcluida(data);
+
     },[])
+
+    function getDataHoje(){
+         const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoje.getDate()).padStart(2, '0');
+
+        return `${ano}-${mes}-${dia}`;
+    }
 
     return (
         <View style={styles.container}>

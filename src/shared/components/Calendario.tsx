@@ -2,28 +2,31 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { theme } from "../themes/theme";
+import { DatasTreino } from "../types/datasTreino";
 
 type Props = {
-  datasTreino: string[]; 
+  datasTreino: DatasTreino;
 };
 export const Calendario = ({ datasTreino }: Props) => {
   const [datasMarcadas, setDatasMarcadas] = useState<{ [key: string]: any }>({});
 
- function gerarDatasMarcadas(datas: string[]) {
+ function gerarDatasMarcadas(datas: DatasTreino) {
     const marked: any = {};
 
-    datas.forEach(date => {
-      marked[date] = {
-        selected: true,
-        selectedColor: theme.colors.exercise,
-      };
+    Object.keys(datas).forEach(date => {
+      if (datas[date]) {
+        marked[date] = {
+          selected: true,
+          selectedColor: theme.colors.exercise,
+        };
+      }
     });
 
     return marked;
   }
 
   useEffect(() => {
-    if (!datasTreino || datasTreino.length === 0) return;
+    if (!datasTreino || Object.keys(datasTreino).length === 0) return;
 
     setDatasMarcadas(gerarDatasMarcadas(datasTreino));
   }, [datasTreino]);

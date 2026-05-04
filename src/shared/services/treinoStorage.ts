@@ -19,7 +19,7 @@ export async function getTreinos() {
        return JSON.parse(data) as Treino[];
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return [];
     }
 }
@@ -35,7 +35,7 @@ export async function getTreino(id:string) {
        return treino ?? null;
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return null;
     }
 }
@@ -53,7 +53,7 @@ export async function checkNomeExists(nome: string, id: string | undefined){
         );
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
     }
 }
