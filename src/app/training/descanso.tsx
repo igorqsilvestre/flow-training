@@ -48,7 +48,7 @@ export default function Descanso() {
         <CardBig
             tipoTreino="descanso"
             tempoCronometroEmSegundos={
-                formatarTempoParaSegundos(exercicioAtual?.tempoDescanso)
+                formatarTempoParaSegundos(exercicioAtual?.tempos.tempoDescanso)
             }
             title='Descanso' 
             backgroundColor={theme.colors.cycles} 

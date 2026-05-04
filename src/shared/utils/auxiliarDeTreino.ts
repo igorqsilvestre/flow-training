@@ -1,16 +1,16 @@
 import { Exercicio } from "../types/exercicio";
 import { TempoCronometro, TempoCronometroFormatado } from "../types/tempos";
 
-function verificaSeExercicioEstaZerado (tempoCronometro: TempoCronometro | undefined){
-  if(!tempoCronometro){
-    return false;
-  }
-
+function retornarValorPadraoParaCronometroZerado (tempoCronometro: TempoCronometro): TempoCronometro{
   if(tempoCronometro.minuto === 0 && tempoCronometro.dezenaDosSegundos === 0 && tempoCronometro.unidadeDosSegundos === 0){
-    return false;
+    return {
+      minuto: 0,
+      dezenaDosSegundos: 4,
+      unidadeDosSegundos: 5
+    };
   }
 
-  return true;
+  return tempoCronometro;
  
 }
 
@@ -31,18 +31,14 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
   listaDeExercicios.forEach((item) => {
     if(item.id === exercicioASerAtualizado.id){
       item.sigla = exercicioASerAtualizado.sigla;
-      item.tempoDescanso = exercicioASerAtualizado.tempoDescanso;
+      item.tempos.tempoDescanso = exercicioASerAtualizado.tempos.tempoDescanso;
 
-      if(exercicioASerAtualizado.tempoRepeticao){
-        item.tempoRepeticao =  exercicioASerAtualizado.tempoRepeticao;
-        item.tempoCronometro = undefined;
-        return;
-      }
-
-      if(verificaSeExercicioEstaZerado(exercicioASerAtualizado.tempoCronometro)){
-        item.tempoCronometro = exercicioASerAtualizado.tempoCronometro;
-        item.tempoRepeticao = undefined;
-        return;
+      if(exercicioASerAtualizado.tempos.tempoExercicio){
+        item.tempos.tempoRepeticao = undefined;
+        item.tempos.tempoExercicio = retornarValorPadraoParaCronometroZerado(exercicioASerAtualizado.tempos.tempoExercicio);
+      }else{
+        item.tempos.tempoExercicio = undefined;
+        item.tempos.tempoRepeticao =  exercicioASerAtualizado.tempos.tempoRepeticao === 0 ? 10 : exercicioASerAtualizado.tempos.tempoRepeticao;
       }
       
       return;
@@ -54,14 +50,23 @@ export function editarListaDeExercicios(listaDeExercicios: Exercicio[], exercici
 
 export function criarListaDeExerciciosDeTempoCronometro(
   quantidadeDeExercicios:number, 
-  tempoExercicio:TempoCronometro,
-  tempoDescanso:TempoCronometro
+  sigla: 'Time' | 'Rep',
+  tempoDescanso:TempoCronometro,
+  tempoExercicio?: TempoCronometro,
+  tempoRepeticao?: number
 ): Exercicio[]{
 
-  if(!verificaSeExercicioEstaZerado(tempoExercicio)){
-    tempoExercicio.minuto = 0;
-    tempoExercicio.dezenaDosSegundos = 4;
-    tempoExercicio.unidadeDosSegundos = 5;
+  if(quantidadeDeExercicios === 0){
+    quantidadeDeExercicios = 4;
+  }
+
+  if(tempoExercicio){
+    tempoRepeticao = undefined;
+    tempoExercicio = retornarValorPadraoParaCronometroZerado(tempoExercicio);
+    
+  }else {
+    tempoExercicio = undefined;
+    if(tempoRepeticao === 0) tempoRepeticao = 10;
   }
 
   //Criando uma lista padrão de exercícios
@@ -70,9 +75,12 @@ export function criarListaDeExerciciosDeTempoCronometro(
     lista.push( 
       {
         id: (index + 1).toString(), 
-        sigla: 'Time',
-        tempoCronometro: tempoExercicio,
-        tempoDescanso: tempoDescanso,
+        sigla,
+        tempos: {
+          tempoExercicio,
+          tempoRepeticao,
+          tempoDescanso,
+        }
       }
     )
   }

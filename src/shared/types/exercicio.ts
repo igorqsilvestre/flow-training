@@ -1,9 +1,7 @@
-import { TempoCronometro } from "./tempos";
+import { TemposExercicio } from "./tempos";
 
 export type Exercicio = {
   id: string;
   sigla: 'Time' | 'Rep'
-  tempoRepeticao?: number;
-  tempoCronometro?: TempoCronometro,
-  tempoDescanso: TempoCronometro,
+  tempos: TemposExercicio
 }

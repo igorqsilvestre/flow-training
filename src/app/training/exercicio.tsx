@@ -54,11 +54,11 @@ export default function Exercicio() {
             buttonColor={theme.colors.botaoExercise}
             irParaAproximaRota={irParaProximaRota}
             voltarRota={voltarRota}
-            tempoCronometroEmSegundos={exercicioAtual?.tempoCronometro 
-                ? formatarTempoParaSegundos(exercicioAtual?.tempoCronometro)
+            tempoCronometroEmSegundos={exercicioAtual?.tempos.tempoExercicio 
+                ? formatarTempoParaSegundos(exercicioAtual?.tempos.tempoExercicio)
                 : undefined
                 }
-            tempoRepeticao={exercicioAtual?.tempoRepeticao}
+            tempoRepeticao={exercicioAtual?.tempos.tempoRepeticao}
         />
         
     )

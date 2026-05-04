@@ -28,7 +28,6 @@ type Props = {
 
 export default function Treino({ id }: Props) {
     const insets = useSafeAreaInsets();
-    
     const iniciarTreino = useTreinoExecucaoStore(s => s.iniciarTreino);
   
     const [openTempGravarTreino, setOpenTempGravarTreino] = useState<boolean>(false);
@@ -52,24 +51,26 @@ export default function Treino({ id }: Props) {
       },[id]);
 
       function setarValoresIniciais(){
+        setNome('');
         setTempoPrepacao({minuto: 0, dezenaDosSegundos: 1, unidadeDosSegundos: 0})
         const lista = criarListaDeExerciciosDeTempoCronometro(
             4,
+            "Time",
+            { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 },
             { minuto: 0,dezenaDosSegundos: 4,unidadeDosSegundos: 5 },
-            { minuto: 0,dezenaDosSegundos: 1,unidadeDosSegundos: 5 }
         );
         setListaExercicios(lista);
         setTempoCiclos(0);
       }
 
-      async function carregarTreino(id: string){
-        const treino = await getTreino(id);
-        if(treino){
-          setTempoPrepacao(treino.tempoPreparacao);
-          setTempoCiclos(treino.tempoCiclos);
-          setListaExercicios(treino.listaDeExercicios);
-          setNome(treino.nome);
-        } 
+    async function carregarTreino(id: string){
+      const treino = await getTreino(id);
+      if(treino){
+        setTempoPrepacao(treino.tempoPreparacao);
+        setTempoCiclos(treino.tempoCiclos);
+        setListaExercicios(treino.listaDeExercicios);
+        setNome(treino.nome);
+      } 
     }
 
     function onAdicionarTempoPreparacao(
