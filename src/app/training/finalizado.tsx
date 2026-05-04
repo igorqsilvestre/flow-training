@@ -1,15 +1,18 @@
 import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
 import { theme } from '@/src/shared/themes/theme';
-import { playSound } from '@/src/shared/utils/audio';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useAudioPlayer } from 'expo-audio';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Finalizado() {
+     const sucess = useAudioPlayer(require('@/assets/sounds/sucess.mp3'));
 
     useEffect(() => {
-        playSound(require('@/assets/sounds/sucess.mp3'));
+       
+        sucess.seekTo(0);
+        sucess.play();
 
         const data = getDataHoje();
         salvarDataConcluida(data);

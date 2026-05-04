@@ -1,5 +1,5 @@
-import { playSound } from '@/src/shared/utils/audio';
 import { MaterialIcons } from "@expo/vector-icons";
+import { useAudioPlayer } from 'expo-audio';
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -23,19 +23,23 @@ export const CardBig = (props: IPropsCardBig) => {
     const [segundos, setSegundos] = useState<number | undefined>(undefined);
     const [rodando, setRodando] = useState(true);
 
+    const startPlayer = useAudioPlayer(require('@/assets/sounds/start.mp3'));
+    const beepPlayer = useAudioPlayer(require('@/assets/sounds/beep.mp3'));
+
     useFocusEffect(
         useCallback(() => {
             setSegundos(props.tempoCronometroEmSegundos);
             setRodando(true);
 
             if (props.tipoTreino === 'execucao') {
-                playSound(require('@/assets/sounds/start.mp3'));
+                startPlayer.seekTo(0);
+                startPlayer.play();
             }
 
             return () => {
                 setRodando(false);
             };
-        }, [props.tempoCronometroEmSegundos])
+        }, [props.tempoCronometroEmSegundos, props.tipoTreino])
     );
 
    useEffect(() => {
@@ -58,7 +62,8 @@ export const CardBig = (props: IPropsCardBig) => {
             segundos > 0 &&
             segundos <= 3
         ) {
-            playSound(require('@/assets/sounds/beep.mp3'));
+           beepPlayer.seekTo(0);
+           beepPlayer.play();
         }
         if (segundos === 0) {
             props.irParaAproximaRota();

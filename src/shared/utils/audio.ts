@@ -1,12 +1,12 @@
-import { Audio } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 
-export async function playSound(requirePath: any) {
-  const { sound } = await Audio.Sound.createAsync(requirePath);
-  await sound.playAsync();
+export function usePlaySound(requirePath: any) {
+  const player = useAudioPlayer(requirePath);
 
-  sound.setOnPlaybackStatusUpdate((status) => {
-    if (status.isLoaded && status.didJustFinish) {
-      sound.unloadAsync();
-    }
-  });
+  const play = () => {
+    player.seekTo(0);
+    player.play();
+  };
+
+  return { play };
 }
