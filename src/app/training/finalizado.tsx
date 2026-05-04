@@ -43,10 +43,10 @@ export default function Finalizado() {
                 Treino realizado com sucesso
             </Text>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerBotao} onPress={() => router.push('/(tabs)')}>
+                <TouchableOpacity style={styles.footerBotao} onPress={() => router.replace('/(tabs)')}>
                     <Text style={styles.texto}>Voltar a home</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.footerBotao} onPress={() => router.push('/(tabs)/progresso')} >
+                <TouchableOpacity style={styles.footerBotao} onPress={() => router.replace('/(tabs)/progresso')} >
                     <Text style={styles.texto}>Ver progresso</Text>
                 </TouchableOpacity>
             </View>
