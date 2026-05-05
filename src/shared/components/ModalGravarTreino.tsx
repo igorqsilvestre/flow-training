@@ -1,7 +1,7 @@
 import { theme } from '@/src/shared/themes/theme';
 import { router } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
 import { Exercicio } from '../types/exercicio';
 import { TempoCronometro } from '../types/tempos';
@@ -22,29 +22,13 @@ type Props = {
 export function ModalGravarTreino({ treino, visible, onClose }: Props){
     const [nome, setNome] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [keyboardOpen, setKeyboardOpen] = useState(false);
     
 
     useEffect(() => {
        setNome(treino.nome);
-       controlarTecladoDigitacaoParaInput();
-    }, []);
+    }, [treino]);
 
-    function controlarTecladoDigitacaoParaInput(){
-         //Controlando o teclado do celular para abrir e fechar
-        const show = Keyboard.addListener('keyboardDidShow', () => {
-            setKeyboardOpen(true);
-        });
-
-        const hide = Keyboard.addListener('keyboardDidHide', () => {
-            setKeyboardOpen(false);
-        });
-
-        return () => {
-            show.remove();
-            hide.remove();
-        };
-    }
+ 
 
     async function onSalvar(){
 
@@ -90,41 +74,45 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     }
 
     return (
-    <Modal  visible={visible} transparent animationType="fade" statusBarTranslucent>
-        <View style={[
-             styles.overlay,
-            {
-                justifyContent: keyboardOpen ? 'flex-end' : 'center',
-                paddingBottom: keyboardOpen ? 20 : 0,
-            }
-        ]}>
-            <View style={styles.modal}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
-            </View>
-            <View style={styles.content}>
-                <Text style={styles.label}>Nome</Text>
-                <TextInput
-                    style={{
-                    ...styles.input,
-                    borderColor: errorMessage ? '#ff4d4f' : '#000000'
-                    }}
-                    onChangeText={setNome}
-                    value={nome}
-                />
-                {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-            </View>
-                
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerAction} onPress={onClose}>
-                    <Text style={styles.footerTitle}>Cancelar</Text>
-                </TouchableOpacity>
+    <Modal  
+        visible={visible} 
+        transparent 
+        animationType="fade" 
+        statusBarTranslucent
+    >
+        <View style={styles.overlay}>
+            <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.keyboardContainer}
+            >
+                <View style={styles.modal}>
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
+                </View>
+                <View style={styles.content}>
+                    <Text style={styles.label}>Nome</Text>
+                    <TextInput
+                        style={{
+                        ...styles.input,
+                        borderColor: errorMessage ? '#ff4d4f' : '#000000'
+                        }}
+                        onChangeText={setNome}
+                        value={nome}
+                    />
+                    {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+                </View>
+                    
+                <View style={styles.footer}>
+                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
+                        <Text style={styles.footerTitle}>Cancelar</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.footerAction} onPress={onSalvar}>
-                    <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
-                </TouchableOpacity>
-            </View>
-            </View>
+                    <TouchableOpacity style={styles.footerAction} onPress={onSalvar}>
+                        <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
+                    </TouchableOpacity>
+                </View>
+                </View>
+            </KeyboardAvoidingView>
         </View>
     </Modal>    
     )
@@ -137,6 +125,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
       },
+        keyboardContainer: {
+        width: '100%',
+        alignItems: 'center',
+    },
     modal: {
         borderRadius: 10,
         width: '95%',
