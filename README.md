@@ -6,3 +6,5 @@ Também tem a parte que verá o seu progresso vendo os dias que foram feitos o t
 O figma do aplicativo é: https://www.figma.com/design/HZLzz4yZFQAQREY9KlRFZg/FlowTraining?node-id=1-2&t=4bgNYaVhj4TjOhSN-1
 
 O projeto foi feito utilizando o react com o expo-go.
+
+Vídeo tutorial mostrando como funciona o aplicativo: https://www.youtube.com/watch?v=96nD1A0hXmM
