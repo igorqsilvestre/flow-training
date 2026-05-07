@@ -1,10 +1,12 @@
-import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
-import { theme } from '@/src/shared/themes/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAudioPlayer } from 'expo-audio';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
+import { theme } from '@/src/shared/themes/theme';
+
 
 export default function Finalizado() {
      const sucess = useAudioPlayer(require('@/assets/sounds/sucess.mp3'));

@@ -1,7 +1,7 @@
 import { theme } from '@/src/shared/themes/theme';
 import { router } from 'expo-router';
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
 import { Exercicio } from '../types/exercicio';
 import { TempoCronometro } from '../types/tempos';
@@ -27,7 +27,6 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     useEffect(() => {
        setNome(treino.nome);
     }, [treino]);
-
  
 
     async function onSalvar(){
@@ -81,11 +80,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
         statusBarTranslucent
     >
         <View style={styles.overlay}>
-            <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.keyboardContainer}
-            >
-                <View style={styles.modal}>
+            <View style={styles.modal}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
                 </View>
@@ -111,8 +106,7 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
                         <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
                     </TouchableOpacity>
                 </View>
-                </View>
-            </KeyboardAvoidingView>
+            </View>
         </View>
     </Modal>    
     )
@@ -125,10 +119,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
       },
-        keyboardContainer: {
-        width: '100%',
-        alignItems: 'center',
-    },
     modal: {
         borderRadius: 10,
         width: '95%',
