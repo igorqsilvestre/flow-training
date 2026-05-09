@@ -7,9 +7,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
 import { useTreinoExecucaoStore } from '@/src/shared/store/useTreinoExecucaoStore';
 import { theme } from '@/src/shared/themes/theme';
+import { useKeepAwake } from 'expo-keep-awake';
 
 
 export default function Finalizado() {
+    useKeepAwake();
+
     const {tempoInicialTreino} = useTreinoExecucaoStore();
     const sucess = useAudioPlayer(require('@/assets/sounds/sucess.mp3'));
 
