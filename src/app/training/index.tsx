@@ -5,18 +5,23 @@ import { CardBig } from "@/src/shared/components/CardBig";
 import { useTreinoExecucaoStore } from "@/src/shared/store/useTreinoExecucaoStore";
 import { theme } from "@/src/shared/themes/theme";
 import { formatarTempoParaSegundos } from "@/src/shared/utils/auxiliarTreinoEmExecucao";
+import { useEffect } from 'react';
 
 
 export default function Index() {
     useKeepAwake();
     
-    const execucaoStorage = useTreinoExecucaoStore();
+    const {setTempoInicialTreino, rotaAtual, setProximaRota, treino} = useTreinoExecucaoStore();
+
+    useEffect(() => {
+        setTempoInicialTreino(new Date());
+    },[])
 
     function irParaProximaRota(){
-        const rota = execucaoStorage.rotaAtual;
+        const rota = rotaAtual;
         if(rota === 'index'){
             const proximaRota = 'exercicio';
-            execucaoStorage.setProximaRota(proximaRota);
+            setProximaRota(proximaRota);
             router.push(`/training/${proximaRota}`); 
         } 
     }
@@ -28,7 +33,7 @@ export default function Index() {
     return (
        <CardBig
        tempoCronometroEmSegundos={
-        formatarTempoParaSegundos(execucaoStorage.treino?.tempoPreparacao)
+        formatarTempoParaSegundos(treino?.tempoPreparacao)
        }
        tipoTreino="preparacao"
        title='Preparação' 

@@ -8,10 +8,12 @@ export type TreinoEmExecucao = {
     indexExercicio: number;
     cicloAtual: number,
     rotaAtual: RotaTreino;
+    tempoInicialTreino: Date;
 
     iniciarTreino: (treino: Treino) => void;
     setProximaRota: (rota: RotaTreino) => void;
     setTreino: (treino: Treino | undefined) => void;
     setIndex: (index: number) => void;
     setCicloAtual: (ciclo: number) => void;
+    setTempoInicialTreino: (tempoInicialTreino: Date) => void;
 }

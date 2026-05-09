@@ -34,7 +34,7 @@ export default function Descanso() {
                     const proximaRota = 'finalizado'
                     useStore.setTreino(undefined);
                     useStore.setProximaRota(proximaRota);
-                    router.push(`/training/${proximaRota}`); 
+                    router.replace(`/training/${proximaRota}`); 
                 }
             }
         }
@@ -55,6 +55,7 @@ export default function Descanso() {
                 formatarTempoParaSegundos(exercicioAtual?.tempos.tempoDescanso)
             }
             title='Descanso' 
+            quantidadeDeExercicios={`${useStore.indexExercicio + 1}/${useStore.treino?.listaDeExercicios.length}`}
             backgroundColor={theme.colors.cycles} 
             buttonColor={theme.colors.botaoDescanso}
             irParaAproximaRota={irParaProximaRota}

@@ -6,6 +6,7 @@ export const useTreinoExecucaoStore = create<TreinoEmExecucao>((set) => ({
     indexExercicio: 0,
     cicloAtual: 0,
     rotaAtual: 'index',
+    tempoInicialTreino: new Date(),
 
     iniciarTreino: (treino) => 
         set({
@@ -19,6 +20,7 @@ export const useTreinoExecucaoStore = create<TreinoEmExecucao>((set) => ({
     setTreino: (treino) => set({treino: treino}),
     setIndex: (index) => set({indexExercicio: index}),
     setCicloAtual: (ciclo) => set({ cicloAtual: ciclo }),
+    setTempoInicialTreino: (tempoTreino) => set({ tempoInicialTreino: tempoTreino })
 }))
 
 

@@ -115,6 +115,36 @@ export const CardSmall = (props: IPropsCardSmall) => {
     }
   }
 
+  function calculartempoDeTreino() {
+    let segundos = 0;
+    let minutos = 0;
+
+    props.exercicios.forEach(item => {
+
+      if (item.tempos.tempoRepeticao) {
+        segundos += item.tempos.tempoRepeticao;
+      }
+
+      if (item.tempos.tempoExercicio) {
+        segundos += item.tempos.tempoExercicio.dezenaDosSegundos * 10;
+        segundos += item.tempos.tempoExercicio.unidadeDosSegundos;
+        minutos += item.tempos.tempoExercicio.minuto;
+      }
+
+      if (item.tempos.tempoDescanso) {
+        segundos += item.tempos.tempoDescanso.dezenaDosSegundos * 10;
+        segundos += item.tempos.tempoDescanso.unidadeDosSegundos;
+        minutos += item.tempos.tempoDescanso.minuto;
+      }
+
+    });
+
+    minutos += Math.floor(segundos / 60);
+    segundos = segundos % 60;
+
+    return `Tempo: ${minutos}m e ${segundos}s`;
+  }
+
   return (
     <View style={ {backgroundColor: props?.backgroundColor, ...styles.card} }>
       <TouchableOpacity style={styles.cardIconRefresh} onPress={() => restaurarValoresNoCard(props?.tipo)}>
@@ -170,75 +200,75 @@ export const CardSmall = (props: IPropsCardSmall) => {
           </TouchableOpacity>
 
           {props?.tipo === 'treino'  && (
-          <View
-            style={styles.containerList}
-          >
+            <View
+              style={styles.containerList}
+            >
+              <Text style={styles.tempo}>{calculartempoDeTreino()}</Text>
 
-            <FlatList 
-              data={props?.exercicios}
-              keyExtractor={(item) => item.id}
-              numColumns={2}
-              columnWrapperStyle={{ }}
-              
-              style={{
-                paddingHorizontal: 5,
-                rowGap: 5,
-                  ...(listaExerciciosExpandida
-                    ? {}
-                    : {
-                        maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2 linhas
-                      })
-              }}
-              showsVerticalScrollIndicator={!listaExerciciosExpandida && (props?.exercicios.length || 4) > MAX_ITEMS_VISIBLE}
-              scrollEnabled={!listaExerciciosExpandida && (props?.exercicios.length || 4) > MAX_ITEMS_VISIBLE}
-              renderItem={({ item }) => (
-                <View style={{width: '50%', paddingHorizontal: 8}}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4 }}>
-                    <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
-                    <TouchableOpacity>
-                      <MaterialIcons size={23} name="edit"  onPress={() => {
-                        setConfiguracoesExercicio({
-                          id: item.id,
-                          title:`Exercício ${item.id}º`,
-                          tempos: {
-                            tempoExercicio: item?.tempos.tempoExercicio,
-                            tempoRepeticao: item?.tempos.tempoRepeticao,
-                            tempoDescanso: item.tempos.tempoDescanso
-                          }
-                        })
-                        setModoExercicio(true);
-                      }}/>
-                    </TouchableOpacity>
-                  </View>
+              <FlatList 
+                data={props?.exercicios}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                columnWrapperStyle={{ }}
                 
-                  <View style={styles.contentExercicio}>
-                      <Text style={styles.cardSubTitle}>{item.sigla}</Text>
-                      <Text style={styles.cardSubTitle}>
-                        {
-                          item.tempos.tempoRepeticao 
-                          ? item.tempos.tempoRepeticao  + 'x' 
-                          : item.tempos.tempoExercicio 
-                            ? formatarCronometro(item.tempos.tempoExercicio)
-                            : ''
-                        }
-                      </Text>
-                      <Text> - </Text>
-                      <Text style={styles.cardSubTitle}>Des</Text>
-                      <Text style={styles.cardSubTitle}>{item.tempos.tempoDescanso ? formatarCronometro(item.tempos.tempoDescanso) : ''}</Text>
-                      
+                style={{
+                  paddingHorizontal: 5,
+                  rowGap: 5,
+                    ...(listaExerciciosExpandida
+                      ? {}
+                      : {
+                          maxHeight: ITEM_HEIGHT * MAX_ITEMS_VISIBLE // mostra só 2 linhas
+                        })
+                }}
+                showsVerticalScrollIndicator={!listaExerciciosExpandida && (props?.exercicios.length || 4) > MAX_ITEMS_VISIBLE}
+                scrollEnabled={!listaExerciciosExpandida && (props?.exercicios.length || 4) > MAX_ITEMS_VISIBLE}
+                renderItem={({ item }) => (
+                  <View style={{width: '50%', paddingHorizontal: 8}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 4 }}>
+                      <Text style={styles.cardSubTitle}>Exercício {item.id}º</Text>
+                      <TouchableOpacity>
+                        <MaterialIcons size={23} name="edit"  onPress={() => {
+                          setConfiguracoesExercicio({
+                            id: item.id,
+                            title:`Exercício ${item.id}º`,
+                            tempos: {
+                              tempoExercicio: item?.tempos.tempoExercicio,
+                              tempoRepeticao: item?.tempos.tempoRepeticao,
+                              tempoDescanso: item.tempos.tempoDescanso
+                            }
+                          })
+                          setModoExercicio(true);
+                        }}/>
+                      </TouchableOpacity>
+                    </View>
+                  
+                    <View style={styles.contentExercicio}>
+                        <Text style={styles.cardSubTitle}>{item.sigla}</Text>
+                        <Text style={styles.cardSubTitle}>
+                          {
+                            item.tempos.tempoRepeticao 
+                            ? item.tempos.tempoRepeticao  + 'x' 
+                            : item.tempos.tempoExercicio 
+                              ? formatarCronometro(item.tempos.tempoExercicio)
+                              : ''
+                          }
+                        </Text>
+                        <Text> - </Text>
+                        <Text style={styles.cardSubTitle}>Des</Text>
+                        <Text style={styles.cardSubTitle}>{item.tempos.tempoDescanso ? formatarCronometro(item.tempos.tempoDescanso) : ''}</Text>
+                        
+                    </View>
                   </View>
-                </View>
               )}
             />
 
-            <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => setListaExerciciosExpandida(prev => !prev)}>
-              <MaterialIcons 
-                size={25} 
-                name={listaExerciciosExpandida ? 'arrow-upward' : 'arrow-downward'}  
-                />
-            </TouchableOpacity>
-          </View>
-          
+              <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => setListaExerciciosExpandida(prev => !prev)}>
+                <MaterialIcons 
+                  size={25} 
+                  name={listaExerciciosExpandida ? 'arrow-upward' : 'arrow-downward'}  
+                  />
+              </TouchableOpacity>
+            </View>
           )}
         </View>
       </View>
@@ -265,11 +295,17 @@ const styles = StyleSheet.create({
   cardIconRefresh: {
    alignSelf: 'flex-end'
   },
+  tempo: {
+    alignSelf: 'flex-end',
+    marginRight: 6,
+    marginBottom: 4,
+    fontFamily: theme.fonts.family.italic,
+    fontSize: theme.fonts.sizes.small,
+  },
   containerList: {
     width: '100%',
     borderTopColor: '#537896',
     borderTopWidth: 1,
-    paddingTop: 4,
     paddingBottom: 4,
     borderRadius: 5,
     shadowColor: '#000',

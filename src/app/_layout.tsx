@@ -26,6 +26,7 @@ export default function RootLayout() {
     PoppinsBoldItalic: require('../../assets/fonts/Poppins-BoldItalic.ttf'),
     PoppinsMedium: require('../../assets/fonts/Poppins-Medium.ttf'),
     PoppinsRegular: require('../../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsItalic: require('../../assets/fonts/Poppins-Italic.ttf'),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.

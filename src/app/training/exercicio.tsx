@@ -9,42 +9,50 @@ import { formatarTempoParaSegundos } from "@/src/shared/utils/auxiliarTreinoEmEx
 
 
 export default function Exercicio() {
-     const {
-        treino, 
-        indexExercicio, 
-        rotaAtual, 
-        setProximaRota, 
-        setIndex,
-        cicloAtual,
-        setCicloAtual
-    } = useTreinoExecucaoStore();
      useKeepAwake();
-     const exercicioAtual = treino?.listaDeExercicios?.[indexExercicio];
+
+     const useStore = useTreinoExecucaoStore();
+     const exercicioAtual = useStore.treino?.listaDeExercicios?.[useStore.indexExercicio];
 
      function irParaProximaRota(){
-        if(rotaAtual === 'exercicio'){
+
+        if(useStore.rotaAtual === 'exercicio'){
+            if( 
+            useStore.treino?.listaDeExercicios.length &&
+            useStore.indexExercicio === (useStore.treino?.listaDeExercicios.length - 1) &&
+            useStore.cicloAtual === 0
+            ){
+                const rota = 'finalizado';
+                useStore.setTreino(undefined);
+
+                useStore.setProximaRota(rota);
+                router.replace(`/training/${rota}`)
+                return;
+            }
+
             const rota = 'descanso';
-            setProximaRota(rota);
-            router.push(`/training/${rota}`); 
+            useStore.setProximaRota(rota);
+            router.push(`/training/${rota}`);  
         }
      }
 
     function voltarRota(){
-        if(rotaAtual === 'exercicio'){
-            if(indexExercicio === 0 && cicloAtual === 0){
+
+        if(useStore.rotaAtual === 'exercicio'){
+            if(useStore.indexExercicio === 0 && useStore.cicloAtual === 0){
                 const rota = 'index';
-                setProximaRota(rota);
+                useStore.setProximaRota(rota);
             }
-            else if(indexExercicio === 0 && cicloAtual > 0){
+            else if(useStore.indexExercicio === 0 && useStore.cicloAtual > 0){
                 const rota = 'descanso';
-                setProximaRota(rota);
-                setIndex(indexExercicio + 1);
-                setCicloAtual(cicloAtual - 1);
+                useStore.setProximaRota(rota);
+                useStore.setIndex(useStore.indexExercicio + 1);
+                useStore.setCicloAtual(useStore.cicloAtual - 1);
             }
             else {
                 const rota = 'descanso';
-                setProximaRota(rota);
-                setIndex(indexExercicio - 1);
+                useStore.setProximaRota(rota);
+                useStore.setIndex(useStore.indexExercicio - 1);
             }
             router.back();
         }
@@ -53,7 +61,8 @@ export default function Exercicio() {
     return (
         <CardBig
             tipoTreino="execucao"
-            title={`Exercicio ${indexExercicio + 1}º`}
+            title={`Exercicio ${useStore.indexExercicio + 1}º`}
+            quantidadeDeExercicios={`${useStore.indexExercicio + 1}/${useStore.treino?.listaDeExercicios.length}`}
             backgroundColor={theme.colors.exercise}
             buttonColor={theme.colors.botaoExercise}
             irParaAproximaRota={irParaProximaRota}

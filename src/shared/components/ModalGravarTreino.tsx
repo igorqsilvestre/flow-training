@@ -1,8 +1,9 @@
-import { theme } from '@/src/shared/themes/theme';
 import { router } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+
 import { checkNomeExists, criarTreino, updateTreino } from '../services/treinoStorage';
+import { modalStyles } from '../styles/modalStyles';
 import { Exercicio } from '../types/exercicio';
 import { TempoCronometro } from '../types/tempos';
 
@@ -79,31 +80,31 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
         animationType="fade" 
         statusBarTranslucent
     >
-        <View style={styles.overlay}>
-            <View style={styles.modal}>
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
+        <View style={modalStyles.overlay}>
+            <View style={modalStyles.modal}>
+                <View style={modalStyles.header}>
+                    <Text style={modalStyles.headerTitle}>{treino.id ? 'Editar treino' : 'Gravar Treino'}</Text>
                 </View>
-                <View style={styles.content}>
-                    <Text style={styles.label}>Nome</Text>
+                <View style={modalStyles.content}>
+                    <Text style={modalStyles.label}>Nome</Text>
                     <TextInput
                         style={{
-                        ...styles.input,
+                        ...modalStyles.input,
                         borderColor: errorMessage ? '#ff4d4f' : '#000000'
                         }}
                         onChangeText={setNome}
                         value={nome}
                     />
-                    {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+                    {errorMessage && <Text style={modalStyles.error}>{errorMessage}</Text>}
                 </View>
                     
-                <View style={styles.footer}>
-                    <TouchableOpacity style={styles.footerAction} onPress={onClose}>
-                        <Text style={styles.footerTitle}>Cancelar</Text>
+                <View style={modalStyles.footer}>
+                    <TouchableOpacity style={modalStyles.footerAction} onPress={onClose}>
+                        <Text style={modalStyles.footerTitle}>Cancelar</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.footerAction} onPress={onSalvar}>
-                        <Text style={styles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
+                    <TouchableOpacity style={modalStyles.footerAction} onPress={onSalvar}>
+                        <Text style={modalStyles.footerTitle}>{treino.id ? 'Atualizar': 'Salvar'}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -112,69 +113,3 @@ export function ModalGravarTreino({ treino, visible, onClose }: Props){
     )
 }
 
-const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-      },
-    modal: {
-        borderRadius: 10,
-        width: '95%',
-        backgroundColor: "#fff",
-        alignItems: 'center',
-        overflow: 'hidden',
-        gap: 30
-      },
-    header: {
-        backgroundColor: theme.colors.header,
-        width: '100%',
-        padding: 10
-      },
-    headerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.bold,
-        fontSize: theme.fonts.sizes.medium
-    },
-    content: {
-        marginVertical: 8,
-        width: '90%',
-    },
-    input: {
-        marginVertical: 2,
-        borderWidth: 1,
-        borderRadius: 5,
-        padding: 10,
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.body,
-    },
-    label: {
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.body,
-    },
-     error: {
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.small,
-        color: theme.colors.wrong
-    },
-    footer: {
-        flexDirection: 'row', 
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 20,
-    },
-    footerTitle: {
-        textAlign: 'center',
-        fontFamily: theme.fonts.family.regular,
-        fontSize: theme.fonts.sizes.medium
-    },
-    footerAction: {
-        paddingVertical: 8,
-        width: '35%',
-        marginBottom: 4,
-        borderRadius: 10,
-        backgroundColor: theme.colors.header
-    },
-   
-});

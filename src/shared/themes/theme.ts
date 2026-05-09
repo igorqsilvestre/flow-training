@@ -26,7 +26,8 @@ export const theme =  {
       regular: 'PoppinsRegular',
       bold: 'PoppinsBold',
       boldItalic: 'PoppinsBoldItalic',
-      medium: 'PoppinsMedium'
+      medium: 'PoppinsMedium',
+      italic: 'PoppinsItalic'
     }
   }
 };

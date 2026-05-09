@@ -5,11 +5,13 @@ import { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { salvarDataConcluida } from '@/src/shared/services/treinoDataStorage';
+import { useTreinoExecucaoStore } from '@/src/shared/store/useTreinoExecucaoStore';
 import { theme } from '@/src/shared/themes/theme';
 
 
 export default function Finalizado() {
-     const sucess = useAudioPlayer(require('@/assets/sounds/sucess.mp3'));
+    const {tempoInicialTreino} = useTreinoExecucaoStore();
+    const sucess = useAudioPlayer(require('@/assets/sounds/sucess.mp3'));
 
     useEffect(() => {
        
@@ -30,6 +32,19 @@ export default function Finalizado() {
         return `${ano}-${mes}-${dia}`;
     }
 
+   function calcularTempoTotal() {
+        const agora = new Date();
+
+        const diferencaEmMs = agora.getTime() - tempoInicialTreino.getTime();
+
+        const totalSegundos = Math.floor(diferencaEmMs / 1000);
+
+        const minutos = Math.floor(totalSegundos / 60);
+        const segundos = totalSegundos % 60;
+
+        return `Tempo total: ${minutos}m e ${segundos}s`;
+    }
+
     return (
         <View style={styles.container}>
             <View style={{flexDirection: 'row',gap: 10}}>
@@ -43,6 +58,9 @@ export default function Finalizado() {
             </Text>
             <Text style={styles.texto}>
                 Treino realizado com sucesso
+            </Text>
+            <Text style={styles.texto}>
+                {calcularTempoTotal()}
             </Text>
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerBotao} onPress={() => router.replace('/(tabs)')}>

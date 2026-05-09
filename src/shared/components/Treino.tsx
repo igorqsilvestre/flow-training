@@ -128,7 +128,7 @@ export default function Treino({ id }: Props) {
       ListHeaderComponent={() => (
         <View style={{paddingVertical: 20 }}>
           <Text style={styles.title}>
-            Vamos começar
+            {nome || 'Vamos começar'}
           </Text>
         </View>
       )}

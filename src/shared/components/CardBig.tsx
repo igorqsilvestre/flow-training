@@ -12,7 +12,7 @@ interface IPropsCardBig {
     buttonColor: string;
     tipoTreino: 'preparacao' | 'execucao' | 'descanso';
 
-    quantidadeExercicios?: string;
+    quantidadeDeExercicios?: string;
     tempoCronometroEmSegundos?: number;
     tempoRepeticao?: number;
     irParaAproximaRota: () => void;
@@ -24,6 +24,7 @@ export const CardBig = (props: IPropsCardBig) => {
     const [rodando, setRodando] = useState(true);
 
     const startPlayer = useAudioPlayer(require('@/assets/sounds/start.mp3'));
+    const restPlayer = useAudioPlayer(require('@/assets/sounds/rest.mp3'));
     const beepPlayer = useAudioPlayer(require('@/assets/sounds/beep.mp3'));
 
     useFocusEffect(
@@ -34,6 +35,9 @@ export const CardBig = (props: IPropsCardBig) => {
             if (props.tipoTreino === 'execucao') {
                 startPlayer.seekTo(0);
                 startPlayer.play();
+            }else if(props.tipoTreino === 'descanso'){
+                restPlayer.seekTo(0);
+                restPlayer.play();
             }
 
             return () => {
@@ -78,9 +82,15 @@ export const CardBig = (props: IPropsCardBig) => {
     return (
         <View style={styles.container}>
             <View style={{backgroundColor: props.backgroundColor, ...styles.card}}>
-                <TouchableOpacity style={{alignSelf: 'flex-end', paddingHorizontal: 10, paddingVertical: 4}} onPress={() => router.replace('/(tabs)')}>
-                    <MaterialIcons size={28} name="cancel"/>
-                </TouchableOpacity>
+                <View style={styles.containerHeader}>
+                    {props.tipoTreino !== 'preparacao' && (
+                        <Text style={styles.headerTitle}>{props.quantidadeDeExercicios}</Text>
+                    )}
+                    <TouchableOpacity style={styles.cancelButton} onPress={() => router.replace('/(tabs)')}>
+                        <MaterialIcons size={28} name="cancel"/>
+                    </TouchableOpacity>
+                </View>
+                
                 
 
                 <View style={styles.cardContent}>
@@ -156,6 +166,21 @@ const styles = StyleSheet.create({
         gap: 20,
   
     },
+    containerHeader: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        paddingVertical: 4,
+        paddingHorizontal: 10
+    },
+
+    cancelButton: {
+        marginLeft: 'auto',
+    },
+    headerTitle: {
+      fontFamily: theme.fonts.family.bold,
+      fontSize: theme.fonts.sizes.medium
+      
+    },
     titleExercise: {
         position: 'absolute',
         left: 10,
@@ -182,9 +207,9 @@ const styles = StyleSheet.create({
         color: theme.colors.primary
     },
     cardButtonExercise: {
-        width: 153,
+        width: 160,
         borderRadius: 10,
-        paddingVertical: 6,
+        paddingVertical: 8,
         gap: 5,
         flexDirection: 'row',
         justifyContent: 'center',
